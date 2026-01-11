@@ -1,0 +1,56 @@
+# Flutter specific files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+*.lock
+*.iml
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build outputs
+build/
+android/
+ios/
+windows/
+macos/
+linux/
+web/
+
+# Hive specific
+*.hive
+*.lock
+
+# Generated files
+*.g.dart
+*.freezed.dart
+*.config.dart
+
+# Environment
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Firebase/Analytics
+google-services.json
+GoogleService-Info.plist
+
+# Secrets
+*.jks
+*.keystore
+*.mobileprovision
+
+# Misc
+.venv
+.venv3
+venv/
+__pycache__/
