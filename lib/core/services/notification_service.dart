@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz_time;
@@ -18,6 +19,8 @@ class NotificationService {
 
   /// Initialize notification service
   Future<void> initialize() async {
+    // Notifications are not supported on web; bail out to prevent runtime errors.
+    if (kIsWeb) return;
     try {
       // Initialize timezone data
       tz.initializeTimeZones();
@@ -64,6 +67,7 @@ class NotificationService {
 
   /// Request notification permissions from the user
   Future<bool> requestNotificationPermission() async {
+    if (kIsWeb) return true;
     try {
       // Request iOS permissions explicitly
       final IOSFlutterLocalNotificationsPlugin? iosPlugin =
@@ -98,6 +102,7 @@ class NotificationService {
     required int notificationMinute,
     required bool enabled,
   }) async {
+    if (kIsWeb) return;
     try {
       // Ensure timezone is initialized
       try {
@@ -197,6 +202,7 @@ class NotificationService {
 
   /// Cancel notification
   Future<void> cancelNotification(String subscriptionId) async {
+    if (kIsWeb) return;
     try {
       await _notificationsPlugin.cancel(subscriptionId.hashCode);
       _logger.i('Cancelled notification for subscription: $subscriptionId');
@@ -207,6 +213,7 @@ class NotificationService {
 
   /// Cancel all notifications
   Future<void> cancelAllNotifications() async {
+    if (kIsWeb) return;
     try {
       await _notificationsPlugin.cancelAll();
       _logger.i('Cancelled all notifications');

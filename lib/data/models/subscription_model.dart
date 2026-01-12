@@ -20,6 +20,8 @@ class SubscriptionModel extends HiveObject {
     bool? notificationsEnabled,
     int? notificationDaysBefore,
     this.imagePath,
+    this.notes,
+    this.endDate,
     BillingCycle billingCycle = BillingCycle.monthly,
   })  : _currency = currency ?? 'TRY',
         _notificationHour = notificationHour ?? 10,
@@ -45,6 +47,8 @@ class SubscriptionModel extends HiveObject {
       startDate: subscription.startDate,
       billingCycle: subscription.billingCycle,
       imagePath: subscription.imagePath,
+      notes: subscription.notes,
+      endDate: subscription.endDate,
     );
     return model;
   }
@@ -90,6 +94,12 @@ class SubscriptionModel extends HiveObject {
   @HiveField(13)
   String? imagePath;
 
+  @HiveField(14)
+  String? notes;
+
+  @HiveField(15)
+  DateTime? endDate;
+
   // Getters with default values
   String get currency => _currency?.isEmpty ?? true ? 'TRY' : _currency!;
   int get notificationHour => _notificationHour ?? 10;
@@ -122,6 +132,8 @@ class SubscriptionModel extends HiveObject {
       startDate: startDate,
       billingCycle: billingCycle,
       imagePath: imagePath,
+      notes: notes,
+      endDate: endDate,
     );
 
   SubscriptionModel copyWith({
@@ -137,6 +149,8 @@ class SubscriptionModel extends HiveObject {
     int? notificationDaysBefore,
     DateTime? startDate,
     BillingCycle? billingCycle,
+    String? notes,
+    DateTime? endDate,
   }) => SubscriptionModel(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -150,5 +164,7 @@ class SubscriptionModel extends HiveObject {
       notificationDaysBefore: notificationDaysBefore ?? this.notificationDaysBefore,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       billingCycle: billingCycle ?? this.billingCycle,
+      notes: notes ?? this.notes,
+      endDate: endDate ?? this.endDate,
     );
 }

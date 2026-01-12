@@ -98,8 +98,13 @@ final totalMonthlyCostProvider = StreamProvider<double>((ref) async* {
   yield* subscriptions.when(
     data: (subs) {
       final total = subs.fold<double>(0, (sum, sub) {
+        // Convert yearly costs to monthly equivalent
+        final monthlyAmount = sub.billingCycle == BillingCycle.yearly
+            ? sub.cost / 12
+            : sub.cost;
+        
         final converted = currencyService.convert(
-          amount: sub.cost,
+          amount: monthlyAmount,
           fromCurrency: sub.currency,
           toCurrency: targetCurrency,
         );

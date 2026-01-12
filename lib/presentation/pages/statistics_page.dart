@@ -5,7 +5,6 @@ import 'package:subscription_tracker/core/localization/strings.dart';
 import 'package:subscription_tracker/domain/entities/subscription.dart';
 import 'package:subscription_tracker/presentation/providers/subscription_providers.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
-import 'package:subscription_tracker/presentation/widgets/subscription_avatar.dart';
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
 import 'package:subscription_tracker/core/services/currency_service.dart';
 
@@ -28,6 +27,8 @@ class StatisticsPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             children: [
               _MonthlyCostCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
+              const SizedBox(height: 16),
+              _ChartCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
               const SizedBox(height: 16),
               _AnnualCostCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
               const SizedBox(height: 16),
@@ -306,6 +307,206 @@ class _AnnualCostCard extends StatelessWidget {
   }
 }
 
+class _ChartCard extends StatelessWidget {
+  const _ChartCard({
+    required this.subscriptions,
+    required this.language,
+    required this.currencyCode,
+  });
+  
+  final List<Subscription> subscriptions;
+  final AppLanguage language;
+  final String currencyCode;
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate cost by category for chart (convert all to monthly basis)
+    final categories = <String, double>{};
+    double maxCost = 0;
+    
+    for (final sub in subscriptions) {
+      // Yearly subscriptions: divide by 12 to get monthly equivalent
+      final monthlyAmount = sub.billingCycle == BillingCycle.yearly
+          ? sub.cost / 12
+          : sub.cost;
+      
+      final cost = CurrencyConverter.convert(
+        amount: monthlyAmount,
+        fromCurrency: sub.currency,
+        toCurrency: currencyCode,
+      );
+      categories[sub.icon] = (categories[sub.icon] ?? 0) + cost;
+      maxCost = maxCost < cost ? cost : maxCost;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Kategori Dağılımı',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 20),
+          CustomPaint(
+            size: const Size(double.infinity, 200),
+            painter: _CategoryChartPainter(
+              categories: categories,
+              maxCost: maxCost,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Wrap(
+            spacing: 16,
+            runSpacing: 12,
+            children: categories.entries.map((entry) {
+              final colors = [
+                Colors.blue,
+                Colors.orange,
+                Colors.green,
+                Colors.red,
+                Colors.purple,
+                Colors.pink,
+              ];
+              final index = categories.keys.toList().indexOf(entry.key);
+              final color = colors[index % colors.length];
+              
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    entry.key,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryChartPainter extends CustomPainter {
+  final Map<String, double> categories;
+  final double maxCost;
+
+  _CategoryChartPainter({
+    required this.categories,
+    required this.maxCost,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (categories.isEmpty || maxCost == 0) return;
+
+    final colors = [
+      Colors.blue,
+      Colors.orange,
+      Colors.green,
+      Colors.red,
+      Colors.purple,
+      Colors.pink,
+    ];
+
+    final barWidth = size.width / (categories.length * 1.5);
+    final spacing = barWidth * 0.5;
+    final baseY = size.height * 0.85;
+
+    int index = 0;
+    for (final entry in categories.entries) {
+      final xPosition = spacing + (index * (barWidth + spacing));
+      final percentage = entry.value / maxCost;
+      final barHeight = size.height * 0.7 * percentage;
+
+      // Draw bar with gradient
+      final rect = Rect.fromLTWH(xPosition, baseY - barHeight, barWidth, barHeight);
+      final color = colors[index % colors.length];
+      
+      final gradient = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [color.withValues(alpha: 0.8), color],
+      );
+
+      final paint = Paint()
+        ..shader = gradient.createShader(rect)
+        ..style = PaintingStyle.fill;
+
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(rect, const Radius.circular(8)),
+        paint,
+      );
+
+      // Draw label at bottom
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: entry.key.substring(0, 1),
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(
+          xPosition + (barWidth - textPainter.width) / 2,
+          baseY + 8,
+        ),
+      );
+
+      index++;
+    }
+
+    // Draw baseline
+    final linePaint = Paint()
+      ..color = Colors.grey.shade300
+      ..strokeWidth = 1;
+    canvas.drawLine(
+      Offset(0, baseY),
+      Offset(size.width, baseY),
+      linePaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_CategoryChartPainter oldDelegate) {
+    return oldDelegate.categories != categories || oldDelegate.maxCost != maxCost;
+  }
+}
+
 class _CategoriesCard extends StatelessWidget {
 
   const _CategoriesCard({
@@ -322,8 +523,13 @@ class _CategoriesCard extends StatelessWidget {
     final categories = <String, double>{};
     
     for (final sub in subscriptions) {
+      // Yearly subscriptions: divide by 12 to get monthly equivalent
+      final monthlyAmount = sub.billingCycle == BillingCycle.yearly
+          ? sub.cost / 12
+          : sub.cost;
+      
       final cost = CurrencyConverter.convert(
-        amount: sub.cost,
+        amount: monthlyAmount,
         fromCurrency: sub.currency,
         toCurrency: currencyCode,
       );
@@ -440,7 +646,17 @@ class _MostExpensiveCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                SubscriptionAvatar(subscription: most, size: 44, fontSize: 20),
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Text('📊', style: TextStyle(fontSize: 24)),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -523,7 +739,17 @@ class _CheapestCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                SubscriptionAvatar(subscription: cheapest, size: 44, fontSize: 20),
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Center(
+                    child: Text('💰', style: TextStyle(fontSize: 24)),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(

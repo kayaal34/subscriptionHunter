@@ -31,10 +31,9 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
   late TextEditingController _titleController;
   late TextEditingController _costController;
   late TextEditingController _typeController;
+  late TextEditingController _notesController;
   late int _selectedBillingDay;
   late String _selectedCurrency;
-  late int _selectedNotificationHour;
-  late int _selectedNotificationMinute;
   late int _selectedNotificationDaysBefore;
   late bool _notificationsEnabled;
   late DateTime _selectedStartDate;
@@ -43,6 +42,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
   String? _selectedImagePath;
   bool _isLoading = false;
   late LocalizationHelper l10n;
+  late BillingCycle _selectedBillingCycle;
 
   // Common subscription types for suggestion - Apple inspired
   final List<String> _subscriptionTypes = [
@@ -71,28 +71,28 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
       _titleController = TextEditingController(text: widget.subscription!.title);
       _costController = TextEditingController(text: widget.subscription!.cost.toString());
       _typeController = TextEditingController(text: widget.subscription!.icon);
+      _notesController = TextEditingController(text: widget.subscription!.notes ?? '');
       _selectedBillingDay = widget.subscription!.billingDay;
       _selectedCurrency = widget.subscription!.currency;
-      _selectedNotificationHour = widget.subscription!.notificationHour;
-      _selectedNotificationMinute = widget.subscription!.notificationMinute;
       _selectedNotificationDaysBefore = widget.subscription!.notificationDaysBefore;
       _notificationsEnabled = widget.subscription!.notificationsEnabled;
       _selectedStartDate = widget.subscription!.startDate;
       _selectedImagePath = widget.subscription!.imagePath;
-      _hasEndDate = false; // Initialize end date
+      _selectedBillingCycle = widget.subscription!.billingCycle;
+      _hasEndDate = false;
       _selectedEndDate = null;
     } else {
       _titleController = TextEditingController();
       _costController = TextEditingController();
       _typeController = TextEditingController();
+      _notesController = TextEditingController();
       _selectedBillingDay = 1;
       _selectedCurrency = 'TRY';
-      _selectedNotificationHour = 10;
-      _selectedNotificationMinute = 0;
       _selectedNotificationDaysBefore = 1;
       _notificationsEnabled = true;
       _selectedStartDate = DateTime.now();
-      _hasEndDate = false; // Initialize end date
+      _selectedBillingCycle = BillingCycle.monthly;
+      _hasEndDate = false;
       _selectedEndDate = null;
     }
   }
@@ -102,6 +102,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
     _titleController.dispose();
     _costController.dispose();
     _typeController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -179,12 +180,15 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         icon: icon,
         createdAt: widget.subscription?.createdAt ?? DateTime.now(),
         currency: _selectedCurrency,
-        notificationHour: _selectedNotificationHour,
-        notificationMinute: _selectedNotificationMinute,
+        notificationHour: 10, // Default from settings
+        notificationMinute: 0, // Default from settings
         notificationDaysBefore: _selectedNotificationDaysBefore,
         notificationsEnabled: _notificationsEnabled,
         startDate: _selectedStartDate,
+        billingCycle: _selectedBillingCycle,
         imagePath: _selectedImagePath,
+        notes: _notesController.text.isEmpty ? null : _notesController.text,
+        endDate: _hasEndDate ? _selectedEndDate : null,
       );
 
       if (widget.subscription != null) {
@@ -203,8 +207,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         subscriptionId: subscription.id,
         subscriptionTitle: subscription.title,
         billingDay: subscription.billingDay,
-        notificationHour: _selectedNotificationHour,
-        notificationMinute: _selectedNotificationMinute,
+        notificationHour: 10, // Use default from settings
+        notificationMinute: 0,
         enabled: _notificationsEnabled,
       );
 
@@ -213,12 +217,11 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         _titleController.clear();
         _costController.clear();
         _typeController.clear();
+        _notesController.clear();
         setState(() {
           _isLoading = false;
           _selectedBillingDay = 1;
           _selectedCurrency = 'TRY';
-          _selectedNotificationHour = 10;
-          _selectedNotificationMinute = 0;
           _selectedNotificationDaysBefore = 1;
           _notificationsEnabled = true;
           _selectedStartDate = DateTime.now();
@@ -229,10 +232,12 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              widget.subscription != null 
-                ? '${l10n.edit}endi' 
-                : 'Abonelik başarıyla eklendi!'
+            content: const Text(
+              '✓ Kaydedildi',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             backgroundColor: Colors.green,
           ),
@@ -472,6 +477,41 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               ),
               const SizedBox(height: 24),
 
+              // Billing Cycle Selection
+              // Payment Cycle Selection
+              Text('Ödeme Döngüsü', style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: DropdownButton<BillingCycle>(
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                    value: _selectedBillingCycle,
+                    items: [
+                      DropdownMenuItem(
+                        value: BillingCycle.monthly,
+                        child: Text('Aylık'),
+                      ),
+                      DropdownMenuItem(
+                        value: BillingCycle.yearly,
+                        child: Text('Yıllık'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() => _selectedBillingCycle = value);
+                      }
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
               // Billing Day Picker
               Text(l10n.billingDay, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
@@ -494,8 +534,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               // Subscription End Date Option
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -509,17 +549,16 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Abonelik Bitişi Tarihi Belli mi?',
+                                'Abonelik Bitiş Tarihi Belli mi?',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Aboneliğin belirli bir tarihte bitişi varsa aktif edin',
+                                'Aboneliğin belirli bir tarihte bitişi varsa açın',
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.grey[300],
+                                  color: Colors.grey[600],
                                 ),
                               ),
                             ],
@@ -559,9 +598,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blue.shade300),
+                            border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(8),
-                            color: Colors.grey.shade900,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -570,13 +608,11 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                                 _selectedEndDate != null
                                   ? '${_selectedEndDate!.day}/${_selectedEndDate!.month}/${_selectedEndDate!.year}'
                                   : 'Tarih Seçin',
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Icon(
                                 Icons.calendar_today,
-                                color: Colors.blue.shade300,
+                                color: Colors.grey[600],
                                 size: 20,
                               ),
                             ],
@@ -603,92 +639,75 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               ),
               if (_notificationsEnabled) ...[
                 const SizedBox(height: 12),
-                Text(l10n.notificationDaysBefore,
-                    style: Theme.of(context).textTheme.bodyMedium),
+                Text('Hatırlat',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
-                DropdownButtonFormField<int>(
-                  initialValue: _selectedNotificationDaysBefore,
-                  items: [
-                    const DropdownMenuItem(value: 0, child: Text('On billing day')),
-                    const DropdownMenuItem(value: 1, child: Text('1 day before')),
-                    const DropdownMenuItem(value: 3, child: Text('3 days before')),
-                    const DropdownMenuItem(value: 7, child: Text('1 week before')),
-                    const DropdownMenuItem(value: 14, child: Text('2 weeks before')),
-                  ].toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _selectedNotificationDaysBefore = value);
-                    }
-                  },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                const SizedBox(height: 12),
-                
-                // New Notification Time Picker (Apple Style)
-                Text('${l10n.notificationTime} ⏰',
-                    style: Theme.of(context).textTheme.bodyMedium),
-                const SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) => Container(
-                        height: 250,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                CupertinoButton(
-                                  child: const Text('Bitti'),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                )
-                              ],
-                            ),
-                            Expanded(
-                              child: CupertinoDatePicker(
-                                mode: CupertinoDatePickerMode.time,
-                                use24hFormat: true,
-                                initialDateTime: DateTime(
-                                  2024, 1, 1, 
-                                  _selectedNotificationHour, 
-                                  _selectedNotificationMinute
-                                ),
-                                onDateTimeChanged: (DateTime newDateTime) {
-                                  setState(() {
-                                    _selectedNotificationHour = newDateTime.hour;
-                                    _selectedNotificationMinute = newDateTime.minute;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      value: _selectedNotificationDaysBefore,
+                      items: [
+                        DropdownMenuItem(
+                          value: 1,
+                          child: Text('1 gün önce')
                         ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '${_selectedNotificationHour.toString().padLeft(2, '0')}:${_selectedNotificationMinute.toString().padLeft(2, '0')}',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                        DropdownMenuItem(
+                          value: 2,
+                          child: Text('2 gün önce')
                         ),
-                        const Icon(Icons.access_time),
-                      ],
+                        DropdownMenuItem(
+                          value: 3,
+                          child: Text('3 gün önce')
+                        ),
+                        DropdownMenuItem(
+                          value: 4,
+                          child: Text('4 gün önce')
+                        ),
+                        DropdownMenuItem(
+                          value: 5,
+                          child: Text('5 gün önce')
+                        ),
+                        DropdownMenuItem(
+                          value: 6,
+                          child: Text('6 gün önce')
+                        ),
+                        DropdownMenuItem(
+                          value: 7,
+                          child: Text('1 hafta önce')
+                        ),
+                      ].toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => _selectedNotificationDaysBefore = value);
+                        }
+                      },
                     ),
                   ),
                 ),
               ],
+              const SizedBox(height: 32),
+
+              // Notes Field
+              Text('Not', style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _notesController,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: 'Abonelik hakkında not ekle...',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                ),
+              ),
               const SizedBox(height: 32),
 
               // Save Button
@@ -710,9 +729,9 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
-                      : Text(
-                          widget.subscription != null ? l10n.edit : l10n.save,
-                          style: const TextStyle(
+                      : const Text(
+                          'Kaydet',
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

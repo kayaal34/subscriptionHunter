@@ -5,6 +5,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
+import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
 import 'package:subscription_tracker/presentation/pages/splash_screen.dart';
 
 void main() async {
@@ -32,6 +33,9 @@ class SubscriptionTrackerApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(appThemeProvider);
     final language = ref.watch(languageProvider);
+    
+    // Trigger exchange rate fetch on app start
+    ref.watch(exchangeRatesProvider);
 
     return MaterialApp(
       title: 'SubTracker',
@@ -56,3 +60,4 @@ class SubscriptionTrackerApp extends ConsumerWidget {
     );
   }
 }
+

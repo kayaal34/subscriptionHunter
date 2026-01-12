@@ -19,6 +19,8 @@ class Subscription extends Equatable { // Monthly or Yearly
     this.imagePath,
     DateTime? startDate,
     this.billingCycle = BillingCycle.monthly,
+    this.notes,
+    this.endDate,
   }) : startDate = startDate ?? createdAt;
   final String id;
   final String title;
@@ -32,8 +34,10 @@ class Subscription extends Equatable { // Monthly or Yearly
   final int notificationMinute; // Minute for notification (0-59)
   final int notificationDaysBefore; // Days before billing to notify
   final bool notificationsEnabled; // Toggle notifications
+  final DateTime? endDate; // Optional subscription end date
   final DateTime startDate; // Subscription start date
   final BillingCycle billingCycle;
+  final String? notes; // User notes about subscription
 
   /// Calculate days remaining until next billing date
   int getDaysUntilBilling() {
@@ -123,5 +127,7 @@ class Subscription extends Equatable { // Monthly or Yearly
     notificationsEnabled,
     startDate,
     billingCycle,
+    notes,
+    endDate,
   ];
 }

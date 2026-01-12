@@ -101,6 +101,7 @@ class _HomePageContent extends ConsumerStatefulWidget {
 
 class _HomePageContentState extends ConsumerState<_HomePageContent> {
   String? _selectedCategory;
+  String? _expandedSubscriptionId;
 
   @override
   Widget build(BuildContext context) {
@@ -109,10 +110,19 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aboneliklerim'),
+        title: const Text(
+          'Aboneliklerim',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+            letterSpacing: -0.5,
+          ),
+        ),
         elevation: 0,
         backgroundColor: const Color(0xFFFFFFFF),
         surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
       ),
       backgroundColor: const Color(0xFFFFFFFF),
       body: sortedSubscriptionsAsync.when(
@@ -133,15 +143,21 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
             data: (total) => Column(
               children: [
                 // Total Cost Card
-                TotalCostCard(totalCost: total),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: TotalCostCard(
+                    totalCost: total,
+                    subscriptionCount: subscriptions.length,
+                  ),
+                ),
 
                 // Category Filter
                 if (categories.isNotEmpty)
-                  SizedBox(
+                  Container(
                     height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       itemCount: categories.length + 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
@@ -151,7 +167,8 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
                               label: const Text(
                                 'Tümü',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
                                   color: Colors.black,
                                 ),
                               ),
@@ -159,12 +176,13 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
                               onSelected: (selected) {
                                 if (selected) setState(() => _selectedCategory = null);
                               },
-                              backgroundColor: const Color(0xFFF2F2F7),
+                              backgroundColor: Colors.grey.shade100,
                               selectedColor: const Color(0xFF007AFF),
                               side: BorderSide(
-                                color: _selectedCategory == null ? const Color(0xFF007AFF) : const Color(0xFFE5E5EA),
-                                width: 1,
+                                color: _selectedCategory == null ? const Color(0xFF007AFF) : Colors.grey.shade200,
+                                width: 1.5,
                               ),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             ),
                           );
                         }
@@ -175,7 +193,8 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
                             label: Text(
                               category,
                               style: TextStyle(
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
                                 color: _selectedCategory == category ? Colors.white : Colors.black,
                               ),
                             ),
@@ -183,12 +202,13 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
                             onSelected: (selected) {
                               setState(() => _selectedCategory = selected ? category : null);
                             },
-                            backgroundColor: const Color(0xFFF2F2F7),
+                            backgroundColor: Colors.grey.shade100,
                             selectedColor: const Color(0xFF007AFF),
                             side: BorderSide(
-                              color: _selectedCategory == category ? const Color(0xFF007AFF) : const Color(0xFFE5E5EA),
-                              width: 1,
+                              color: _selectedCategory == category ? const Color(0xFF007AFF) : Colors.grey.shade200,
+                              width: 1.5,
                             ),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           ),
                         );
                       },
@@ -213,36 +233,207 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
   Widget _buildSubscriptionList(List<Subscription> subs, BuildContext context, WidgetRef ref) {
     if (subs.isEmpty) {
       return Center(
-        child: Text(
-          'Abonelik bulunamadı',
-          style: Theme.of(context).textTheme.bodyLarge,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inbox,
+              size: 60,
+              color: Colors.grey[300],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Abonelik bulunamadı',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.grey[500],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       );
     }
     return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 80),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: subs.length,
       itemBuilder: (context, index) {
-         final subscription = subs[index];
-         return SubscriptionCard(
-            subscription: subscription,
-            onEdit: () {
-               Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => AddSubscriptionPage(
-                    subscription: subscription,
+        final subscription = subs[index];
+        final isExpanded = _expandedSubscriptionId == subscription.id;
+        
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            children: [
+              SubscriptionCard(
+                subscription: subscription,
+                onTap: () {
+                  setState(() {
+                    _expandedSubscriptionId = isExpanded ? null : subscription.id;
+                  });
+                },
+                onEdit: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AddSubscriptionPage(
+                        subscription: subscription,
+                      ),
+                    ),
+                  );
+                },
+                onDelete: () {
+                  _showDeleteDialog(context, subscription, ref);
+                },
+              ),
+              // Expandable Details
+              if (isExpanded)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeOut,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFFFFF),
+                    border: Border(
+                      left: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                      right: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                      bottom: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    ),
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
                   ),
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(16),
+                  child: _buildSubscriptionDetails(context, subscription),
                 ),
-              );
-            },
-            onDelete: () {
-              _showDeleteDialog(context, subscription, ref);
-            },
-          );
+            ],
+          ),
+        );
       },
     );
   }
 
+  Widget _buildSubscriptionDetails(BuildContext context, Subscription subscription) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Başlangıç Tarihi
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.blue.shade200),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.calendar_today, color: Colors.blue.shade400, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Başlangıç',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      color: Colors.blue.shade700,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                '${subscription.startDate.day}.${subscription.startDate.month}.${subscription.startDate.year}',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Colors.blue.shade900,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        // Bitiş Tarihi (varsa)
+        if (subscription.endDate != null) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.orange.shade200),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.event_busy, color: Colors.orange.shade400, size: 16),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Bitiş Tarihi',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Colors.orange.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  '${subscription.endDate!.day}.${subscription.endDate!.month}.${subscription.endDate!.year}',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Colors.orange.shade900,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        
+        // Not (varsa)
+        if (subscription.notes != null && subscription.notes!.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.purple.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.purple.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.note, color: Colors.purple.shade400, size: 16),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Not',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        color: Colors.purple.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  subscription.notes!,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.purple.shade900,
+                    height: 1.5,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  
   void _showDeleteDialog(BuildContext context, Subscription subscription, WidgetRef ref) {
     showDialog(
       context: context,

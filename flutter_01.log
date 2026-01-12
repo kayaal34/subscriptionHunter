@@ -1,0 +1,72 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run -d chrome
+
+## exception
+
+DartDevelopmentServiceException: DartDevelopmentServiceException: Failed to start Dart Development Service
+
+```
+```
+
+## flutter doctor
+
+```
+[32m[✓][39m Flutter (Channel stable, 3.38.5, on Microsoft Windows [Version 10.0.26200.7462], locale tr-TR) [731ms]
+    [32m•[39m Flutter version 3.38.5 on channel stable at C:\Users\yahya\flutter
+    [32m•[39m Upstream repository https://github.com/flutter/flutter.git
+    [32m•[39m Framework revision f6ff1529fd (5 weeks ago), 2025-12-11 11:50:07 -0500
+    [32m•[39m Engine revision 1527ae0ec5
+    [32m•[39m Dart version 3.10.4
+    [32m•[39m DevTools version 2.51.1
+    [32m•[39m Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets,
+      omit-legacy-version-file, enable-lldb-debugging
+
+[32m[✓][39m Windows Version (11 Pro 64-bit, 25H2, 2009) [1.311ms]
+
+[33m[!][39m Android toolchain - develop for Android devices (Android SDK version 35.0.0) [1.103ms]
+    [32m•[39m Android SDK at C:\Users\yahya\AppData\Local\Android\sdk
+    [32m•[39m Emulator version 35.3.12.0 (build_id 12990079) (CL:N/A)
+    [31m✗[39m cmdline-tools component is missing.
+      Try installing or updating Android Studio.
+      Alternatively, download the tools from https://developer.android.com/studio#command-line-tools-only and make sure to set the ANDROID_HOME environment variable.
+      See https://developer.android.com/studio/command-line for more details.
+    [31m✗[39m Android license status unknown.
+      Run `flutter doctor --android-licenses` to accept the SDK licenses.
+      See https://flutter.dev/to/windows-android-setup for more details.
+
+[32m[✓][39m Chrome - develop for the web [517ms]
+    [32m•[39m Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[33m[!][39m Visual Studio - develop Windows apps (Visual Studio Community 2022 17.14.21 (November 2025)) [516ms]
+    [32m•[39m Visual Studio at C:\Program Files\Microsoft Visual Studio\2022\Community
+    [32m•[39m Visual Studio Community 2022 version 17.14.36717.8
+    [32m•[39m Windows 10 SDK version 10.0.22621.0
+    [31m✗[39m Visual Studio is missing necessary components. Please re-run the Visual Studio installer for the "Desktop development with C++" workload, and include these components:
+        MSVC v142 - VS 2019 C++ x64/x86 build tools
+         - If there are multiple build tool versions available, install the latest
+        C++ CMake tools for Windows
+        Windows 10 SDK
+
+[32m[✓][39m Connected device (3 available) [81ms]
+    [32m•[39m Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.26200.7462]
+    [32m•[39m Chrome (web)      • chrome  • web-javascript • Google Chrome 143.0.7499.193
+    [32m•[39m Edge (web)        • edge    • web-javascript • Microsoft Edge 143.0.3650.80
+
+[33m[!][39m Network resources [42,3s]
+    [31m✗[39m A cryptographic error occurred while checking "https://pub.dev/": Connection terminated during handshake
+      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware installed on your computer.
+    [31m✗[39m A cryptographic error occurred while checking "https://storage.googleapis.com/": Connection terminated during handshake
+      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware installed on your computer.
+    [31m✗[39m A cryptographic error occurred while checking "https://maven.google.com/": Connection terminated during handshake
+      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware installed on your computer.
+    [31m✗[39m A cryptographic error occurred while checking "https://cocoapods.org/": Connection terminated during handshake
+      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware installed on your computer.
+    [31m✗[39m A cryptographic error occurred while checking "https://github.com/": Connection terminated during handshake
+      You may be experiencing a man-in-the-middle attack, your network may be compromised, or you may have malware installed on your computer.
+
+[33m![39m Doctor found issues in 3 categories.
+```
