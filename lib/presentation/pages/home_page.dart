@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:subscription_tracker/core/localization/strings.dart';
+import 'package:subscription_tracker/core/services/notification_service.dart';
 import 'package:subscription_tracker/domain/entities/subscription.dart';
 import 'package:subscription_tracker/presentation/pages/add_subscription_page.dart';
 import 'package:subscription_tracker/presentation/pages/settings_page.dart';
@@ -150,6 +152,118 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
                     subscriptionCount: subscriptions.length,
                   ),
                 ),
+
+                // Notification Toggle
+                if (subscriptions.isNotEmpty)
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final appSettings = Hive.box('app_settings');
+                      final phoneNotifEnabled = appSettings.get('phoneNotifEnabled', defaultValue: true) as bool;
+                      final notificationService = ref.watch(notificationServiceProvider);
+                      
+                      return Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE5E5EA)),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.notifications, color: Color(0xFF007AFF), size: 20),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Bildirimler',
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                                Switch(
+                                  value: phoneNotifEnabled,
+                                  onChanged: (val) {
+                                    appSettings.put('phoneNotifEnabled', val);
+                                  },
+                                  activeThumbColor: const Color(0xFF007AFF),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Test notification button (temporary debug)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.bug_report),
+                              label: const Text('Test Bildirimi'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF007AFF),
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 44),
+                              ),
+                              onPressed: () async {
+                                try {
+                                  // İzin kontrolü (test için her zaman kontrol et)
+                                  final granted = await notificationService.requestNotificationPermission(
+                                    forceRequest: true, // Test için her zaman izin iste
+                                  );
+                                  if (!granted) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Bildirim izni verilmedi'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                    return;
+                                  }
+                                  
+                                  // Exact alarm izni kontrolü
+                                  final exactAlarmGranted = await notificationService.checkExactAlarmPermission();
+                                  if (!exactAlarmGranted) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Tam zamanlama izni gerekli. Ayarlara yonlendiriliyorsunuz...'),
+                                          backgroundColor: Colors.orange,
+                                          duration: Duration(seconds: 3),
+                                        ),
+                                      );
+                                    }
+                                    return;
+                                  }
+                                  
+                                  // Test bildirimi gönder
+                                  await notificationService.showTestNotification();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Test bildirimi gonderildi! Bildirim panelini kontrol edin.'),
+                                        backgroundColor: Colors.green,
+                                        duration: Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Hata: $e'),
+                                        backgroundColor: Colors.red,
+                                        duration: const Duration(seconds: 5),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
 
                 // Category Filter
                 if (categories.isNotEmpty)

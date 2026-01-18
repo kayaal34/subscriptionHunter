@@ -38,5 +38,10 @@ class LocalSubscriptionDataSourceImpl implements LocalSubscriptionDataSource {
   }
 
   @override
-  Stream<List<SubscriptionModel>> watchAllSubscriptions() => _box.watch().map((_) => _box.values.toList());
+  Stream<List<SubscriptionModel>> watchAllSubscriptions() async* {
+    // Emit initial data immediately
+    yield _box.values.toList();
+    // Then watch for changes
+    yield* _box.watch().map((_) => _box.values.toList());
+  }
 }

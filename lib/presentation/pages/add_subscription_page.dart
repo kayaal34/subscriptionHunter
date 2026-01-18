@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -172,6 +173,11 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
       
       final icon = _typeController.text.isEmpty ? 'Other' : _typeController.text;
 
+      // Get global notification time from settings
+      final appSettings = Hive.box('app_settings');
+      final notificationHour = appSettings.get('defaultNotificationHour', defaultValue: 10) as int;
+      final notificationMinute = appSettings.get('defaultNotificationMinute', defaultValue: 0) as int;
+
       final subscription = Subscription(
         id: widget.subscription?.id ?? const Uuid().v4(),
         title: _titleController.text,
@@ -180,8 +186,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         icon: icon,
         createdAt: widget.subscription?.createdAt ?? DateTime.now(),
         currency: _selectedCurrency,
-        notificationHour: 10, // Default from settings
-        notificationMinute: 0, // Default from settings
+        notificationHour: notificationHour,
+        notificationMinute: notificationMinute,
         notificationDaysBefore: _selectedNotificationDaysBefore,
         notificationsEnabled: _notificationsEnabled,
         startDate: _selectedStartDate,
@@ -207,8 +213,9 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
         subscriptionId: subscription.id,
         subscriptionTitle: subscription.title,
         billingDay: subscription.billingDay,
-        notificationHour: 10, // Use default from settings
-        notificationMinute: 0,
+        notificationHour: notificationHour,
+        notificationMinute: notificationMinute,
+        notificationDaysBefore: _selectedNotificationDaysBefore,
         enabled: _notificationsEnabled,
       );
 
@@ -689,6 +696,31 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                         }
                       },
                     ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Info text about global notification time
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.blue.shade200),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Bildirim saati Ayarlar sayfasından düzenlenebilir',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.blue.shade900,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

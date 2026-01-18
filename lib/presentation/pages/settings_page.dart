@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
+import 'package:subscription_tracker/presentation/providers/subscription_providers.dart';
 import 'package:subscription_tracker/core/services/currency_service.dart';
 import 'package:hive/hive.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
@@ -288,11 +289,26 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   ),
                 ),
                 CupertinoButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final appSettings = Hive.box('app_settings');
                     appSettings.put('defaultNotificationHour', _notificationHour);
                     appSettings.put('defaultNotificationMinute', _notificationMinute);
+                    
+                    // Reschedule all notifications with new time
+                    await _rescheduleAllNotifications();
+                    
                     Navigator.pop(context);
+                    
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isTr 
+                            ? 'Bildirim saati güncellendi ve tüm bildirimler yeniden zamanlandı' 
+                            : 'Notification time updated and all notifications rescheduled'),
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                    }
                   },
                   child: Text(
                     isTr ? 'Tamam' : 'Done',
@@ -302,28 +318,76 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               ],
             ),
             Expanded(
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                use24hFormat: true,
-                initialDateTime: DateTime(
-                  2024,
-                  1,
-                  1,
-                  _notificationHour,
-                  _notificationMinute,
+              child: Theme(
+                data: ThemeData.light().copyWith(
+                  cupertinoOverrideTheme: const CupertinoThemeData(
+                    primaryColor: Color(0xFF007AFF), // iOS mavi teması
+                    textTheme: CupertinoTextThemeData(
+                      dateTimePickerTextStyle: TextStyle(
+                        fontSize: 21,
+                        color: Color(0xFF007AFF), // Seçili saat rengi
+                      ),
+                    ),
+                  ),
                 ),
-                onDateTimeChanged: (DateTime newDateTime) {
-                  setState(() {
-                    _notificationHour = newDateTime.hour;
-                    _notificationMinute = newDateTime.minute;
-                  });
-                },
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.time,
+                  use24hFormat: true,
+                  initialDateTime: DateTime(
+                    2024,
+                    1,
+                    1,
+                    _notificationHour,
+                    _notificationMinute,
+                  ),
+                  onDateTimeChanged: (DateTime newDateTime) {
+                    setState(() {
+                      _notificationHour = newDateTime.hour;
+                      _notificationMinute = newDateTime.minute;
+                    });
+                  },
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  /// Reschedule all notifications with new global time
+  Future<void> _rescheduleAllNotifications() async {
+    try {
+      // Get all subscriptions
+      final getAllUseCase = await ref.read(getAllSubscriptionsProvider.future);
+      final subscriptions = await getAllUseCase();
+      
+      // Get notification service
+      final notificationService = ref.read(notificationServiceProvider);
+      
+      // Get new time from settings
+      final appSettings = Hive.box('app_settings');
+      final newHour = appSettings.get('defaultNotificationHour', defaultValue: 10) as int;
+      final newMinute = appSettings.get('defaultNotificationMinute', defaultValue: 0) as int;
+      
+      // Reschedule each subscription
+      for (final sub in subscriptions) {
+        if (sub.notificationsEnabled) {
+          await notificationService.scheduleSubscriptionReminder(
+            subscriptionId: sub.id,
+            subscriptionTitle: sub.title,
+            billingDay: sub.billingDay,
+            notificationHour: newHour,
+            notificationMinute: newMinute,
+            notificationDaysBefore: sub.notificationDaysBefore,
+            enabled: true,
+          );
+        }
+      }
+    } catch (e) {
+      // Log error but don't throw
+      debugPrint('Error rescheduling notifications: $e');
+    }
   }
 
   void _showDeleteAllDataDialog(BuildContext context, bool isTr) {

@@ -32,6 +32,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         // Show permissions dialog
         await _showPermissionsDialog(appBox);
       }
+      
+      // Schedule notifications for all subscriptions on app start
+      await _scheduleAllNotifications();
     } catch (_) {
       // Ignore errors here, provider handles them or they will show in UI
     }
@@ -44,6 +47,43 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
        Navigator.of(context).pushReplacement(
          MaterialPageRoute(builder: (_) => const HomePage()),
        );
+    }
+  }
+
+  Future<void> _scheduleAllNotifications() async {
+    try {
+      // Get all subscriptions
+      final getAllUseCase = await ref.read(getAllSubscriptionsProvider.future);
+      final subscriptions = await getAllUseCase();
+      
+      // Get notification settings
+      final appSettings = Hive.box('app_settings');
+      final notificationHour = appSettings.get('defaultNotificationHour', defaultValue: 10) as int;
+      final notificationMinute = appSettings.get('defaultNotificationMinute', defaultValue: 0) as int;
+      final notificationsEnabled = appSettings.get('notificationsEnabled', defaultValue: true) as bool;
+      
+      if (!notificationsEnabled) return;
+      
+      // Get notification service
+      final notificationService = ref.read(notificationServiceProvider);
+      
+      // Schedule each subscription
+      for (final sub in subscriptions) {
+        if (sub.notificationsEnabled) {
+          await notificationService.scheduleSubscriptionReminder(
+            subscriptionId: sub.id,
+            subscriptionTitle: sub.title,
+            billingDay: sub.billingDay,
+            notificationHour: notificationHour,
+            notificationMinute: notificationMinute,
+            notificationDaysBefore: sub.notificationDaysBefore,
+            enabled: true,
+          );
+        }
+      }
+    } catch (e) {
+      // Silently fail - notifications are not critical
+      debugPrint('Failed to schedule notifications: $e');
     }
   }
 
@@ -104,9 +144,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _requestPermissions(Box appBox) async {
     try {
-      // Request notification permission
+      // Request notification permission (force request on first launch)
       final notificationService = ref.read(notificationServiceProvider);
-      final notificationGranted = await notificationService.requestNotificationPermission();
+      final notificationGranted = await notificationService.requestNotificationPermission(
+        forceRequest: true, // Force permission request on first launch
+      );
+      
+      // Request exact alarm permission
+      final exactAlarmGranted = await notificationService.checkExactAlarmPermission();
+      
+      // Request battery optimization exemption (critical for Samsung devices)
+      await notificationService.requestBatteryOptimizationExemption();
       
       // Initialize notifications if granted
       if (notificationGranted) {

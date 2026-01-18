@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:subscription_tracker/core/localization/localization_helper.dart';
+import 'package:subscription_tracker/core/services/notification_service.dart';
 import 'package:subscription_tracker/domain/entities/subscription.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
 
@@ -115,7 +116,7 @@ class QuickStatsWidget extends ConsumerWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Bildirim Bildirimleri',
+                        'Bildirimler',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -127,6 +128,100 @@ class QuickStatsWidget extends ConsumerWidget {
                       activeThumbColor: const Color(0xFF007AFF),
                     ),
                   ],
+                ),
+              );
+            },
+          ),
+        // Test Notification Button
+        if (subscriptions.isNotEmpty)
+          Consumer(
+            builder: (context, ref, _) {
+              return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    try {
+                      final notificationService = ref.read(notificationServiceProvider);
+                      
+                      // İzin kontrolü (test için her zaman kontrol et)
+                      final granted = await notificationService.requestNotificationPermission(
+                        forceRequest: true, // Test için her zaman izin iste
+                      );
+                      if (!granted) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Bildirim izni verilmedi'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                        return;
+                      }
+                      
+                      // Exact alarm izni kontrolü
+                      final exactAlarmGranted = await notificationService.checkExactAlarmPermission();
+                      if (!exactAlarmGranted) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Tam zamanlama izni gerekli. Ayarlara yonlendiriliyorsunuz...'),
+                              backgroundColor: Colors.orange,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                        return;
+                      }
+                      
+                      // Pil optimizasyonu izni (Samsung uyumluluk)
+                      final batteryExempted = await notificationService.requestBatteryOptimizationExemption();
+                      if (!batteryExempted) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Pil optimizasyonu izni onemli (Samsung cihazlar icin)'),
+                              backgroundColor: Colors.orange,
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      }
+                      
+                      // Test bildirimi gönder
+                      await notificationService.showTestNotification();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Test bildirimi gonderildi! 5 saniye sonra ikinci bildirim gelecek.'),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 5),
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Hata: $e'),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 5),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  icon: const Icon(Icons.notifications_active, size: 18),
+                  label: const Text('Test Bildirimi Gönder'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF007AFF),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
               );
             },
