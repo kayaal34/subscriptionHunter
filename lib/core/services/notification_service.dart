@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart'; // Required for Color
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -43,24 +45,93 @@ class NotificationService {
       if (defaultTargetPlatform == TargetPlatform.android) {
         final status = await Permission.scheduleExactAlarm.status;
         
-        if (status.isDenied) {
-          _logger.w('Exact alarm permission denied');
+        if (status.isDenied || !status.isGranted) {
+          _logger.w('🔴 Exact alarm permission NOT granted - status: $status');
           // Open settings for user to grant permission
           final granted = await Permission.scheduleExactAlarm.request();
-          if (!granted.isGranted) {
-            _logger.w('User did not grant exact alarm permission');
+          
+          // Check again after request
+          final newStatus = await Permission.scheduleExactAlarm.status;
+          if (!newStatus.isGranted) {
+            _logger.e('❌ EXACT ALARM STILL NOT GRANTED - Opening settings');
             await openAppSettings();
             return false;
           }
+          _logger.i('✅ Exact alarm permission NOW granted after request');
+          return true;
         }
         
-        _logger.i('Exact alarm permission granted');
-        return status.isGranted;
+        _logger.i('✅ Exact alarm permission already granted');
+        return true;
       }
       return true;
     } catch (e) {
-      _logger.e('Failed to check exact alarm permission', error: e);
-      return true; // Don't block on permission check failure
+      _logger.e('❌ Failed to check exact alarm permission', error: e);
+      return false; // Return false on error to alert user
+    }
+  }
+  
+  /// Diagnostic function to check all permissions and settings
+  Future<Map<String, dynamic>> getDiagnosticInfo() async {
+    final Map<String, dynamic> info = {};
+    
+    try {
+      // Notification permission
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        final notifStatus = await Permission.notification.status;
+        info['notification_permission'] = notifStatus.isGranted;
+        info['notification_status'] = notifStatus.toString();
+        
+        // Exact alarm permission (critical for scheduled notifications)
+        final alarmStatus = await Permission.scheduleExactAlarm.status;
+        info['exact_alarm_permission'] = alarmStatus.isGranted;
+        info['exact_alarm_status'] = alarmStatus.toString();
+        
+        // Battery optimization (critical for Doze Mode bypass)
+        final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
+        info['battery_exemption'] = batteryStatus.isGranted;
+        info['battery_status'] = batteryStatus.toString();
+        
+        // Samsung-specific debug info
+        info['android_api_level'] = 'Android 12+ (Requires SCHEDULE_EXACT_ALARM)';
+        info['doze_mode_bypass'] = 'Using AndroidScheduleMode.exactAllowWhileIdle + fullScreenIntent';
+      } else {
+        info['platform'] = 'iOS or other';
+        info['notification_permission'] = true;
+        info['exact_alarm_permission'] = true;
+        info['battery_exemption'] = true;
+      }
+      
+      // Pending notifications count with detailed info
+      final pending = await _notificationsPlugin.pendingNotificationRequests();
+      info['pending_notifications_count'] = pending.length;
+      info['pending_notifications'] = pending.map((p) => {
+        'id': p.id,
+        'title': p.title,
+        'body': p.body,
+        'payload': p.payload,
+      }).toList();
+      
+      // Timezone and time info
+      info['timezone'] = tz_time.local.name;
+      info['timezone_offset'] = DateTime.now().timeZoneOffset.toString();
+      info['current_time'] = DateTime.now().toString();
+      info['tz_current_time'] = tz_time.TZDateTime.now(tz_time.local).toString();
+      info['utc_time'] = DateTime.now().toUtc().toString();
+      
+      // Channel configuration
+      info['notification_channel_id'] = channelId;
+      info['notification_channel_name'] = channelName;
+      info['channel_importance'] = 'Importance.max (Highest)';
+      info['channel_visibility'] = 'NotificationVisibility.public (Shows on lock screen)';
+      info['fullScreenIntent_enabled'] = 'true (Forces display even in Doze Mode)';
+      
+      _logger.i('📊 Diagnostic Info: $info');
+      return info;
+    } catch (e, stack) {
+      _logger.e('❌ Failed to get diagnostic info', error: e, stackTrace: stack);
+      info['error'] = e.toString();
+      return info;
     }
   }
   
@@ -69,14 +140,20 @@ class NotificationService {
     // Notifications are not supported on web; bail out to prevent runtime errors.
     if (kIsWeb) return;
     try {
-      // Initialize timezone data
+      // CRITICAL: Initialize timezone data and set local location FIRST
       try {
         tz.initializeTimeZones();
-        // Set local location
-        final locationName = tz_time.local.name;
-        _logger.i('Timezone initialized: $locationName');
+        
+        // Get device's actual timezone (e.g., 'Europe/Istanbul', 'Asia/Yekaterinburg')
+        final String timezoneName = await FlutterTimezone.getLocalTimezone();
+        tz_time.setLocalLocation(tz_time.getLocation(timezoneName));
+        
+        _logger.i('✅ Timezone set to LOCAL: $timezoneName');
+        _logger.i('✅ Current local time: ${tz_time.TZDateTime.now(tz_time.local)}');
+        _logger.i('✅ UTC time: ${DateTime.now().toUtc()}');
       } catch (e) {
-        _logger.w('Timezone already initialized or error: $e');
+        _logger.e('⚠️ Could not get local timezone, using UTC', error: e);
+        tz_time.setLocalLocation(tz_time.getLocation('UTC'));
       }
       
       const AndroidInitializationSettings androidSettings =
@@ -98,24 +175,26 @@ class NotificationService {
         onDidReceiveNotificationResponse: _handleNotificationResponse,
       );
 
-      // Create Android channel with maximum importance for lock screen
+      // Create Android channel with ULTRA-AGGRESSIVE settings for Samsung Doze Mode bypass
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         channelId,
         channelName,
         description: 'Notifications for subscription billing reminders',
-        importance: Importance.max,
+        importance: Importance.max, // Highest priority
         enableVibration: true,
         playSound: true,
         showBadge: true,
+        enableLights: true, // Visual indicator
+        // Note: ledColor and visibility are set per-notification in NotificationDetails
       );
 
       await _notificationsPlugin
           .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
           ?.createNotificationChannel(channel);
 
-      _logger.i('Notification service initialized successfully');
+      _logger.i('✅ Notification service initialized successfully');
     } catch (e) {
-      _logger.e('Failed to initialize notification service', error: e);
+      _logger.e('❌ Failed to initialize notification service', error: e);
     }
   }
 
@@ -321,15 +400,21 @@ class NotificationService {
         return;
       }
       
-      // Check exact alarm permission
+      // CRITICAL: Check exact alarm permission with debug output
       final hasPermission = await checkExactAlarmPermission();
       if (!hasPermission) {
-        _logger.w('⚠️ Cannot schedule notification without exact alarm permission');
+        _logger.e('🚫 CRITICAL: Cannot schedule notification - Exact Alarm permission DENIED!');
+        _logger.e('🚫 User MUST grant "Alarms and Reminders" permission in Settings');
+        _logger.e('🚫 Path: Settings > Apps > subscription_tracker > Alarms & Reminders > Allow');
         return;
       }
+      
+      _logger.i('✅ Exact Alarm permission verified - proceeding with scheduling');
 
-      // Use timezone-aware current time
+      // Use timezone-aware current time (ALWAYS use local timezone)
       final now = tz_time.TZDateTime.now(tz_time.local);
+      
+      _logger.i('🕐 Current LOCAL time: $now (${tz_time.local.name})');
       
       // Calculate next payment date
       int paymentMonth = now.month;
@@ -344,14 +429,22 @@ class NotificationService {
         }
       }
       
-      // Create payment date
-      final paymentDate = DateTime(paymentYear, paymentMonth, billingDay, 12, 0);
+      // Create payment date IN LOCAL TIMEZONE
+      final paymentDate = tz_time.TZDateTime(
+        tz_time.local,
+        paymentYear,
+        paymentMonth,
+        billingDay,
+        12,
+        0,
+      );
       
       // Calculate reminder date (X days before payment)
       final reminderDate = paymentDate.subtract(Duration(days: notificationDaysBefore));
       
-      // Set notification time
-      var scheduledDateTime = DateTime(
+      // Set notification time IN LOCAL TIMEZONE
+      var scheduledDateTime = tz_time.TZDateTime(
+        tz_time.local,
         reminderDate.year,
         reminderDate.month,
         reminderDate.day,
@@ -360,14 +453,13 @@ class NotificationService {
         0,
       );
       
-      // GUARD: If scheduled time is in the past, schedule for NOW + 10 seconds (for testing)
-      if (scheduledDateTime.isBefore(now)) {
-        _logger.w('⚠️ Scheduled time is in past. Setting to NOW + 10 seconds for immediate test');
+      // CRITICAL GUARD: Prevent "is in the past" error
+      if (scheduledDateTime.isBefore(now) || scheduledDateTime.isAtSameMomentAs(now)) {
+        _logger.w('⚠️ Scheduled time ($scheduledDateTime) is in past or now!');
+        _logger.w('⚠️ Moving to NOW + 10 seconds for immediate test/verification');
         scheduledDateTime = now.add(const Duration(seconds: 10));
+        _logger.i('✅ New scheduled time: $scheduledDateTime');
       }
-
-      // Convert to TZDateTime
-      final tzScheduledTime = tz_time.TZDateTime.from(scheduledDateTime, tz_time.local);
       
       // Calculate days until payment for dynamic message
       final daysUntilPayment = paymentDate.difference(scheduledDateTime).inDays;
@@ -386,27 +478,39 @@ class NotificationService {
       final title = _sanitizeForUtf16('Odeme Hatirlatici');
       final body = _sanitizeForUtf16(notificationBody);
 
-      // Schedule with Samsung-compatible settings
+      // Schedule with ULTRA-AGGRESSIVE Samsung Doze Mode bypass
       await _notificationsPlugin.zonedSchedule(
         subscriptionId.hashCode,
         title,
         body,
-        tzScheduledTime,
+        scheduledDateTime, // Already TZDateTime in local timezone
         NotificationDetails(
           android: AndroidNotificationDetails(
             channelId,
             channelName,
             channelDescription: 'Subscription payment reminders',
-            importance: Importance.max,
-            priority: Priority.high,
+            importance: Importance.max, // Highest priority
+            priority: Priority.high, // High priority flag
             enableVibration: true,
             enableLights: true,
             playSound: true,
             showWhen: true,
+            when: scheduledDateTime.millisecondsSinceEpoch, // Explicit timestamp
             ticker: 'Subscription reminder',
-            // Samsung-specific: Show on lock screen
-            visibility: NotificationVisibility.public,
-            category: AndroidNotificationCategory.reminder,
+            // CRITICAL for Samsung lock screen visibility
+            visibility: NotificationVisibility.public, // Show full content on lock screen
+            category: AndroidNotificationCategory.reminder, // Proper categorization
+            // Samsung-specific: Full-screen intent for maximum visibility
+            fullScreenIntent: true, // Forces notification to be shown even in Doze Mode
+            channelShowBadge: true,
+            autoCancel: false, // Don't auto-dismiss - user must manually clear
+            ongoing: false, // Not persistent (ongoing = false allows swipe-dismiss)
+            // Additional wake-up flags (Samsung compatibility)
+            color: const Color.fromARGB(255, 33, 150, 243), // Blue color for notification
+            ledColor: const Color.fromARGB(255, 33, 150, 243), // Blue LED (0xFF2196F3)
+            ledOnMs: 1000,
+            ledOffMs: 500,
+            timeoutAfter: 3600000, // Timeout after 1 hour (in milliseconds)
           ),
           iOS: const DarwinNotificationDetails(
             presentAlert: true,
@@ -415,11 +519,18 @@ class NotificationService {
             sound: 'default',
           ),
         ),
+        // CRITICAL: Use exactAllowWhileIdle to bypass Doze Mode
+        // This uses setExactAndAllowWhileIdle() internally on Android API 23+
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: null, // No recurring pattern
       );
 
-      _logger.i('✅ Scheduled: $subscriptionTitle at ${tzScheduledTime.toIso8601String()} (${tzScheduledTime.timeZoneName}) - ${daysUntilPayment}d before payment');
+      _logger.i('✅ Scheduled: $subscriptionTitle');
+      _logger.i('   📅 Payment Date: ${paymentDate.toIso8601String()} (${tz_time.local.name})');
+      _logger.i('   ⏰ Notification Time: ${scheduledDateTime.toIso8601String()} (${tz_time.local.name})');
+      _logger.i('   📊 Days before payment: $notificationDaysBefore');
+      _logger.i('   🕐 Notification will arrive at: ${scheduledDateTime.hour}:${scheduledDateTime.minute.toString().padLeft(2, "0")}');
     } catch (e, stack) {
       _logger.e('❌ Failed to schedule notification for $subscriptionTitle', error: e, stackTrace: stack);
     }
