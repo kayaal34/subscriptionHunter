@@ -13,14 +13,22 @@ import 'package:subscription_tracker/presentation/pages/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize timezone data with local timezone
-  tz.initializeTimeZones();
+  print('🚀 App starting...');
   
-  // Get device's local timezone and set it
+  // CRITICAL: Initialize timezone data with local timezone
+  tz.initializeTimeZones();
+  print('✅ Timezone database initialized');
+  
+  // Get device's local timezone and set it as default
   try {
     final String timezoneName = await FlutterTimezone.getLocalTimezone();
     tz_time.setLocalLocation(tz_time.getLocation(timezoneName));
+    
+    final now = tz_time.TZDateTime.now(tz_time.local);
     print('✅ Timezone set to: $timezoneName');
+    print('✅ Current local time: $now');
+    print('✅ Current UTC time: ${DateTime.now().toUtc()}');
+    print('✅ Offset from UTC: ${now.timeZoneOffset}');
   } catch (e) {
     print('⚠️ Could not get local timezone, using UTC: $e');
     tz_time.setLocalLocation(tz_time.getLocation('UTC'));
@@ -28,9 +36,17 @@ void main() async {
 
   // Initialize Hive
   await Hive.initFlutter();
+  print('✅ Hive initialized');
+  
   // Register adapters
   Hive.registerAdapter(SubscriptionModelAdapter());
+  print('✅ Hive adapters registered');
 
+  // Open app settings box before UI starts to allow safe synchronous reads.
+  await Hive.openBox('app_settings');
+  print('✅ app_settings box opened');
+
+  print('🚀 Launching app...');
   runApp(
     const ProviderScope(
       child: SubscriptionTrackerApp(),

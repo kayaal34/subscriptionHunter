@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
 import 'package:subscription_tracker/presentation/providers/subscription_providers.dart';
 import 'package:subscription_tracker/core/services/currency_service.dart';
 import 'package:hive/hive.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
+
+final _logger = Logger();
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -160,6 +163,240 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   },
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // EXCHANGE RATES SECTION
+          _SettingsSection(
+            title: isTr ? 'Döviz Kurları' : 'Exchange Rates',
+            children: [
+              // Exchange Rates Status
+              ref.watch(exchangeRatesProvider).when(
+                data: (rates) {
+                  return Column(
+                    children: [
+                      // Last Update Time
+                      FutureBuilder(
+                        future: Hive.openBox('exchange_rates'),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final box = snapshot.data!;
+                            final lastFetch = box.get('last_fetch') as int?;
+                            final lastUpdateText = lastFetch != null
+                                ? DateTime.fromMillisecondsSinceEpoch(lastFetch)
+                                : null;
+                            
+                            return ListTile(
+                              leading: const Icon(
+                                Icons.update,
+                                color: Color(0xFF007AFF),
+                                size: 24,
+                              ),
+                              title: Text(
+                                isTr ? 'Son Güncelleme' : 'Last Update',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              subtitle: Text(
+                                lastUpdateText != null
+                                    ? '${lastUpdateText.day}.${lastUpdateText.month}.${lastUpdateText.year} ${lastUpdateText.hour}:${lastUpdateText.minute.toString().padLeft(2, '0')}'
+                                    : (isTr ? 'Henüz güncellenmedi' : 'Not updated yet'),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF8E8E93),
+                                ),
+                              ),
+                              trailing: rates.isNotEmpty
+                                  ? const Icon(Icons.check_circle, color: Colors.green, size: 20)
+                                  : const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                            );
+                          }
+                          return const SizedBox();
+                        },
+                      ),
+                      Divider(
+                        height: 1,
+                        color: Colors.grey.shade200,
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      // Current Rates Display
+                      if (rates.isNotEmpty)
+                        ExpansionTile(
+                          leading: const Icon(
+                            Icons.currency_exchange,
+                            color: Color(0xFF007AFF),
+                            size: 24,
+                          ),
+                          title: Text(
+                            isTr ? 'Güncel Kurlar' : 'Current Rates',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            isTr ? '${rates.length} para birimi' : '${rates.length} currencies',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF8E8E93),
+                            ),
+                          ),
+                          children: rates.entries.map((entry) {
+                            return ListTile(
+                              dense: true,
+                              title: Text(
+                                '1 ${entry.key}',
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                              trailing: Text(
+                                '${entry.value.toStringAsFixed(4)} ₺',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF007AFF),
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 32),
+                            );
+                          }).toList(),
+                        ),
+                      if (rates.isNotEmpty)
+                        Divider(
+                          height: 1,
+                          color: Colors.grey.shade200,
+                          indent: 16,
+                          endIndent: 16,
+                        ),
+                      // Manual Refresh Button
+                      ListTile(
+                        leading: const Icon(
+                          Icons.refresh,
+                          color: Color(0xFF007AFF),
+                          size: 24,
+                        ),
+                        title: Text(
+                          isTr ? 'Kurları Yenile' : 'Refresh Rates',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        subtitle: Text(
+                          isTr ? 'İnternetten güncel kurları çek' : 'Fetch latest rates from internet',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF8E8E93),
+                          ),
+                        ),
+                        onTap: () async {
+                          // Show loading
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => Center(
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const CircularProgressIndicator(),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                      isTr ? 'Kurlar güncelleniyor...' : 'Updating rates...',
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+
+                          try {
+                            // Clear cache first
+                            final cacheService = ref.read(exchangeRateCacheServiceProvider);
+                            await cacheService.clearCache();
+                            
+                            // Force refresh
+                            ref.invalidate(exchangeRatesProvider);
+                            await ref.read(exchangeRatesProvider.future);
+                            
+                            if (mounted) {
+                              Navigator.pop(context); // Close loading dialog
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    isTr ? '✓ Kurlar güncellendi' : '✓ Rates updated',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              Navigator.pop(context); // Close loading dialog
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    isTr ? '✗ Hata: $e' : '✗ Error: $e',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      ),
+                    ],
+                  );
+                },
+                loading: () => const ListTile(
+                  leading: CircularProgressIndicator(),
+                  title: Text('Loading rates...'),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                error: (error, stack) => ListTile(
+                  leading: const Icon(Icons.error_outline, color: Colors.red),
+                  title: Text(
+                    isTr ? 'Kurlar yüklenemedi' : 'Failed to load rates',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),
+                  subtitle: Text(
+                    isTr ? 'İnternet bağlantınızı kontrol edin' : 'Check your internet connection',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF8E8E93),
+                    ),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: () => ref.invalidate(exchangeRatesProvider),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
               ),
             ],
           ),
@@ -414,17 +651,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           TextButton(
             onPressed: () async {
               try {
+                // Get notification service first
+                final notificationService = ref.read(notificationServiceProvider);
+                
+                // Cancel ALL pending notifications
+                await notificationService.cancelAllNotifications();
+                _logger.i('✅ All notifications cancelled');
+                
                 // Clear all subscription data
                 await Hive.box<SubscriptionModel>('subscriptions').clear();
+                _logger.i('✅ All subscriptions deleted');
                 
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        isTr ? 'Tüm veriler silindi' : 'All data deleted',
+                        isTr ? '✓ Tüm veriler ve bildirimler silindi' : '✓ All data and notifications deleted',
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      backgroundColor: const Color(0xFFFF3B30),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
                     ),
                   );
                 }
@@ -497,3 +744,4 @@ class _SettingsSection extends StatelessWidget {
     ],
   );
 }
+

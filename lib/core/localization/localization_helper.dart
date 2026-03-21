@@ -34,9 +34,17 @@ class LocalizationHelper {
   String get currency => get('currency');
   String get category => get('category');
   String get startDate => get('startDate');
+  String get addPhoto => get('addPhoto');
+  String get paymentCycle => get('paymentCycle');
   String get billingCycle => get('billingCycle');
   String get monthly => get('monthly');
   String get yearly => get('yearly');
+  String get subscriptionHasEndDate => get('subscriptionHasEndDate');
+  String get subscriptionEndDateHint => get('subscriptionEndDateHint');
+  String get selectDate => get('selectDate');
+  String get notes => get('notes');
+  String get addSubscriptionNote => get('addSubscriptionNote');
+  String get savedWithCheck => get('savedWithCheck');
   String get exampleName => get('exampleName');
   String get exampleCost => get('exampleCost');
 
@@ -75,4 +83,12 @@ class LocalizationHelper {
   String get sortBy => get('sortBy');
   String get notificationSettings => get('notificationSettings');
   String get notificationDaysBefore => get('notificationDaysBefore');
+  String get remind => get('remind');
+  String get oneDayBefore => get('oneDayBefore');
+  String get twoDaysBefore => get('twoDaysBefore');
+  String get threeDaysBefore => get('threeDaysBefore');
+  String get fourDaysBefore => get('fourDaysBefore');
+  String get fiveDaysBefore => get('fiveDaysBefore');
+  String get sixDaysBefore => get('sixDaysBefore');
+  String get oneWeekBefore => get('oneWeekBefore');
 }

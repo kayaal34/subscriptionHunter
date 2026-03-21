@@ -41,6 +41,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
   DateTime? _selectedEndDate;
   bool _hasEndDate = false;
   String? _selectedImagePath;
+  String? _tempImagePath;
   bool _isLoading = false;
   late LocalizationHelper l10n;
   late BillingCycle _selectedBillingCycle;
@@ -142,8 +143,17 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
           final fileName = '${const Uuid().v4()}.jpg';
           final savedImage = await File(croppedFile.path).copy('${appDir.path}/$fileName');
 
+          // Delete only previously created temp image from this page session.
+          if (_tempImagePath != null && _tempImagePath != savedImage.path) {
+            final previousTempFile = File(_tempImagePath!);
+            if (await previousTempFile.exists()) {
+              await previousTempFile.delete();
+            }
+          }
+
           setState(() {
             _selectedImagePath = savedImage.path;
+            _tempImagePath = savedImage.path;
           });
         }
       }
@@ -220,35 +230,48 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
       );
 
       if (mounted) {
-        // Reset form
-        _titleController.clear();
-        _costController.clear();
-        _typeController.clear();
-        _notesController.clear();
-        setState(() {
-          _isLoading = false;
-          _selectedBillingDay = 1;
-          _selectedCurrency = 'TRY';
-          _selectedNotificationDaysBefore = 1;
-          _notificationsEnabled = true;
-          _selectedStartDate = DateTime.now();
-        });
+        // Reset form for new subscriptions
+        if (widget.subscription == null) {
+          _titleController.clear();
+          _costController.clear();
+          _typeController.clear();
+          _notesController.clear();
+          setState(() {
+            _isLoading = false;
+            _selectedBillingDay = 1;
+            _selectedCurrency = 'TRY';
+            _selectedNotificationDaysBefore = 1;
+            _notificationsEnabled = true;
+            _selectedStartDate = DateTime.now();
+          });
+        } else {
+          setState(() => _isLoading = false);
+        }
         
         // Call callback if provided
         widget.onSaved?.call();
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text(
-              '✓ Kaydedildi',
+            content: Text(
+              l10n.savedWithCheck,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
             backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 1500),
           ),
         );
+        
+        // Navigate back to previous screen after successful save
+        // Use a short delay to ensure the SnackBar is visible
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            Navigator.pop(context, true); // Return true to indicate success
+          }
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -278,7 +301,9 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: _selectedImagePath != null ? null : Colors.black,
+                      color: _selectedImagePath != null
+                          ? null
+                          : Theme.of(context).colorScheme.primaryContainer,
                       shape: BoxShape.circle,
                       image: _selectedImagePath != null
                           ? DecorationImage(
@@ -299,23 +324,26 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                             child: _typeController.text.isNotEmpty
                                 ? Text(
                                     _typeController.text[0],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 40,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                                     ),
                                   )
                                 : _titleController.text.isNotEmpty
                                     ? Text(
                                         _titleController.text[0].toUpperCase(),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 40,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+                                          color: Theme.of(context).colorScheme.onPrimaryContainer,
                                         ),
                                       )
-                                    : const Icon(Icons.add_a_photo,
-                                        color: Colors.white, size: 40),
+                                    : Icon(
+                                        Icons.add_a_photo,
+                                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                        size: 40,
+                                      ),
                           )
                         : null,
                   ),
@@ -325,7 +353,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               Center(
                 child: TextButton(
                   onPressed: _pickImage,
-                  child: Text(l10n.category == "Kategori" ? "Fotoğraf Ekle" : "Add Photo"),
+                  child: Text(l10n.addPhoto),
                 ),
               ),
               const SizedBox(height: 24),
@@ -342,7 +370,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                   hintStyle: TextStyle(color: Colors.grey[400]),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   filled: true,
-                  fillColor: Colors.grey.shade50,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
               ),
               const SizedBox(height: 24),
@@ -370,7 +398,6 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                           _typeController.text = selected ? category : '';
                         });
                       },
-                      backgroundColor: Colors.grey.shade100,
                       selectedColor: Colors.blue.shade500,
                       side: BorderSide(
                         color: isSelected ? Colors.blue.shade500 : Colors.grey.shade300,
@@ -386,7 +413,6 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                     onPressed: () {
                       _showCustomCategoryDialog(context);
                     },
-                    backgroundColor: Colors.grey.shade100,
                   ),
                 ],
               ),
@@ -411,7 +437,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                             hintStyle: TextStyle(color: Colors.grey[400]),
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             filled: true,
-                            fillColor: Colors.grey.shade50,
+                            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                           ),
                         ),
                       ],
@@ -440,6 +466,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                           },
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            filled: true,
+                            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                           ),
                         ),
                       ],
@@ -486,7 +514,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
 
               // Billing Cycle Selection
               // Payment Cycle Selection
-              Text('Ödeme Döngüsü', style: Theme.of(context).textTheme.titleSmall),
+              Text(l10n.paymentCycle, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
@@ -502,11 +530,11 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                     items: [
                       DropdownMenuItem(
                         value: BillingCycle.monthly,
-                        child: Text('Aylık'),
+                        child: Text(l10n.monthly),
                       ),
                       DropdownMenuItem(
                         value: BillingCycle.yearly,
-                        child: Text('Yıllık'),
+                        child: Text(l10n.yearly),
                       ),
                     ],
                     onChanged: (value) {
@@ -534,6 +562,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                 },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
               ),
               const SizedBox(height: 24),
@@ -556,14 +586,14 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Abonelik Bitiş Tarihi Belli mi?',
+                                l10n.subscriptionHasEndDate,
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Aboneliğin belirli bir tarihte bitişi varsa açın',
+                                l10n.subscriptionEndDateHint,
                                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Colors.grey[600],
                                 ),
@@ -578,7 +608,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                             setState(() {
                               _hasEndDate = value;
                               if (value) {
-                                _selectedEndDate = DateTime.now().add(const Duration(days: 30));
+                                _selectedEndDate = null;
                               } else {
                                 _selectedEndDate = null;
                               }
@@ -614,7 +644,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                               Text(
                                 _selectedEndDate != null
                                   ? '${_selectedEndDate!.day}/${_selectedEndDate!.month}/${_selectedEndDate!.year}'
-                                  : 'Tarih Seçin',
+                                  : l10n.selectDate,
                                 style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Icon(
@@ -646,7 +676,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               ),
               if (_notificationsEnabled) ...[
                 const SizedBox(height: 12),
-                Text('Hatırlat',
+                Text(l10n.remind,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 Container(
@@ -663,31 +693,31 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                       items: [
                         DropdownMenuItem(
                           value: 1,
-                          child: Text('1 gün önce')
+                          child: Text(l10n.oneDayBefore)
                         ),
                         DropdownMenuItem(
                           value: 2,
-                          child: Text('2 gün önce')
+                          child: Text(l10n.twoDaysBefore)
                         ),
                         DropdownMenuItem(
                           value: 3,
-                          child: Text('3 gün önce')
+                          child: Text(l10n.threeDaysBefore)
                         ),
                         DropdownMenuItem(
                           value: 4,
-                          child: Text('4 gün önce')
+                          child: Text(l10n.fourDaysBefore)
                         ),
                         DropdownMenuItem(
                           value: 5,
-                          child: Text('5 gün önce')
+                          child: Text(l10n.fiveDaysBefore)
                         ),
                         DropdownMenuItem(
                           value: 6,
-                          child: Text('6 gün önce')
+                          child: Text(l10n.sixDaysBefore)
                         ),
                         DropdownMenuItem(
                           value: 7,
-                          child: Text('1 hafta önce')
+                          child: Text(l10n.oneWeekBefore)
                         ),
                       ].toList(),
                       onChanged: (value) {
@@ -703,20 +733,24 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.shade200),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.info_outline, color: Colors.blue.shade700, size: 20),
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        size: 20,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           'Bildirim saati Ayarlar sayfasından düzenlenebilir',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Colors.blue.shade900,
+                            color: Theme.of(context).colorScheme.onSecondaryContainer,
                           ),
                         ),
                       ),
@@ -727,17 +761,17 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
               const SizedBox(height: 32),
 
               // Notes Field
-              Text('Not', style: Theme.of(context).textTheme.titleSmall),
+              Text(l10n.notes, style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               TextField(
                 controller: _notesController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: 'Abonelik hakkında not ekle...',
+                  hintText: l10n.addSubscriptionNote,
                   hintStyle: TextStyle(color: Colors.grey[400]),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                   filled: true,
-                  fillColor: Colors.grey.shade50,
+                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
               ),
               const SizedBox(height: 32),
@@ -761,8 +795,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
-                      : const Text(
-                          'Kaydet',
+                        : Text(
+                          l10n.save,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

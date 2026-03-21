@@ -31,10 +31,17 @@ class StringsTR {
   static const String currency = 'Para Birimi';
   static const String category = 'Kategori';
   static const String startDate = 'Başlangıç Tarihi';
+  static const String addPhoto = 'Fotoğraf Ekle';
+  static const String paymentCycle = 'Ödeme Döngüsü';
   static const String endDate = 'Bitiş Tarihi';
   static const String billingCycle = 'Ödeme Döngüsü';
   static const String monthly = 'Aylık';
   static const String yearly = 'Yıllık';
+  static const String subscriptionHasEndDate = 'Abonelik Bitiş Tarihi Belli mi?';
+  static const String subscriptionEndDateHint = 'Aboneliğin belirli bir tarihte bitişi varsa açın';
+  static const String selectDate = 'Tarih Seçin';
+  static const String notes = 'Not';
+  static const String addSubscriptionNote = 'Abonelik hakkında not ekle...';
   static const String selectCategory = 'Kategori Seç';
   
   // Abonelik Kartı
@@ -54,9 +61,14 @@ class StringsTR {
   static const String notificationDaysBefore = 'Kaç Gün Önce Bildir';
   static const String onBillingDay = 'Ödeme Günü';
   static const String oneDayBefore = '1 Gün Önce';
+  static const String twoDaysBefore = '2 Gün Önce';
   static const String threeDaysBefore = '3 Gün Önce';
+  static const String fourDaysBefore = '4 Gün Önce';
+  static const String fiveDaysBefore = '5 Gün Önce';
+  static const String sixDaysBefore = '6 Gün Önce';
   static const String oneWeekBefore = '1 Hafta Önce';
   static const String twoWeeksBefore = '2 Hafta Önce';
+  static const String remind = 'Hatırlat';
 
   // İstatistikler
   static const String monthlySpending = 'Aylık Harcama';
@@ -96,6 +108,7 @@ class StringsTR {
   static const String deleteConfirm = 'Bu aboneliği silmek istediğinizden emin misiniz?';
   static const String addFirst = 'İlk aboneliğinizi ekleyin';
   static const String saved = 'Kaydedildi';
+  static const String savedWithCheck = '✓ Kaydedildi';
   static const String error = 'Hata';
   static const String success = 'Başarılı';
 
@@ -136,10 +149,17 @@ class StringsEN {
   static const String currency = 'Currency';
   static const String category = 'Category';
   static const String startDate = 'Start Date';
+  static const String addPhoto = 'Add Photo';
+  static const String paymentCycle = 'Payment Cycle';
   static const String endDate = 'End Date';
   static const String billingCycle = 'Billing Cycle';
   static const String monthly = 'Monthly';
   static const String yearly = 'Yearly';
+  static const String subscriptionHasEndDate = 'Does this subscription have an end date?';
+  static const String subscriptionEndDateHint = 'Enable if this subscription ends on a specific date';
+  static const String selectDate = 'Select Date';
+  static const String notes = 'Notes';
+  static const String addSubscriptionNote = 'Add a note about this subscription...';
   static const String selectCategory = 'Select Category';
   
   // Subscription Card
@@ -159,9 +179,14 @@ class StringsEN {
   static const String notificationDaysBefore = 'Days Before Notification';
   static const String onBillingDay = 'On billing day';
   static const String oneDayBefore = '1 day before';
+  static const String twoDaysBefore = '2 days before';
   static const String threeDaysBefore = '3 days before';
+  static const String fourDaysBefore = '4 days before';
+  static const String fiveDaysBefore = '5 days before';
+  static const String sixDaysBefore = '6 days before';
   static const String oneWeekBefore = '1 week before';
   static const String twoWeeksBefore = '2 weeks before';
+  static const String remind = 'Remind';
 
   // Statistics
   static const String monthlySpending = 'Monthly Spending';
@@ -201,6 +226,7 @@ class StringsEN {
   static const String deleteConfirm = 'Are you sure you want to delete this subscription?';
   static const String addFirst = 'Add your first subscription';
   static const String saved = 'Saved';
+  static const String savedWithCheck = '✓ Saved';
   static const String error = 'Error';
   static const String success = 'Success';
   // Currencies
@@ -240,10 +266,17 @@ class StringsRU {
   static const String currency = 'Валюта';
   static const String category = 'Категория';
   static const String startDate = 'Дата начала';
+  static const String addPhoto = 'Добавить фото';
+  static const String paymentCycle = 'Платежный цикл';
   static const String endDate = 'Дата конца';
   static const String billingCycle = 'Цикл платежа';
   static const String monthly = 'Ежемесячно';
   static const String yearly = 'Ежегодно';
+  static const String subscriptionHasEndDate = 'Есть ли у подписки дата окончания?';
+  static const String subscriptionEndDateHint = 'Включите, если подписка заканчивается в определенную дату';
+  static const String selectDate = 'Выберите дату';
+  static const String notes = 'Заметка';
+  static const String addSubscriptionNote = 'Добавьте заметку об этой подписке...';
   static const String selectCategory = 'Выберите категорию';
   
   // Карточка подписки
@@ -263,9 +296,14 @@ class StringsRU {
   static const String notificationDaysBefore = 'Дней до уведомления';
   static const String onBillingDay = 'В день платежа';
   static const String oneDayBefore = '1 день до';
+  static const String twoDaysBefore = '2 дня до';
   static const String threeDaysBefore = '3 дня до';
+  static const String fourDaysBefore = '4 дня до';
+  static const String fiveDaysBefore = '5 дней до';
+  static const String sixDaysBefore = '6 дней до';
   static const String oneWeekBefore = '1 неделя до';
   static const String twoWeeksBefore = '2 недели до';
+  static const String remind = 'Напомнить';
 
   // Статистика
   static const String monthlySpending = 'Расходы в месяц';
@@ -305,6 +343,7 @@ class StringsRU {
   static const String deleteConfirm = 'Вы уверены, что хотите удалить эту подписку?';
   static const String addFirst = 'Добавьте первую подписку';
   static const String saved = 'Сохранено';
+  static const String savedWithCheck = '✓ Сохранено';
   static const String error = 'Ошибка';
   static const String success = 'Успех';
 
@@ -350,10 +389,17 @@ final Map<String, String> _stringsMapTR = {
   'currency': StringsTR.currency,
   'category': StringsTR.category,
   'startDate': StringsTR.startDate,
+  'addPhoto': StringsTR.addPhoto,
+  'paymentCycle': StringsTR.paymentCycle,
   'endDate': StringsTR.endDate,
   'billingCycle': StringsTR.billingCycle,
   'monthly': StringsTR.monthly,
   'yearly': StringsTR.yearly,
+  'subscriptionHasEndDate': StringsTR.subscriptionHasEndDate,
+  'subscriptionEndDateHint': StringsTR.subscriptionEndDateHint,
+  'selectDate': StringsTR.selectDate,
+  'notes': StringsTR.notes,
+  'addSubscriptionNote': StringsTR.addSubscriptionNote,
   'selectCategory': StringsTR.selectCategory,
   'deleteConfirmTitle': StringsTR.deleteConfirmTitle,
   'deleteConfirmMsg': StringsTR.deleteConfirmMsg,
@@ -367,9 +413,14 @@ final Map<String, String> _stringsMapTR = {
   'notificationTime': StringsTR.notificationTime,
   'notificationSettings': StringsTR.notificationSettings,
   'notificationDaysBefore': StringsTR.notificationDaysBefore,
+  'remind': StringsTR.remind,
   'onBillingDay': StringsTR.onBillingDay,
   'oneDayBefore': StringsTR.oneDayBefore,
+  'twoDaysBefore': StringsTR.twoDaysBefore,
   'threeDaysBefore': StringsTR.threeDaysBefore,
+  'fourDaysBefore': StringsTR.fourDaysBefore,
+  'fiveDaysBefore': StringsTR.fiveDaysBefore,
+  'sixDaysBefore': StringsTR.sixDaysBefore,
   'oneWeekBefore': StringsTR.oneWeekBefore,
   'twoWeeksBefore': StringsTR.twoWeeksBefore,
   'monthlySpending': StringsTR.monthlySpending,
@@ -403,6 +454,7 @@ final Map<String, String> _stringsMapTR = {
   'deleteConfirm': StringsTR.deleteConfirm,
   'addFirst': StringsTR.addFirst,
   'saved': StringsTR.saved,
+  'savedWithCheck': StringsTR.savedWithCheck,
   'error': StringsTR.error,
   'success': StringsTR.success,
   'tryCurrency': StringsTR.tryCurrency,
@@ -435,10 +487,17 @@ final Map<String, String> _stringsMapEN = {
   'currency': StringsEN.currency,
   'category': StringsEN.category,
   'startDate': StringsEN.startDate,
+  'addPhoto': StringsEN.addPhoto,
+  'paymentCycle': StringsEN.paymentCycle,
   'endDate': StringsEN.endDate,
   'billingCycle': StringsEN.billingCycle,
   'monthly': StringsEN.monthly,
   'yearly': StringsEN.yearly,
+  'subscriptionHasEndDate': StringsEN.subscriptionHasEndDate,
+  'subscriptionEndDateHint': StringsEN.subscriptionEndDateHint,
+  'selectDate': StringsEN.selectDate,
+  'notes': StringsEN.notes,
+  'addSubscriptionNote': StringsEN.addSubscriptionNote,
   'selectCategory': StringsEN.selectCategory,
   'deleteConfirmTitle': StringsEN.deleteConfirmTitle,
   'deleteConfirmMsg': StringsEN.deleteConfirmMsg,
@@ -452,9 +511,14 @@ final Map<String, String> _stringsMapEN = {
   'notificationTime': StringsEN.notificationTime,
   'notificationSettings': StringsEN.notificationSettings,
   'notificationDaysBefore': StringsEN.notificationDaysBefore,
+  'remind': StringsEN.remind,
   'onBillingDay': StringsEN.onBillingDay,
   'oneDayBefore': StringsEN.oneDayBefore,
+  'twoDaysBefore': StringsEN.twoDaysBefore,
   'threeDaysBefore': StringsEN.threeDaysBefore,
+  'fourDaysBefore': StringsEN.fourDaysBefore,
+  'fiveDaysBefore': StringsEN.fiveDaysBefore,
+  'sixDaysBefore': StringsEN.sixDaysBefore,
   'oneWeekBefore': StringsEN.oneWeekBefore,
   'twoWeeksBefore': StringsEN.twoWeeksBefore,
   'monthlySpending': StringsEN.monthlySpending,
@@ -488,6 +552,7 @@ final Map<String, String> _stringsMapEN = {
   'deleteConfirm': StringsEN.deleteConfirm,
   'addFirst': StringsEN.addFirst,
   'saved': StringsEN.saved,
+  'savedWithCheck': StringsEN.savedWithCheck,
   'error': StringsEN.error,
   'success': StringsEN.success,
   'tryCurrency': StringsEN.tryCurrency,
@@ -520,10 +585,17 @@ final Map<String, String> _stringsMapRU = {
   'currency': StringsRU.currency,
   'category': StringsRU.category,
   'startDate': StringsRU.startDate,
+  'addPhoto': StringsRU.addPhoto,
+  'paymentCycle': StringsRU.paymentCycle,
   'endDate': StringsRU.endDate,
   'billingCycle': StringsRU.billingCycle,
   'monthly': StringsRU.monthly,
   'yearly': StringsRU.yearly,
+  'subscriptionHasEndDate': StringsRU.subscriptionHasEndDate,
+  'subscriptionEndDateHint': StringsRU.subscriptionEndDateHint,
+  'selectDate': StringsRU.selectDate,
+  'notes': StringsRU.notes,
+  'addSubscriptionNote': StringsRU.addSubscriptionNote,
   'selectCategory': StringsRU.selectCategory,
   'deleteConfirmTitle': StringsRU.deleteConfirmTitle,
   'deleteConfirmMsg': StringsRU.deleteConfirmMsg,
@@ -537,9 +609,14 @@ final Map<String, String> _stringsMapRU = {
   'notificationTime': StringsRU.notificationTime,
   'notificationSettings': StringsRU.notificationSettings,
   'notificationDaysBefore': StringsRU.notificationDaysBefore,
+  'remind': StringsRU.remind,
   'onBillingDay': StringsRU.onBillingDay,
   'oneDayBefore': StringsRU.oneDayBefore,
+  'twoDaysBefore': StringsRU.twoDaysBefore,
   'threeDaysBefore': StringsRU.threeDaysBefore,
+  'fourDaysBefore': StringsRU.fourDaysBefore,
+  'fiveDaysBefore': StringsRU.fiveDaysBefore,
+  'sixDaysBefore': StringsRU.sixDaysBefore,
   'oneWeekBefore': StringsRU.oneWeekBefore,
   'twoWeeksBefore': StringsRU.twoWeeksBefore,
   'monthlySpending': StringsRU.monthlySpending,
@@ -573,6 +650,7 @@ final Map<String, String> _stringsMapRU = {
   'deleteConfirm': StringsRU.deleteConfirm,
   'addFirst': StringsRU.addFirst,
   'saved': StringsRU.saved,
+  'savedWithCheck': StringsRU.savedWithCheck,
   'error': StringsRU.error,
   'success': StringsRU.success,
   'tryCurrency': StringsRU.tryCurrency,
