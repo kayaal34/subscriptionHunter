@@ -245,25 +245,24 @@ class _SubscriptionDetailPageState extends State<SubscriptionDetailPage> {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w500,
+  Widget _buildDetailRow(BuildContext context, String label, String value) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.black,
-            fontWeight: FontWeight.w500,
+          Text(
+            value,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }

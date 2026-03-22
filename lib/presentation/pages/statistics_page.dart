@@ -416,13 +416,14 @@ class _ChartCard extends StatelessWidget {
 }
 
 class _CategoryChartPainter extends CustomPainter {
-  final Map<String, double> categories;
-  final double maxCost;
 
   _CategoryChartPainter({
     required this.categories,
     required this.maxCost,
   });
+
+  final Map<String, double> categories;
+  final double maxCost;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -502,9 +503,7 @@ class _CategoryChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_CategoryChartPainter oldDelegate) {
-    return oldDelegate.categories != categories || oldDelegate.maxCost != maxCost;
-  }
+  bool shouldRepaint(_CategoryChartPainter oldDelegate) => oldDelegate.categories != categories || oldDelegate.maxCost != maxCost;
 }
 
 class _CategoriesCard extends StatelessWidget {
@@ -555,8 +554,8 @@ class _CategoriesCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ...categories.entries.map((entry) {
-                final formattedCost = currencyService.getFormattedTotal(entry.value, currencyCode);
-                return Padding(
+              final formattedCost = currencyService.getFormattedTotal(entry.value, currencyCode);
+              return Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Row(
                   children: [
@@ -585,8 +584,7 @@ class _CategoriesCard extends StatelessWidget {
                   ],
                 ),
               );
-              }
-              ),
+            }),
           ],
         ),
       ),

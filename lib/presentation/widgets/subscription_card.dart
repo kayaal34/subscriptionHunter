@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subscription_tracker/domain/entities/subscription.dart';
 import 'package:subscription_tracker/core/services/currency_service.dart';
@@ -196,6 +197,9 @@ class SubscriptionCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: 400.ms)
+        .slideX(begin: 0.05, curve: Curves.easeOut);
   }
 }

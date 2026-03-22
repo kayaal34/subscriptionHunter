@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:subscription_tracker/core/constants/currencies.dart';
@@ -223,7 +224,10 @@ class _BillCard extends ConsumerWidget {
           ),
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: 400.ms)
+        .slideX(begin: 0.05, curve: Curves.easeOut);
   }
 
   Color _getColorByDays(int days) {

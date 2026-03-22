@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
 
@@ -140,7 +141,10 @@ class TotalCostCard extends ConsumerWidget {
           ],
         ),
       ),
-    );
+    )
+        .animate()
+        .fadeIn(duration: 500.ms)
+        .slideY(begin: -0.1, curve: Curves.easeOutQuad);
   }
 }
 

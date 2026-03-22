@@ -1,19 +1,33 @@
 // Web-specific notification implementation
-import 'dart:html' as html;
+import 'dart:js_interop';
+
+import 'package:web/web.dart' as web;
 
 Future<void> sendWebNotification(String title, String body) async {
-  final permission = html.Notification.permission;
+  final permission = web.Notification.permission.toString();
   if (permission == 'granted') {
-    html.Notification(title, body: body, icon: '/favicon.png');
+    web.Notification(
+      title,
+      web.NotificationOptions(
+        body: body,
+        icon: '/favicon.png',
+      ),
+    );
   } else if (permission == 'default') {
-    await html.Notification.requestPermission();
-    if (html.Notification.permission == 'granted') {
-      html.Notification(title, body: body, icon: '/favicon.png');
+    final requestedPermission = (await web.Notification.requestPermission().toDart).toString();
+    if (requestedPermission == 'granted') {
+      web.Notification(
+        title,
+        web.NotificationOptions(
+          body: body,
+          icon: '/favicon.png',
+        ),
+      );
     }
   }
 }
 
 Future<bool> requestWebNotificationPermission() async {
-  final permission = await html.Notification.requestPermission();
+  final permission = (await web.Notification.requestPermission().toDart).toString();
   return permission == 'granted';
 }

@@ -17,7 +17,7 @@ class Currency {
 /// Exchange rates to TRY (Turkish Lira) for calculation
 /// Can be updated dynamically from API
 class CurrencyConverter {
-  static Map<String, double> _exchangeRates = {
+  static Map<String, double> exchangeRates = {
     'TRY': 1.0,
     'USD': 41.5, // 1 USD = 41.5 TRY
     'EUR': 50, // 1 EUR = 50 TRY
@@ -30,12 +30,6 @@ class CurrencyConverter {
     'CNY': 4.6, // 1 CNY = 4.6 TRY
   };
 
-  /// Get current exchange rates
-  static Map<String, double> get exchangeRates => _exchangeRates;
-
-  /// Update exchange rates from API
-  static set exchangeRates(Map<String, double> newRates) => _exchangeRates = newRates;
-
   /// Convert amount from source currency to target currency
   static double convert({
     required double amount,
@@ -44,8 +38,8 @@ class CurrencyConverter {
   }) {
     if (fromCurrency == toCurrency) return amount;
 
-    final fromRate = _exchangeRates[fromCurrency] ?? 1.0;
-    final toRate = _exchangeRates[toCurrency] ?? 1.0;
+    final fromRate = exchangeRates[fromCurrency] ?? 1.0;
+    final toRate = exchangeRates[toCurrency] ?? 1.0;
 
     // Convert to base currency (TRY) first, then to target
     final amountInTRY = amount * fromRate;
