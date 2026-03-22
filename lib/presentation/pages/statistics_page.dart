@@ -26,16 +26,32 @@ class StatisticsPage extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
+              Text(
+                language == AppLanguage.turkish ? 'Harcama Analizi' : 'Spending Insights',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                language == AppLanguage.turkish
+                    ? 'Aylık ve yıllık görünümle aboneliklerini takip et'
+                    : 'Track subscriptions with monthly and yearly insights',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
               _MonthlyCostCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _ChartCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _AnnualCostCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _CategoriesCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _MostExpensiveCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               _CheapestCard(subscriptions: subscriptions, language: language, currencyCode: currencyCode),
             ],
           );
@@ -177,12 +193,8 @@ class _MonthlyCostCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blue.shade400, Colors.blue.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -194,20 +206,20 @@ class _MonthlyCostCard extends StatelessWidget {
               Text(
                 getString('monthlySpending', language),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white70,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
                   fontWeight: FontWeight.w500,
                 ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Theme.of(context).colorScheme.onPrimaryContainer.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '${subscriptions.length}',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                   ),
@@ -220,7 +232,7 @@ class _MonthlyCostCard extends StatelessWidget {
             formattedTotal,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
         ],
@@ -265,12 +277,8 @@ class _AnnualCostCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green.shade400, Colors.green.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
+        color: Theme.of(context).colorScheme.tertiaryContainer,
+        borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -279,7 +287,7 @@ class _AnnualCostCard extends StatelessWidget {
           Text(
             getString('annualSpending', language),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Colors.white70,
+              color: Theme.of(context).colorScheme.onTertiaryContainer.withValues(alpha: 0.8),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -288,7 +296,7 @@ class _AnnualCostCard extends StatelessWidget {
             formattedTotal,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onTertiaryContainer,
             ),
           ),
           const SizedBox(height: 16),
@@ -297,8 +305,10 @@ class _AnnualCostCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: (annualCost / 100000).clamp(0, 1),
               minHeight: 6,
-              backgroundColor: Colors.white.withValues(alpha: 0.2),
-              valueColor: AlwaysStoppedAnimation(Colors.white.withValues(alpha: 0.8)),
+              backgroundColor: Theme.of(context).colorScheme.onTertiaryContainer.withValues(alpha: 0.15),
+              valueColor: AlwaysStoppedAnimation(
+                Theme.of(context).colorScheme.onTertiaryContainer.withValues(alpha: 0.8),
+              ),
             ),
           ),
         ],
@@ -322,7 +332,6 @@ class _ChartCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Calculate cost by category for chart (convert all to monthly basis)
     final categories = <String, double>{};
-    double maxCost = 0;
     
     for (final sub in subscriptions) {
       // Yearly subscriptions: divide by 12 to get monthly equivalent
@@ -336,23 +345,18 @@ class _ChartCard extends StatelessWidget {
         toCurrency: currencyCode,
       );
       categories[sub.icon] = (categories[sub.icon] ?? 0) + cost;
-      maxCost = maxCost < cost ? cost : maxCost;
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(20),
+    final maxCost = categories.values.isEmpty
+        ? 0.0
+        : categories.values.reduce((a, b) => a > b ? a : b);
+
+    return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -360,7 +364,6 @@ class _ChartCard extends StatelessWidget {
             'Kategori Dağılımı',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: Colors.black,
             ),
           ),
           const SizedBox(height: 20),
@@ -403,6 +406,7 @@ class _ChartCard extends StatelessWidget {
                     entry.key,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w500,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -410,6 +414,7 @@ class _ChartCard extends StatelessWidget {
             }).toList(),
           ),
         ],
+      ),
       ),
     );
   }
@@ -467,27 +472,6 @@ class _CategoryChartPainter extends CustomPainter {
         paint,
       );
 
-      // Draw label at bottom
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: entry.key.substring(0, 1),
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 10,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(
-          xPosition + (barWidth - textPainter.width) / 2,
-          baseY + 8,
-        ),
-      );
-
       index++;
     }
 
@@ -539,7 +523,8 @@ class _CategoriesCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: Colors.grey.shade50,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -548,7 +533,7 @@ class _CategoriesCard extends StatelessWidget {
             Text(
               getString('spendingByCategory', language),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -568,9 +553,9 @@ class _CategoriesCard extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: (entry.value / categories.values.reduce((a, b) => a + b)).clamp(0, 1),
                         minHeight: 6,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                         valueColor: AlwaysStoppedAnimation(
-                          Colors.primaries[entry.key.hashCode % Colors.primaries.length].shade400,
+                          Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -628,7 +613,8 @@ class _MostExpensiveCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: Colors.grey.shade50,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -637,7 +623,7 @@ class _MostExpensiveCard extends StatelessWidget {
             Text(
               getString('mostExpensive', language),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -648,7 +634,7 @@ class _MostExpensiveCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
+                    color: Theme.of(context).colorScheme.errorContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Center(
@@ -669,7 +655,7 @@ class _MostExpensiveCard extends StatelessWidget {
                       Text(
                         formattedCost,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.orange.shade600,
+                          color: Theme.of(context).colorScheme.error,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -721,7 +707,8 @@ class _CheapestCard extends StatelessWidget {
 
     return Card(
       elevation: 0,
-      color: Colors.grey.shade50,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -730,7 +717,7 @@ class _CheapestCard extends StatelessWidget {
             Text(
               getString('cheapest', language),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -741,7 +728,7 @@ class _CheapestCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.green.shade100,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Center(
@@ -762,7 +749,7 @@ class _CheapestCard extends StatelessWidget {
                       Text(
                         formattedCost,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.green.shade600,
+                          color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
