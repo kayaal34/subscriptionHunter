@@ -7,13 +7,9 @@ import '../../core/constants/currencies.dart';
 
 final loggerProvider = Provider<Logger>((ref) => Logger());
 
-final exchangeRateServiceProvider = Provider<ExchangeRateService>((ref) {
-  return ExchangeRateService(logger: ref.watch(loggerProvider));
-});
+final exchangeRateServiceProvider = Provider<ExchangeRateService>((ref) => ExchangeRateService(logger: ref.watch(loggerProvider)));
 
-final exchangeRateCacheServiceProvider = Provider<ExchangeRateCacheService>((ref) {
-  return ExchangeRateCacheService(logger: ref.watch(loggerProvider));
-});
+final exchangeRateCacheServiceProvider = Provider<ExchangeRateCacheService>((ref) => ExchangeRateCacheService(logger: ref.watch(loggerProvider)));
 
 // Provider to fetch and cache exchange rates
 final exchangeRatesProvider = FutureProvider<Map<String, double>>((ref) async {
@@ -21,7 +17,7 @@ final exchangeRatesProvider = FutureProvider<Map<String, double>>((ref) async {
   final exchangeRateService = ref.watch(exchangeRateServiceProvider);
   
   return cacheService.getExchangeRates(
-    exchangeRateService: exchangeRateService,
+    fetchRates: exchangeRateService.fetchExchangeRates,
   );
 });
 
@@ -29,7 +25,7 @@ final exchangeRatesProvider = FutureProvider<Map<String, double>>((ref) async {
 final updatedCurrencyConverterProvider = FutureProvider<void>((ref) async {
   final rates = await ref.watch(exchangeRatesProvider.future);
   if (rates.isNotEmpty) {
-    CurrencyConverter.updateExchangeRates(rates);
+    CurrencyConverter.exchangeRates = rates;
   }
 });
 

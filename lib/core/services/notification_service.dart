@@ -2,12 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'; // Required for Color
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz_time;
 import 'package:logger/logger.dart';
 import 'notification_service_web.dart' if (dart.library.io) 'notification_service_stub.dart';
+import 'hive_encryption_service.dart';
 
 class NotificationService {
 
@@ -25,7 +25,7 @@ class NotificationService {
       // Remove non-BMP characters (emojis, special unicode)
       final sanitized = input.runes
           .where((rune) => rune < 0x10000) // Keep only BMP characters
-          .map((rune) => String.fromCharCode(rune))
+          .map(String.fromCharCode)
           .join();
       return sanitized.isEmpty ? input.replaceAll(RegExp(r'[^\x20-\x7E\u00A0-\uFFFF]'), '') : sanitized;
     } catch (e) {
@@ -48,7 +48,7 @@ class NotificationService {
         if (status.isDenied || !status.isGranted) {
           _logger.w('🔴 Exact alarm permission NOT granted - status: $status');
           // Open settings for user to grant permission
-          final granted = await Permission.scheduleExactAlarm.request();
+          await Permission.scheduleExactAlarm.request();
           
           // Check again after request
           final newStatus = await Permission.scheduleExactAlarm.status;
@@ -201,7 +201,7 @@ class NotificationService {
   /// Check if notification permission was already requested
   Future<bool> _wasPermissionAlreadyRequested() async {
     try {
-      final appSettings = await Hive.openBox('app_settings');
+      final appSettings = await openEncryptedBox('app_settings');
       return appSettings.get('notificationPermissionRequested', defaultValue: false) as bool;
     } catch (e) {
       _logger.e('Failed to check permission flag', error: e);
@@ -212,7 +212,7 @@ class NotificationService {
   /// Mark notification permission as requested
   Future<void> _markPermissionAsRequested() async {
     try {
-      final appSettings = await Hive.openBox('app_settings');
+      final appSettings = await openEncryptedBox('app_settings');
       await appSettings.put('notificationPermissionRequested', true);
     } catch (e) {
       _logger.e('Failed to set permission flag', error: e);

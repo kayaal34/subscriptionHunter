@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -146,8 +145,8 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
           // Delete only previously created temp image from this page session.
           if (_tempImagePath != null && _tempImagePath != savedImage.path) {
             final previousTempFile = File(_tempImagePath!);
-            if (await previousTempFile.exists()) {
-              await previousTempFile.delete();
+            if (previousTempFile.existsSync()) {
+              previousTempFile.deleteSync();
             }
           }
 
@@ -255,13 +254,13 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
           SnackBar(
             content: Text(
               l10n.savedWithCheck,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
             ),
             backgroundColor: Colors.green,
-            duration: Duration(milliseconds: 1500),
+            duration: const Duration(milliseconds: 1500),
           ),
         );
         
@@ -797,7 +796,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                         )
                         : Text(
                           l10n.save,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,

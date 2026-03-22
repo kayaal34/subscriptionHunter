@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:subscription_tracker/core/services/hive_encryption_service.dart';
 import 'package:subscription_tracker/presentation/pages/home_page.dart';
 import 'package:subscription_tracker/presentation/providers/subscription_providers.dart';
 
@@ -16,7 +19,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _initApp();
+    unawaited(_initApp());
   }
 
   Future<void> _initApp() async {
@@ -25,7 +28,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       await ref.read(subscriptionBoxProvider.future);
       
       // Setup app settings box
-      final appBox = await Hive.openBox('app_settings');
+      final appBox = await openEncryptedBox('app_settings');
       final isFirstLaunch = appBox.get('permissionsRequested', defaultValue: false) == false;
       
       if (isFirstLaunch && mounted) {
@@ -44,8 +47,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (mounted) {
        // Navigate to Home
-       Navigator.of(context).pushReplacement(
-         MaterialPageRoute(builder: (_) => const HomePage()),
+       unawaited(
+         Navigator.of(context).pushReplacement(
+           MaterialPageRoute(builder: (_) => const HomePage()),
+         ),
        );
     }
   }
@@ -87,8 +92,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
   }
 
-  Future<void> _showPermissionsDialog(Box appBox) async {
-    return showDialog(
+  Future<void> _showPermissionsDialog(Box appBox) => showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) => AlertDialog(
@@ -119,10 +123,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               // Mark as requested but declined
-              appBox.put('permissionsRequested', true);
-              appBox.put('notificationsEnabled', false);
+              await appBox.put('permissionsRequested', true);
+              await appBox.put('notificationsEnabled', false);
+              if (!context.mounted) return;
               Navigator.of(context).pop();
             },
             child: const Text('Daha Sonra'),
@@ -131,7 +136,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             onPressed: () async {
               // Request permissions
               await _requestPermissions(appBox);
-              if (mounted) {
+              if (context.mounted) {
                 Navigator.of(context).pop();
               }
             },
@@ -140,7 +145,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         ],
       ),
     );
-  }
 
   Future<void> _requestPermissions(Box appBox) async {
     try {
@@ -151,7 +155,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       );
       
       // Request exact alarm permission
-      final exactAlarmGranted = await notificationService.checkExactAlarmPermission();
+      await notificationService.checkExactAlarmPermission();
       
       // Request battery optimization exemption (critical for Samsung devices)
       await notificationService.requestBatteryOptimizationExemption();
@@ -159,13 +163,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       // Initialize notifications if granted
       if (notificationGranted) {
         await notificationService.initialize();
-        appBox.put('notificationsEnabled', true);
+        await appBox.put('notificationsEnabled', true);
       } else {
-        appBox.put('notificationsEnabled', false);
+        await appBox.put('notificationsEnabled', false);
       }
       
       // Mark permissions as requested
-      appBox.put('permissionsRequested', true);
+      await appBox.put('permissionsRequested', true);
       
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -180,7 +184,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         );
       }
     } catch (e) {
-      appBox.put('permissionsRequested', true);
+      await appBox.put('permissionsRequested', true);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -195,10 +199,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   Widget build(BuildContext context) => Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Icon(
               Icons.subscriptions,
               size: 80,
@@ -224,15 +228,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 }
 
 class _PermissionItem extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
 
   const _PermissionItem({
     required this.icon,
     required this.title,
     required this.description,
   });
+  final IconData icon;
+  final String title;
+  final String description;
 
   @override
   Widget build(BuildContext context) => Row(

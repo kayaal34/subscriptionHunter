@@ -34,9 +34,7 @@ class CurrencyConverter {
   static Map<String, double> get exchangeRates => _exchangeRates;
 
   /// Update exchange rates from API
-  static void updateExchangeRates(Map<String, double> newRates) {
-    _exchangeRates = newRates;
-  }
+  static set exchangeRates(Map<String, double> newRates) => _exchangeRates = newRates;
 
   /// Convert amount from source currency to target currency
   static double convert({

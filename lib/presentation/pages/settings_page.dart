@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,7 @@ import 'package:subscription_tracker/presentation/providers/theme_provider.dart'
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
 import 'package:subscription_tracker/presentation/providers/subscription_providers.dart';
 import 'package:subscription_tracker/core/services/currency_service.dart';
+import 'package:subscription_tracker/core/services/hive_encryption_service.dart';
 import 'package:hive/hive.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
 
@@ -175,12 +178,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             children: [
               // Exchange Rates Status
               ref.watch(exchangeRatesProvider).when(
-                data: (rates) {
-                  return Column(
+                data: (rates) => Column(
                     children: [
                       // Last Update Time
                       FutureBuilder(
-                        future: Hive.openBox('exchange_rates'),
+                        future: openEncryptedBox('exchange_rates'),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             final box = snapshot.data!;
@@ -250,8 +252,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               color: Color(0xFF8E8E93),
                             ),
                           ),
-                          children: rates.entries.map((entry) {
-                            return ListTile(
+                          children: rates.entries.map((entry) => ListTile(
                               dense: true,
                               title: Text(
                                 '1 ${entry.key}',
@@ -266,8 +267,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 ),
                               ),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 32),
-                            );
-                          }).toList(),
+                            )).toList(),
                         ),
                       if (rates.isNotEmpty)
                         Divider(
@@ -300,7 +300,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                         onTap: () async {
                           // Show loading
-                          showDialog(
+                          unawaited(showDialog(
                             context: context,
                             barrierDismissible: false,
                             builder: (context) => Center(
@@ -323,7 +323,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 ),
                               ),
                             ),
-                          );
+                          ));
 
                           try {
                             // Clear cache first
@@ -334,41 +334,38 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             ref.invalidate(exchangeRatesProvider);
                             await ref.read(exchangeRatesProvider.future);
                             
-                            if (mounted) {
-                              Navigator.pop(context); // Close loading dialog
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    isTr ? '✓ Kurlar güncellendi' : '✓ Rates updated',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                            if (!mounted) return;
+                            Navigator.of(this.context).pop(); // Close loading dialog
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isTr ? '✓ Kurlar güncellendi' : '✓ Rates updated',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  backgroundColor: Colors.green,
-                                  duration: const Duration(seconds: 2),
                                 ),
-                              );
-                            }
+                                backgroundColor: Colors.green,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
                           } catch (e) {
-                            if (mounted) {
-                              Navigator.pop(context); // Close loading dialog
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    isTr ? '✗ Hata: $e' : '✗ Error: $e',
-                                  ),
-                                  backgroundColor: Colors.red,
+                            if (!mounted) return;
+                            Navigator.of(this.context).pop(); // Close loading dialog
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isTr ? '✗ Hata: $e' : '✗ Error: $e',
                                 ),
-                              );
-                            }
+                                backgroundColor: Colors.red,
+                              ),
+                            );
                           }
                         },
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       ),
                     ],
-                  );
-                },
+                  ),
                 loading: () => const ListTile(
                   leading: CircularProgressIndicator(),
                   title: Text('Loading rates...'),
@@ -528,16 +525,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 CupertinoButton(
                   onPressed: () async {
                     final appSettings = Hive.box('app_settings');
-                    appSettings.put('defaultNotificationHour', _notificationHour);
-                    appSettings.put('defaultNotificationMinute', _notificationMinute);
+                    await appSettings.put('defaultNotificationHour', _notificationHour);
+                    await appSettings.put('defaultNotificationMinute', _notificationMinute);
                     
                     // Reschedule all notifications with new time
                     await _rescheduleAllNotifications();
                     
+                    if (!context.mounted) return;
                     Navigator.pop(context);
                     
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(this.context).showSnackBar(
                         SnackBar(
                           content: Text(isTr 
                             ? 'Bildirim saati güncellendi ve tüm bildirimler yeniden zamanlandı' 

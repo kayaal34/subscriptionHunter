@@ -1,17 +1,24 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import '../constants/currencies.dart';
+import 'exchange_rate_cache_service.dart';
 
 class ExchangeRateService {
-  final Logger _logger;
-  final http.Client _httpClient;
 
   ExchangeRateService({
     Logger? logger,
     http.Client? httpClient,
+    ExchangeRateCacheService? cacheService,
   })  : _logger = logger ?? Logger(),
-        _httpClient = httpClient ?? http.Client();
+        _httpClient = httpClient ?? http.Client() {
+    _cacheService = cacheService ?? ExchangeRateCacheService(logger: _logger);
+  }
+  final Logger _logger;
+  final http.Client _httpClient;
+  late final ExchangeRateCacheService _cacheService;
 
   /// Fetch live exchange rates from API and update local rates
   /// Returns map of currency code to TRY exchange rate
@@ -43,14 +50,19 @@ class ExchangeRateService {
 
         _logger.i('Exchange rates fetched successfully: $exchangeRates');
         return exchangeRates;
-      } else {
-        _logger.w('Failed to fetch exchange rates: ${response.statusCode}');
-        return {};
       }
+
+      _logger.w('Failed to fetch exchange rates: ${response.statusCode}');
+      return _fallbackRates('primary API status code ${response.statusCode}');
+    } on SocketException catch (e) {
+      _logger.e('No internet connection while fetching exchange rates', error: e);
+      return _fallbackRates('primary API socket exception');
+    } on TimeoutException catch (e) {
+      _logger.e('Exchange rate request timed out', error: e);
+      return _fallbackRates('primary API timeout');
     } catch (e) {
       _logger.e('Error fetching exchange rates', error: e);
-      // Return empty map on error; app will use cached rates
-      return {};
+      return _fallbackRates('primary API generic error');
     }
   }
 
@@ -82,13 +94,31 @@ class ExchangeRateService {
 
         _logger.i('Exchange rates fetched (alternative): $exchangeRates');
         return exchangeRates;
-      } else {
-        _logger.w('Failed to fetch exchange rates (alternative): ${response.statusCode}');
-        return {};
       }
+
+      _logger.w('Failed to fetch exchange rates (alternative): ${response.statusCode}');
+      return _fallbackRates('alternative API status code ${response.statusCode}');
+    } on SocketException catch (e) {
+      _logger.e('No internet connection while fetching alternative exchange rates', error: e);
+      return _fallbackRates('alternative API socket exception');
+    } on TimeoutException catch (e) {
+      _logger.e('Alternative exchange rate request timed out', error: e);
+      return _fallbackRates('alternative API timeout');
     } catch (e) {
       _logger.e('Error fetching exchange rates (alternative)', error: e);
-      return {};
+      return _fallbackRates('alternative API generic error');
     }
+  }
+
+  Future<Map<String, double>> _fallbackRates(String reason) async {
+    final cachedRates = await _cacheService.getLastSuccessfulRates();
+    if (cachedRates != null && cachedRates.isNotEmpty) {
+      _logger.w('Using cached exchange rates fallback due to $reason');
+      return cachedRates;
+    }
+
+    final defaults = _cacheService.getDefaultRates();
+    _logger.e('No cached exchange rates found. Returning default 1.0 rates due to $reason');
+    return defaults;
   }
 }

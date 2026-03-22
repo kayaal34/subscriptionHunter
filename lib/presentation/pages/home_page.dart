@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:subscription_tracker/core/localization/strings.dart';
-import 'package:subscription_tracker/core/services/notification_service.dart';
 import 'package:subscription_tracker/domain/entities/subscription.dart';
 import 'package:subscription_tracker/presentation/pages/add_subscription_page.dart';
 import 'package:subscription_tracker/presentation/pages/settings_page.dart';
@@ -313,8 +312,7 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
     );
   }
 
-  Widget _buildSubscriptionDetails(BuildContext context, Subscription subscription) {
-    return Column(
+  Widget _buildSubscriptionDetails(BuildContext context, Subscription subscription) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Başlangıç Tarihi
@@ -432,11 +430,9 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
         ],
       ],
     );
-  }
 
   
-  void _showDeleteDialog(BuildContext context, Subscription subscription, WidgetRef ref) {
-    showDialog(
+  void _showDeleteDialog(BuildContext context, Subscription subscription, WidgetRef ref) => showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Sil?'),
@@ -463,6 +459,5 @@ class _HomePageContentState extends ConsumerState<_HomePageContent> {
         ],
       ),
     );
-  }
 }
 

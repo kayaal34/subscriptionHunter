@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:subscription_tracker/core/services/notification_service.dart';
+import 'package:subscription_tracker/core/services/hive_encryption_service.dart';
 import 'package:subscription_tracker/data/datasources/local_subscription_datasource.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
 import 'package:subscription_tracker/data/repositories/subscription_repository_impl.dart';
@@ -30,7 +31,7 @@ final subscriptionBoxProvider = FutureProvider<Box<SubscriptionModel>>((ref) asy
   // Previously we had logic here to check for broken data and clear the box.
   // Removed to prevent accidental data loss. Safe migration should be handled in Model getters.
 
-  return Hive.openBox<SubscriptionModel>(boxName);
+  return openEncryptedBox<SubscriptionModel>(boxName);
 });
 
 // Data Source Provider - handles both Web and Mobile

@@ -5,6 +5,7 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz_time;
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:subscription_tracker/core/services/hive_encryption_service.dart';
 import 'package:subscription_tracker/data/models/subscription_model.dart';
 import 'package:subscription_tracker/presentation/providers/theme_provider.dart';
 import 'package:subscription_tracker/presentation/providers/currency_provider.dart';
@@ -37,13 +38,17 @@ void main() async {
   // Initialize Hive
   await Hive.initFlutter();
   print('✅ Hive initialized');
+
+  final encryptionKey = await getHiveEncryptionKey();
+  final encryptionCipher = HiveAesCipher(encryptionKey);
+  print('✅ Hive encryption key ready');
   
   // Register adapters
   Hive.registerAdapter(SubscriptionModelAdapter());
   print('✅ Hive adapters registered');
 
   // Open app settings box before UI starts to allow safe synchronous reads.
-  await Hive.openBox('app_settings');
+  await Hive.openBox('app_settings', encryptionCipher: encryptionCipher);
   print('✅ app_settings box opened');
 
   print('🚀 Launching app...');
