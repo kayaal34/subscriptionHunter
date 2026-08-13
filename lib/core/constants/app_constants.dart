@@ -21,7 +21,7 @@ abstract final class AppConstants {
   /// repository root; publish it (GitHub Pages serves it for free) and put the
   /// resulting address here before submitting the listing.
   static const String privacyPolicyUrl =
-      'https://github.com/kodmod034/subscriptionHunter/blob/main/PRIVACY_POLICY.md';
+      'https://github.com/kayaal34/subscriptionHunter/blob/main/PRIVACY_POLICY.md';
 
   static const List<AppLanguage> languages = [
     AppLanguage(null, 'System'),
