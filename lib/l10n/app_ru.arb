@@ -1,0 +1,191 @@
+{
+  "@@locale": "ru",
+
+  "appTitle": "Subscription Hunter",
+
+  "navHome": "Главная",
+  "navStatistics": "Статистика",
+  "navSettings": "Настройки",
+
+  "actionSave": "Сохранить",
+  "actionCancel": "Отмена",
+  "actionDelete": "Удалить",
+  "actionEdit": "Изменить",
+  "actionRetry": "Повторить",
+  "actionClose": "Закрыть",
+  "actionAdd": "Добавить",
+  "actionUndo": "Отменить",
+  "actionChange": "Изменить",
+  "addCustomSubscription": "Создать свою подписку",
+
+  "homeMonthlyTotal": "В месяц",
+  "homeYearlyTotal": "В год",
+  "homeActiveCount": "Активные",
+  "homeUpcoming": "Ближайшие платежи",
+  "homeAllSubscriptions": "Все подписки",
+  "homeSearchHint": "Поиск подписок",
+
+  "homeEmptyTitle": "Подписок пока нет",
+  "homeEmptyMessage": "Добавьте первую подписку, чтобы отслеживать ежемесячные расходы.",
+  "homeEmptyAction": "Добавить подписку",
+
+  "homeNoUpcoming": "В ближайшие 30 дней платежей нет.",
+  "homeNoResults": "Нет подписок по запросу «{query}».",
+  "@homeNoResults": {
+    "placeholders": {"query": {"type": "String"}}
+  },
+
+  "dueToday": "Платёж сегодня",
+  "dueTomorrow": "Платёж завтра",
+  "dueInDays": "{count, plural, one{Через {count} день} few{Через {count} дня} many{Через {count} дней} other{Через {count} дня}}",
+  "@dueInDays": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "perMonth": "в месяц",
+  "perYear": "в год",
+  "cycleWeekly": "Еженедельно",
+  "cycleMonthly": "Ежемесячно",
+  "cycleQuarterly": "Раз в квартал",
+  "cycleYearly": "Ежегодно",
+
+  "addTitle": "Добавить подписку",
+  "editTitle": "Изменить подписку",
+  "addChoosePreset": "Популярные сервисы",
+  "addChoosePresetSubtitle": "Выберите сервис, чтобы поля заполнились автоматически.",
+  "addCustomService": "Свой",
+  "addSearchServices": "Поиск сервисов",
+  "addDetailsSection": "Детали",
+  "addReminderSection": "Напоминание",
+
+  "fieldName": "Название",
+  "fieldPrice": "Цена",
+  "fieldCurrency": "Валюта",
+  "fieldCycle": "Период оплаты",
+  "fieldFirstPayment": "Первый платёж",
+  "fieldCategory": "Категория",
+  "fieldNotes": "Заметки (необязательно)",
+  "fieldEndDate": "Дата окончания (необязательно)",
+
+  "reminderEnabled": "Напомнить перед платежом",
+  "reminderDaysBefore": "{count, plural, =0{В день платежа} one{За {count} день} few{За {count} дня} many{За {count} дней} other{За {count} дня}}",
+  "@reminderDaysBefore": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "reminderTime": "Время напоминания",
+
+  "validationNameRequired": "Введите название",
+  "validationPriceRequired": "Введите цену",
+  "validationPriceInvalid": "Введите корректную сумму больше нуля",
+
+  "detailNextPayment": "Следующий платёж",
+  "detailLastPayment": "Последний платёж",
+  "detailCostPerMonth": "Стоимость в месяц",
+  "detailCostPerYear": "Стоимость в год",
+  "detailNotes": "Заметки",
+  "detailStarted": "Начало",
+  "detailNeverBilled": "Платежей ещё не было",
+
+  "deleteConfirmTitle": "Удалить подписку?",
+  "deleteConfirmMessage": "{name} будет удалена навсегда. Это действие необратимо.",
+  "@deleteConfirmMessage": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "deletedSnack": "{name} удалена",
+  "@deletedSnack": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "savedSnack": "Сохранено",
+
+  "statsTitle": "Статистика",
+  "statsByCategory": "Расходы по категориям",
+  "statsMonthlyTrend": "Последние 6 месяцев",
+  "statsTotalMonthly": "Всего в месяц",
+  "statsTotalYearly": "Всего в год",
+  "statsAveragePerService": "В среднем на сервис",
+  "statsEmpty": "Добавьте подписку, чтобы увидеть структуру расходов.",
+  "statsMostExpensive": "Самая дорогая",
+
+  "settingsTitle": "Настройки",
+  "settingsAppearance": "Оформление",
+  "settingsTheme": "Тема",
+  "themeSystem": "Системная",
+  "themeLight": "Светлая",
+  "themeDark": "Тёмная",
+  "settingsLanguage": "Язык",
+  "settingsCurrency": "Валюта по умолчанию",
+  "settingsNotifications": "Уведомления",
+  "settingsNotificationsEnabled": "Напоминания о платежах",
+  "settingsNotificationsSubtitle": "Уведомлять перед продлением подписки",
+  "settingsNotificationsBlocked": "Уведомления отключены в настройках системы.",
+  "settingsData": "Данные",
+  "settingsEraseAll": "Удалить все данные",
+  "settingsEraseConfirm": "Удалить все подписки? Это действие необратимо.",
+  "settingsAbout": "О приложении",
+  "settingsVersion": "Версия",
+
+  "onboardingTitle1": "Все подписки в одном месте",
+  "onboardingBody1": "Добавьте сервисы и сразу видите реальную стоимость в месяц и в год.",
+  "onboardingTitle2": "Не пропустите продление",
+  "onboardingBody2": "Напоминание перед каждым списанием — пробный период не станет сюрпризом.",
+  "onboardingTitle3": "Понимайте, куда уходят деньги",
+  "onboardingBody3": "Разбивка по категориям и помесячный тренд показывают, что накапливается.",
+
+  "onboardingConsentTitle": "Перед началом",
+  "onboardingConsentIntro": "Два коротких шага — и всё готово.",
+  "onboardingPrivacyLabel": "Я согласен с обработкой моих данных",
+  "onboardingPrivacyDetail": "Подписки хранятся только на этом устройстве. Ничего не выгружается, аккаунт не нужен, аналитика не собирается. Логотипы брендов загружаются через сервис фавиконов Google, туда передаётся только доменное имя сервиса.",
+  "onboardingNotificationsTitle": "Напоминания о платежах",
+  "onboardingNotificationsDetail": "Разрешите уведомления, чтобы напомнить вам перед продлением подписки. Это можно изменить позже в настройках.",
+  "onboardingAllowNotifications": "Разрешить уведомления",
+  "onboardingNotificationsGranted": "Уведомления включены",
+  "onboardingNotificationsSkipped": "Продолжить без напоминаний",
+  "onboardingNext": "Далее",
+  "onboardingStart": "Начать",
+  "onboardingConsentRequired": "Примите уведомление о данных, чтобы продолжить.",
+
+  "statsViewCategories": "Категории",
+  "statsViewTrend": "Тренд",
+
+  "settingsSupport": "Связь и поддержка",
+  "settingsSupportSubtitle": "Сообщить о проблеме или предложить идею",
+  "settingsSupportUnavailable": "Почтовое приложение не найдено. Напишите на {email}",
+  "@settingsSupportUnavailable": {
+    "placeholders": {"email": {"type": "String"}}
+  },
+
+  "categoryStreaming": "Стриминг",
+  "categoryMusic": "Музыка",
+  "categoryGaming": "Игры",
+  "categorySoftware": "Софт",
+  "categoryAi": "ИИ",
+  "categoryCloud": "Облако",
+  "categoryNews": "Новости",
+  "categoryFitness": "Фитнес",
+  "categoryEducation": "Обучение",
+  "categoryShopping": "Покупки",
+  "categoryFinance": "Финансы",
+  "categoryOther": "Другое",
+
+  "notificationTitle": "{name} скоро продлится",
+  "@notificationTitle": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "notificationBodyToday": "{name} спишет {amount} сегодня.",
+  "@notificationBodyToday": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"}
+    }
+  },
+  "notificationBodyUpcoming": "{name} спишет {amount} {date}.",
+  "@notificationBodyUpcoming": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"},
+      "date": {"type": "String"}
+    }
+  },
+  "notificationChannelName": "Напоминания о платежах",
+  "notificationChannelDescription": "Напоминания перед продлением подписки"
+}

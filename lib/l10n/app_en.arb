@@ -1,0 +1,193 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Subscription Hunter",
+  "@appTitle": {"description": "Application name shown in the app bar"},
+
+  "navHome": "Home",
+  "navStatistics": "Statistics",
+  "navSettings": "Settings",
+
+  "actionSave": "Save",
+  "actionCancel": "Cancel",
+  "actionDelete": "Delete",
+  "actionEdit": "Edit",
+  "actionRetry": "Retry",
+  "actionClose": "Close",
+  "actionAdd": "Add",
+  "actionUndo": "Undo",
+  "actionChange": "Change",
+  "addCustomSubscription": "Create a custom subscription",
+
+  "homeMonthlyTotal": "Monthly",
+  "homeYearlyTotal": "Yearly",
+  "homeActiveCount": "Active",
+  "homeUpcoming": "Upcoming payments",
+  "homeAllSubscriptions": "All subscriptions",
+  "homeSearchHint": "Search subscriptions",
+
+  "homeEmptyTitle": "No subscriptions yet",
+  "homeEmptyMessage": "Add your first subscription to start tracking what you spend each month.",
+  "homeEmptyAction": "Add subscription",
+
+  "homeNoUpcoming": "Nothing due in the next 30 days.",
+  "homeNoResults": "No subscriptions match \"{query}\".",
+  "@homeNoResults": {
+    "placeholders": {"query": {"type": "String"}}
+  },
+
+  "dueToday": "Due today",
+  "dueTomorrow": "Due tomorrow",
+  "dueInDays": "{count, plural, =1{Due in 1 day} other{Due in {count} days}}",
+  "@dueInDays": {
+    "description": "Countdown to the next charge",
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "perMonth": "per month",
+  "perYear": "per year",
+  "cycleWeekly": "Weekly",
+  "cycleMonthly": "Monthly",
+  "cycleQuarterly": "Quarterly",
+  "cycleYearly": "Yearly",
+
+  "addTitle": "Add subscription",
+  "editTitle": "Edit subscription",
+  "addChoosePreset": "Popular services",
+  "addChoosePresetSubtitle": "Pick a service to fill in the details automatically.",
+  "addCustomService": "Custom",
+  "addSearchServices": "Search services",
+  "addDetailsSection": "Details",
+  "addReminderSection": "Reminder",
+
+  "fieldName": "Name",
+  "fieldPrice": "Price",
+  "fieldCurrency": "Currency",
+  "fieldCycle": "Billing cycle",
+  "fieldFirstPayment": "First payment",
+  "fieldCategory": "Category",
+  "fieldNotes": "Notes (optional)",
+  "fieldEndDate": "Ends on (optional)",
+
+  "reminderEnabled": "Remind me before payment",
+  "reminderDaysBefore": "{count, plural, =0{On the payment day} =1{1 day before} other{{count} days before}}",
+  "@reminderDaysBefore": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "reminderTime": "Reminder time",
+
+  "validationNameRequired": "Enter a name",
+  "validationPriceRequired": "Enter a price",
+  "validationPriceInvalid": "Enter a valid amount greater than zero",
+
+  "detailNextPayment": "Next payment",
+  "detailLastPayment": "Last payment",
+  "detailCostPerMonth": "Cost per month",
+  "detailCostPerYear": "Cost per year",
+  "detailNotes": "Notes",
+  "detailStarted": "Started",
+  "detailNeverBilled": "Not billed yet",
+
+  "deleteConfirmTitle": "Delete subscription?",
+  "deleteConfirmMessage": "{name} will be removed permanently. This cannot be undone.",
+  "@deleteConfirmMessage": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "deletedSnack": "{name} deleted",
+  "@deletedSnack": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "savedSnack": "Saved",
+
+  "statsTitle": "Statistics",
+  "statsByCategory": "Spending by category",
+  "statsMonthlyTrend": "Last 6 months",
+  "statsTotalMonthly": "Monthly total",
+  "statsTotalYearly": "Yearly total",
+  "statsAveragePerService": "Average per service",
+  "statsEmpty": "Add a subscription to see your spending breakdown.",
+  "statsMostExpensive": "Most expensive",
+
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsLanguage": "Language",
+  "settingsCurrency": "Default currency",
+  "settingsNotifications": "Notifications",
+  "settingsNotificationsEnabled": "Payment reminders",
+  "settingsNotificationsSubtitle": "Get notified before a subscription renews",
+  "settingsNotificationsBlocked": "Notifications are turned off in system settings.",
+  "settingsData": "Data",
+  "settingsEraseAll": "Erase all data",
+  "settingsEraseConfirm": "Delete every subscription? This cannot be undone.",
+  "settingsAbout": "About",
+  "settingsVersion": "Version",
+
+  "onboardingTitle1": "Every subscription in one place",
+  "onboardingBody1": "Add what you pay for and see the real monthly and yearly cost at a glance.",
+  "onboardingTitle2": "Never miss a renewal",
+  "onboardingBody2": "Get a reminder before each charge, so a free trial never turns into a surprise.",
+  "onboardingTitle3": "Know where the money goes",
+  "onboardingBody3": "Category breakdowns and monthly trends show exactly what is adding up.",
+
+  "onboardingConsentTitle": "Before you start",
+  "onboardingConsentIntro": "Two quick things, then you are ready.",
+  "onboardingPrivacyLabel": "I agree to how my data is handled",
+  "onboardingPrivacyDetail": "Your subscriptions are stored only on this device. Nothing is uploaded, no account is required, and no analytics are collected. Brand logos are fetched from Google's favicon service, which receives only the service's domain name.",
+  "onboardingNotificationsTitle": "Payment reminders",
+  "onboardingNotificationsDetail": "Allow notifications so we can remind you before a subscription renews. You can change this later in Settings.",
+  "onboardingAllowNotifications": "Allow notifications",
+  "onboardingNotificationsGranted": "Notifications enabled",
+  "onboardingNotificationsSkipped": "Continue without reminders",
+  "onboardingNext": "Next",
+  "onboardingStart": "Get started",
+  "onboardingConsentRequired": "Please accept the data notice to continue.",
+
+  "statsViewCategories": "Categories",
+  "statsViewTrend": "Trend",
+
+  "settingsSupport": "Contact & support",
+  "settingsSupportSubtitle": "Report a problem or send a suggestion",
+  "settingsSupportUnavailable": "No email app found. Write to {email}",
+  "@settingsSupportUnavailable": {
+    "placeholders": {"email": {"type": "String"}}
+  },
+
+  "categoryStreaming": "Streaming",
+  "categoryMusic": "Music",
+  "categoryGaming": "Gaming",
+  "categorySoftware": "Software",
+  "categoryAi": "AI",
+  "categoryCloud": "Cloud",
+  "categoryNews": "News",
+  "categoryFitness": "Fitness",
+  "categoryEducation": "Education",
+  "categoryShopping": "Shopping",
+  "categoryFinance": "Finance",
+  "categoryOther": "Other",
+
+  "notificationTitle": "{name} renews soon",
+  "@notificationTitle": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "notificationBodyToday": "{name} charges {amount} today.",
+  "@notificationBodyToday": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"}
+    }
+  },
+  "notificationBodyUpcoming": "{name} charges {amount} on {date}.",
+  "@notificationBodyUpcoming": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"},
+      "date": {"type": "String"}
+    }
+  },
+  "notificationChannelName": "Payment reminders",
+  "notificationChannelDescription": "Reminders before a subscription renews"
+}

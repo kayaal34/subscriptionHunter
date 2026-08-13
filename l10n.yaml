@@ -1,0 +1,9 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+# Generated sources land in lib/ rather than a synthetic package so they can be
+# imported with a normal relative path and inspected during debugging.
+output-dir: lib/l10n/generated
+# Getters are non-null, so screens use `l10n.navHome` with no `!` noise.
+nullable-getter: false

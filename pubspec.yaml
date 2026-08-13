@@ -1,0 +1,95 @@
+name: subscription_tracker
+description: "Subscription Hunter - offline-first subscription tracker with reminders, analytics and multi-currency support."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  cached_network_image: ^3.4.1
+  collection: ^1.19.1
+  # NOTE: drift/drift_dev are capped below 2.34.2 on purpose.
+  # drift_dev >=2.34.1+1 requires analyzer ^13, which requires meta ^1.18.0,
+  # but the pinned Flutter SDK (3.38.5) ships meta 1.17.0. Raising this cap
+  # will break `dart run build_runner` until Flutter itself bumps meta.
+  drift: '>=2.28.0 <2.34.2'
+  # Bundles a modern SQLite binary instead of relying on the OS one.
+  # Matters here: the target device is Android 10 (API 29) with an old system SQLite.
+  sqlite3_flutter_libs: ^0.5.26
+  equatable: ^2.1.0
+  fl_chart: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_animate: ^4.5.2
+  flutter_local_notifications: ^22.3.0
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.3.2
+  flutter_svg: ^2.3.0
+  flutter_timezone: ^5.1.0
+  go_router: ^17.5.0
+  intl: ^0.20.2
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  # NOTE: permission_handler was removed deliberately.
+  # flutter_local_notifications 22 exposes requestNotificationsPermission()
+  # and requestExactAlarmsPermission() directly, so the extra dependency was
+  # redundant - and permission_handler_android 14.0.0 ships a build script
+  # that fails to configure under Flutter's Gradle plugin loader.
+  shared_preferences: ^2.5.5
+  timezone: ^0.11.1
+  uuid: ^4.6.0
+  cupertino_icons: ^1.0.9
+  shimmer: ^3.0.0
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  # Capped below 2.5: newer build_runner AOT-compiles its build script with
+  # `dart compile`, which refuses to run while any package in the graph ships
+  # native build hooks. path_provider_foundation (iOS/macOS only, unused here)
+  # pulls in objective_c, which does exactly that.
+  build_runner: '>=2.4.13 <2.5.0'
+  drift_dev: '>=2.28.0 <2.34.2'
+  flutter_launcher_icons: ^0.14.4
+  flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.7
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+
+# Launcher icon. Regenerate after changing assets/icon/*:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/icon/icon.png"
+  # Adaptive icons (API 26+) are the foreground mark on a flat brand colour,
+  # so the system can mask it to whatever shape the launcher uses.
+  adaptive_icon_background: "#4A378C"
+  adaptive_icon_foreground: "assets/icon/icon_foreground.png"
+  min_sdk_android: 24
+
+# Launch screen shown while the Dart VM boots. Regenerate with:
+#   dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#4A378C"
+  image: assets/icon/icon_foreground.png
+  android_12:
+    color: "#4A378C"
+    image: assets/icon/icon_foreground.png
+    icon_background_color: "#4A378C"
+  android: true
+  ios: false
+  web: false
+
+flutter:
+  uses-material-design: true
+  # Enables gen_l10n (see l10n.yaml).
+  generate: true
+
+  assets:
+    - assets/logos/

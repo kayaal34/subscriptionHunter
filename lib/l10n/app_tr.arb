@@ -1,0 +1,191 @@
+{
+  "@@locale": "tr",
+
+  "appTitle": "Subscription Hunter",
+
+  "navHome": "Ana Sayfa",
+  "navStatistics": "İstatistikler",
+  "navSettings": "Ayarlar",
+
+  "actionSave": "Kaydet",
+  "actionCancel": "İptal",
+  "actionDelete": "Sil",
+  "actionEdit": "Düzenle",
+  "actionRetry": "Tekrar dene",
+  "actionClose": "Kapat",
+  "actionAdd": "Ekle",
+  "actionUndo": "Geri al",
+  "actionChange": "Değiştir",
+  "addCustomSubscription": "Özel abonelik oluştur",
+
+  "homeMonthlyTotal": "Aylık",
+  "homeYearlyTotal": "Yıllık",
+  "homeActiveCount": "Aktif",
+  "homeUpcoming": "Yaklaşan ödemeler",
+  "homeAllSubscriptions": "Tüm abonelikler",
+  "homeSearchHint": "Abonelik ara",
+
+  "homeEmptyTitle": "Henüz abonelik yok",
+  "homeEmptyMessage": "Her ay ne kadar harcadığını takip etmeye başlamak için ilk aboneliğini ekle.",
+  "homeEmptyAction": "Abonelik ekle",
+
+  "homeNoUpcoming": "Önümüzdeki 30 gün içinde ödeme yok.",
+  "homeNoResults": "\"{query}\" ile eşleşen abonelik yok.",
+  "@homeNoResults": {
+    "placeholders": {"query": {"type": "String"}}
+  },
+
+  "dueToday": "Bugün ödenecek",
+  "dueTomorrow": "Yarın ödenecek",
+  "dueInDays": "{count, plural, =1{1 gün sonra} other{{count} gün sonra}}",
+  "@dueInDays": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+
+  "perMonth": "aylık",
+  "perYear": "yıllık",
+  "cycleWeekly": "Haftalık",
+  "cycleMonthly": "Aylık",
+  "cycleQuarterly": "3 Aylık",
+  "cycleYearly": "Yıllık",
+
+  "addTitle": "Abonelik ekle",
+  "editTitle": "Aboneliği düzenle",
+  "addChoosePreset": "Popüler servisler",
+  "addChoosePresetSubtitle": "Bilgilerin otomatik dolması için bir servis seç.",
+  "addCustomService": "Özel",
+  "addSearchServices": "Servis ara",
+  "addDetailsSection": "Detaylar",
+  "addReminderSection": "Hatırlatma",
+
+  "fieldName": "Ad",
+  "fieldPrice": "Fiyat",
+  "fieldCurrency": "Para birimi",
+  "fieldCycle": "Ödeme döngüsü",
+  "fieldFirstPayment": "İlk ödeme",
+  "fieldCategory": "Kategori",
+  "fieldNotes": "Notlar (isteğe bağlı)",
+  "fieldEndDate": "Bitiş tarihi (isteğe bağlı)",
+
+  "reminderEnabled": "Ödemeden önce hatırlat",
+  "reminderDaysBefore": "{count, plural, =0{Ödeme günü} =1{1 gün önce} other{{count} gün önce}}",
+  "@reminderDaysBefore": {
+    "placeholders": {"count": {"type": "int"}}
+  },
+  "reminderTime": "Hatırlatma saati",
+
+  "validationNameRequired": "Bir ad gir",
+  "validationPriceRequired": "Bir fiyat gir",
+  "validationPriceInvalid": "Sıfırdan büyük geçerli bir tutar gir",
+
+  "detailNextPayment": "Sonraki ödeme",
+  "detailLastPayment": "Son ödeme",
+  "detailCostPerMonth": "Aylık maliyet",
+  "detailCostPerYear": "Yıllık maliyet",
+  "detailNotes": "Notlar",
+  "detailStarted": "Başlangıç",
+  "detailNeverBilled": "Henüz ödeme alınmadı",
+
+  "deleteConfirmTitle": "Abonelik silinsin mi?",
+  "deleteConfirmMessage": "{name} kalıcı olarak silinecek. Bu işlem geri alınamaz.",
+  "@deleteConfirmMessage": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "deletedSnack": "{name} silindi",
+  "@deletedSnack": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "savedSnack": "Kaydedildi",
+
+  "statsTitle": "İstatistikler",
+  "statsByCategory": "Kategoriye göre harcama",
+  "statsMonthlyTrend": "Son 6 ay",
+  "statsTotalMonthly": "Aylık toplam",
+  "statsTotalYearly": "Yıllık toplam",
+  "statsAveragePerService": "Servis başına ortalama",
+  "statsEmpty": "Harcama dağılımını görmek için bir abonelik ekle.",
+  "statsMostExpensive": "En pahalı",
+
+  "settingsTitle": "Ayarlar",
+  "settingsAppearance": "Görünüm",
+  "settingsTheme": "Tema",
+  "themeSystem": "Sistem",
+  "themeLight": "Açık",
+  "themeDark": "Koyu",
+  "settingsLanguage": "Dil",
+  "settingsCurrency": "Varsayılan para birimi",
+  "settingsNotifications": "Bildirimler",
+  "settingsNotificationsEnabled": "Ödeme hatırlatmaları",
+  "settingsNotificationsSubtitle": "Abonelik yenilenmeden önce bildirim al",
+  "settingsNotificationsBlocked": "Bildirimler sistem ayarlarından kapatılmış.",
+  "settingsData": "Veriler",
+  "settingsEraseAll": "Tüm verileri sil",
+  "settingsEraseConfirm": "Tüm abonelikler silinsin mi? Bu işlem geri alınamaz.",
+  "settingsAbout": "Hakkında",
+  "settingsVersion": "Sürüm",
+
+  "onboardingTitle1": "Tüm abonelikler tek yerde",
+  "onboardingBody1": "Ödediğin servisleri ekle, aylık ve yıllık gerçek maliyeti tek bakışta gör.",
+  "onboardingTitle2": "Hiçbir yenilemeyi kaçırma",
+  "onboardingBody2": "Her tahsilattan önce hatırlatma al; ücretsiz deneme sürprize dönüşmesin.",
+  "onboardingTitle3": "Paranın nereye gittiğini bil",
+  "onboardingBody3": "Kategori dağılımı ve aylık trendler neyin biriktiğini net gösterir.",
+
+  "onboardingConsentTitle": "Başlamadan önce",
+  "onboardingConsentIntro": "İki kısa adım, sonra hazırsın.",
+  "onboardingPrivacyLabel": "Verilerimin işlenmesini kabul ediyorum",
+  "onboardingPrivacyDetail": "Abonelikleriniz yalnızca bu cihazda saklanır. Hiçbir veri yüklenmez, hesap gerekmez ve analiz toplanmaz. Marka logoları Google'ın favicon servisinden çekilir; oraya yalnızca servisin alan adı gider.",
+  "onboardingNotificationsTitle": "Ödeme hatırlatmaları",
+  "onboardingNotificationsDetail": "Abonelik yenilenmeden önce hatırlatabilmemiz için bildirimlere izin ver. Bunu sonradan Ayarlar'dan değiştirebilirsin.",
+  "onboardingAllowNotifications": "Bildirimlere izin ver",
+  "onboardingNotificationsGranted": "Bildirimler açık",
+  "onboardingNotificationsSkipped": "Hatırlatma olmadan devam et",
+  "onboardingNext": "Devam",
+  "onboardingStart": "Başla",
+  "onboardingConsentRequired": "Devam etmek için veri bildirimini kabul et.",
+
+  "statsViewCategories": "Kategoriler",
+  "statsViewTrend": "Trend",
+
+  "settingsSupport": "İletişim & Destek",
+  "settingsSupportSubtitle": "Hata bildir veya öneride bulun",
+  "settingsSupportUnavailable": "E-posta uygulaması bulunamadı. {email} adresine yazabilirsin",
+  "@settingsSupportUnavailable": {
+    "placeholders": {"email": {"type": "String"}}
+  },
+
+  "categoryStreaming": "Yayın",
+  "categoryMusic": "Müzik",
+  "categoryGaming": "Oyun",
+  "categorySoftware": "Yazılım",
+  "categoryAi": "Yapay Zeka",
+  "categoryCloud": "Bulut",
+  "categoryNews": "Haber",
+  "categoryFitness": "Spor",
+  "categoryEducation": "Eğitim",
+  "categoryShopping": "Alışveriş",
+  "categoryFinance": "Finans",
+  "categoryOther": "Diğer",
+
+  "notificationTitle": "{name} yakında yenileniyor",
+  "@notificationTitle": {
+    "placeholders": {"name": {"type": "String"}}
+  },
+  "notificationBodyToday": "{name} bugün {amount} tahsil edecek.",
+  "@notificationBodyToday": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"}
+    }
+  },
+  "notificationBodyUpcoming": "{name} {date} tarihinde {amount} tahsil edecek.",
+  "@notificationBodyUpcoming": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "amount": {"type": "String"},
+      "date": {"type": "String"}
+    }
+  },
+  "notificationChannelName": "Ödeme hatırlatmaları",
+  "notificationChannelDescription": "Abonelik yenilenmeden önceki hatırlatmalar"
+}
