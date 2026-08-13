@@ -6,12 +6,6 @@ Subscription Hunter is built to work without an account and without sending your
 data anywhere. This page explains exactly what the app stores, what leaves your
 device, and what it does not do.
 
-> **Publishing note (for the developer, remove before hosting):** Google Play
-> requires a *publicly reachable URL* on the store listing — an in-app screen is
-> not accepted on its own. Publish this file (GitHub Pages serves it for free)
-> and put the resulting address in both the Play Console listing and
-> `AppConstants.privacyPolicyUrl`.
-
 ## What the app stores
 
 Everything you enter — subscription names, prices, billing dates, categories,
