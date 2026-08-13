@@ -6,8 +6,8 @@ import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/money_formatter.dart';
 import '../../../../shared/widgets/soft_card.dart';
-import '../../../../shared/widgets/subscription_logo.dart';
 import '../providers/subscription_providers.dart';
+import 'subscription_avatar.dart';
 
 /// Horizontally scrolling "what is about to be charged" strip.
 class UpcomingStrip extends StatelessWidget {
@@ -52,15 +52,9 @@ class UpcomingStrip extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          SubscriptionLogo(
-                            monogram: bill.subscription.name.isEmpty
-                                ? '?'
-                                : bill.subscription.name
-                                      .substring(0, 1)
-                                      .toUpperCase(),
-                            brandColor: bill.subscription.brandColor,
-                            assetPath: bill.subscription.logoAsset,
-                            size: 32,
+                          SubscriptionAvatar(
+                            subscription: bill.subscription,
+                            size: 34,
                           ),
                           const SizedBox(width: AppSpacing.sm),
                           Expanded(

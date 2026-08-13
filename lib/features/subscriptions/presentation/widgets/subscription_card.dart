@@ -4,8 +4,8 @@ import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/money_formatter.dart';
 import '../../../../shared/widgets/soft_card.dart';
-import '../../../../shared/widgets/subscription_logo.dart';
 import '../../domain/subscription.dart';
+import 'subscription_avatar.dart';
 
 /// One row in the subscription list.
 class SubscriptionCard extends StatelessWidget {
@@ -41,12 +41,7 @@ class SubscriptionCard extends StatelessWidget {
           Hero(
             // Shared element into the detail page.
             tag: 'logo-${subscription.id}',
-            child: SubscriptionLogo(
-              monogram: _monogramFor(subscription.name),
-              brandColor: subscription.brandColor,
-              assetPath: subscription.logoAsset,
-              logoUrl: subscription.logoUrl,
-            ),
+            child: SubscriptionAvatar(subscription: subscription),
           ),
           const SizedBox(width: AppSpacing.lg),
           Expanded(
@@ -111,18 +106,3 @@ class SubscriptionCard extends StatelessWidget {
   }
 }
 
-/// Up to two initials from the service name, used when no preset monogram is
-/// available (custom subscriptions).
-String _monogramFor(String name) {
-  final words = name
-      .trim()
-      .split(RegExp(r'\s+'))
-      .where((w) => w.isNotEmpty)
-      .toList();
-  if (words.isEmpty) return '?';
-  if (words.length == 1) {
-    final word = words.first;
-    return word.substring(0, word.length >= 2 ? 2 : 1).toUpperCase();
-  }
-  return (words[0][0] + words[1][0]).toUpperCase();
-}

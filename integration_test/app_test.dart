@@ -55,6 +55,11 @@ void main() {
       if (finder.evaluate().isNotEmpty) break;
     }
     expect(finder, findsWidgets, reason: 'timed out waiting for $finder');
+    // Existing is not the same as reachable: with the preset grid grouped by
+    // category, anything below the first section starts off-screen and tap()
+    // fails with "would not hit test on the specified widget".
+    await tester.ensureVisible(finder.first);
+    await tester.pump(const Duration(milliseconds: 300));
     await tester.tap(finder.first);
   }
 

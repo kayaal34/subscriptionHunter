@@ -390,6 +390,82 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get privacyTitle => 'Gizlilik Politikası';
+
+  @override
+  String get privacyUpdated => 'Son güncelleme: 13 Ağustos 2026';
+
+  @override
+  String get privacyIntro =>
+      'Subscription Hunter, hesap gerektirmeden ve verilerinizi hiçbir yere göndermeden çalışacak şekilde tasarlandı. Bu sayfa uygulamanın tam olarak neyi sakladığını, cihazınızdan neyin çıktığını ve neleri yapmadığını anlatır.';
+
+  @override
+  String get privacyStorageTitle => 'Uygulamanın sakladıkları';
+
+  @override
+  String get privacyStorageBody =>
+      'Girdiğiniz her şey - abonelik adları, fiyatlar, ödeme tarihleri, kategoriler, notlar ve hatırlatma ayarları - cihazınızdaki uygulamaya özel alanda bir veritabanı dosyasına yazılır. Hesap yok, giriş yok, bulut senkronizasyonu yok. Bunların bir kopyası bize hiçbir zaman ulaşmaz.';
+
+  @override
+  String get privacyNetworkTitle => 'Cihazınızdan çıkan tek şey';
+
+  @override
+  String get privacyNetworkBody =>
+      'Yalnızca şu: marka logosunu gösterebilmek için uygulama, Google\'ın favicon servisinden herkese açık bir sitenin simgesini ister, örneğin netflix.com. Bu istek yalnızca servisin alan adını içerir - abonelik fiyatlarınız, kişisel verileriniz veya sizi ya da cihazınızı tanımlayan hiçbir bilgi gitmez. Çevrimdışıyken uygulama bunun yerine renkli bir kutucuk çizer ve normal çalışır.';
+
+  @override
+  String get privacyNotificationsTitle => 'Bildirimler';
+
+  @override
+  String get privacyNotificationsBody =>
+      'Ödeme hatırlatmaları cihazınızın kendi alarm sistemi tarafından zamanlanır. Girdiğiniz verilerden yerel olarak üretilir ve hiçbir sunucudan geçmez.';
+
+  @override
+  String get privacySupportTitle => 'Destek ile iletişime geçerseniz';
+
+  @override
+  String get privacySupportBody =>
+      'Destek seçeneği, göndermeden önce okuyup düzenleyebileceğiniz bir mesajla kendi e-posta uygulamanızı açar. Sorunun yeniden üretilebilmesi için uygulama sürümü ve Android sürümünüz önceden doldurulur. Gönderirseniz e-posta adresiniz ve yazdıklarınız bize ulaşır; yalnızca size yanıt vermek için kullanılır.';
+
+  @override
+  String get privacyNoTrackingTitle => 'Uygulamanın yapmadıkları';
+
+  @override
+  String get privacyNoTrackingBody =>
+      'Analitik yok, reklam yok, izleme veya profilleme yok, üçüncü taraf pazarlama SDK\'sı yok, veri satışı veya paylaşımı yok. Satılacak bir şey de yok - veri zaten bize hiç ulaşmıyor.';
+
+  @override
+  String get privacyControlTitle => 'Verileriniz üzerindeki kontrolünüz';
+
+  @override
+  String get privacyControlBody =>
+      'Ayarlar\'daki Tüm verileri sil seçeneğiyle her şeyi istediğiniz an silebilirsiniz. Uygulamayı kaldırmak da veritabanını ve ayarları cihazınızdan kalıcı olarak siler. Başka hiçbir yerde kopyası bulunmadığı için silme anında ve geri dönüşsüzdür.';
+
+  @override
+  String get privacyChildrenTitle => 'Çocuklar';
+
+  @override
+  String get privacyChildrenBody =>
+      'Uygulama genel amaçlı bir bütçe takip aracıdır, 13 yaş altı çocuklara yönelik değildir ve onlardan bilerek veri toplanmaz.';
+
+  @override
+  String get privacyContactTitle => 'İletişim';
+
+  @override
+  String privacyContactBody(String email) {
+    return 'Bu politikayla ilgili sorularınızı $email adresine gönderebilirsiniz.';
+  }
+
+  @override
+  String get settingsPrivacy => 'Gizlilik Politikası';
+
+  @override
+  String get settingsPrivacySubtitle => 'Ne saklanıyor, cihazdan ne çıkıyor';
+
+  @override
+  String get privacyViewOnline => 'Çevrimiçi görüntüle';
+
+  @override
   String get categoryStreaming => 'Yayın';
 
   @override

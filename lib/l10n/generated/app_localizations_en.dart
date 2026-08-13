@@ -390,6 +390,83 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get privacyTitle => 'Privacy Policy';
+
+  @override
+  String get privacyUpdated => 'Last updated: 13 August 2026';
+
+  @override
+  String get privacyIntro =>
+      'Subscription Hunter is built to work without an account and without sending your data anywhere. This page explains exactly what the app stores, what leaves your device, and what it does not do.';
+
+  @override
+  String get privacyStorageTitle => 'What the app stores';
+
+  @override
+  String get privacyStorageBody =>
+      'Everything you enter - subscription names, prices, billing dates, categories, notes and reminder settings - is written to a database file inside the app\'s private storage on your device. There is no account, no sign-in and no cloud sync. We never receive a copy.';
+
+  @override
+  String get privacyNetworkTitle => 'What leaves your device';
+
+  @override
+  String get privacyNetworkBody =>
+      'One thing only: to show a brand logo, the app asks Google\'s favicon service for the icon of a public website, for example netflix.com. That request contains the service\'s domain name and nothing else - no subscription prices, no personal data, and no identifier for you or your device. Offline, the app draws a coloured tile instead and works normally.';
+
+  @override
+  String get privacyNotificationsTitle => 'Notifications';
+
+  @override
+  String get privacyNotificationsBody =>
+      'Payment reminders are scheduled by your device\'s own alarm system. They are generated locally from the data you entered and never pass through a server.';
+
+  @override
+  String get privacySupportTitle => 'If you contact support';
+
+  @override
+  String get privacySupportBody =>
+      'The support option opens your own email app with a message you can read and edit before sending. It is pre-filled with the app version and your Android version so a problem can be reproduced. If you send it, we receive your email address and what you wrote, and use them only to answer you.';
+
+  @override
+  String get privacyNoTrackingTitle => 'What the app does not do';
+
+  @override
+  String get privacyNoTrackingBody =>
+      'No analytics, no advertising, no tracking or profiling, no third-party marketing SDKs, and no selling or sharing of data. There is nothing to sell - the data never reaches us.';
+
+  @override
+  String get privacyControlTitle => 'Your control over your data';
+
+  @override
+  String get privacyControlBody =>
+      'You can delete everything at any time from Settings, using Erase all data. Uninstalling the app also removes its database and settings from your device permanently. Because no copy exists anywhere else, deletion is immediate and final.';
+
+  @override
+  String get privacyChildrenTitle => 'Children';
+
+  @override
+  String get privacyChildrenBody =>
+      'The app is a general-purpose budgeting tool, is not directed at children under 13, and no data is knowingly collected from them.';
+
+  @override
+  String get privacyContactTitle => 'Contact';
+
+  @override
+  String privacyContactBody(String email) {
+    return 'Questions about this policy can be sent to $email.';
+  }
+
+  @override
+  String get settingsPrivacy => 'Privacy Policy';
+
+  @override
+  String get settingsPrivacySubtitle =>
+      'What is stored and what leaves your device';
+
+  @override
+  String get privacyViewOnline => 'View online';
+
+  @override
   String get categoryStreaming => 'Streaming';
 
   @override

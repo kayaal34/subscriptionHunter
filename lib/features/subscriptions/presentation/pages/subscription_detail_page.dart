@@ -9,10 +9,10 @@ import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/money_formatter.dart';
 import '../../../../shared/widgets/soft_card.dart';
-import '../../../../shared/widgets/subscription_logo.dart';
 import '../../domain/billing_calculator.dart';
 import '../../domain/subscription.dart';
 import '../providers/subscription_providers.dart';
+import '../widgets/subscription_avatar.dart';
 
 class SubscriptionDetailPage extends ConsumerWidget {
   const SubscriptionDetailPage({required this.id, super.key});
@@ -105,13 +105,8 @@ class SubscriptionDetailPage extends ConsumerWidget {
           Center(
             child: Hero(
               tag: 'logo-${subscription.id}',
-              child: SubscriptionLogo(
-                monogram: subscription.name.isEmpty
-                    ? '?'
-                    : subscription.name.substring(0, 1).toUpperCase(),
-                brandColor: subscription.brandColor,
-                assetPath: subscription.logoAsset,
-                logoUrl: subscription.logoUrl,
+              child: SubscriptionAvatar(
+                subscription: subscription,
                 size: 88,
               ),
             ),

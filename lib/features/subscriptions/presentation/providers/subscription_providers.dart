@@ -37,6 +37,16 @@ final subscriptionsProvider = StreamProvider<List<Subscription>>(
   (ref) => ref.watch(subscriptionRepositoryProvider).watchAll(),
 );
 
+/// Whether anything has been added yet.
+///
+/// Drives the home FAB: with an empty list the empty state already shows a
+/// large "add subscription" button, and a FAB alongside it was a duplicate.
+final hasSubscriptionsProvider = Provider<bool>(
+  (ref) => ref
+      .watch(subscriptionsProvider)
+      .maybeWhen(data: (items) => items.isNotEmpty, orElse: () => false),
+);
+
 /// Subscriptions that still charge - excludes archived and ended ones.
 final activeSubscriptionsProvider = Provider<List<Subscription>>((ref) {
   final now = ref.watch(nowProvider)();

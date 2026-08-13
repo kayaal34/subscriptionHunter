@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_palette.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/currencies.dart';
@@ -225,6 +227,23 @@ class SettingsPage extends ConsumerWidget {
                       subtitle: Text(l10n.settingsSupportSubtitle),
                       trailing: const Icon(Icons.open_in_new_rounded, size: 18),
                       onTap: () => _contactSupport(context),
+                    ),
+                  ),
+
+                  // ---- Legal ---------------------------------------------
+                  _SectionLabel(l10n.privacyTitle),
+                  SoftCard(
+                    padding: EdgeInsets.zero,
+                    child: ListTile(
+                      key: const Key('privacy-policy'),
+                      leading: Icon(
+                        Icons.privacy_tip_outlined,
+                        color: context.colors.primary,
+                      ),
+                      title: Text(l10n.settingsPrivacy),
+                      subtitle: Text(l10n.settingsPrivacySubtitle),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => context.push(AppRoutes.privacy),
                     ),
                   ),
 

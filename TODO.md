@@ -21,13 +21,15 @@ and covered by tests.
 - [ ] **Encryption at rest.** The old Hive setup was encrypted; the Drift
       database is not. Add `sqlcipher_flutter_libs` if subscription names and
       prices should be protected on a rooted device.
-- [ ] **App bundle fails to strip debug symbols.** `flutter build apk` works,
-      but `flutter build appbundle --release` errors out because the Android
-      `cmdline-tools` component is missing (see `flutter doctor`). Install it
-      from Android Studio before the first Play Store upload.
-- [ ] **Privacy policy URL.** The onboarding notice explains data handling
-      in-app, but Google Play also requires a hosted policy page before a
-      listing goes live.
+- [ ] **Host the privacy policy and update the URL.** `PRIVACY_POLICY.md` is
+      written and the app renders it offline in all three languages, but Google
+      Play needs a *publicly reachable* address on the listing. Publish the file
+      (GitHub Pages works) and set `AppConstants.privacyPolicyUrl` to it. The
+      file also contains ready answers for the Play "Data safety" form.
+- [ ] **Accept the remaining Android SDK licences.** `cmdline-tools` is now
+      installed and `flutter build appbundle` succeeds, but 6 of 7 licences are
+      still unaccepted. Accepting a licence agreement is yours to do - run
+      `flutter doctor --android-licenses` in a real terminal and press `y`.
 - [ ] **Delete the old project copy** at `C:\Masaüstü\subscriptionHunter-main`.
       It could not be removed automatically because this session's shell held
       the directory open.
@@ -50,6 +52,28 @@ and covered by tests.
 ## Done
 
 ### Latest round
+
+- [x] **Preset catalog expanded to 75 services, grouped by category.** Nine
+      sections (streaming, music, AI, software, cloud, gaming, news, fitness,
+      learning); a flat grid that size was a wall of icons. The Dart entries and
+      the SVG tiles are generated from one table so they cannot drift apart.
+- [x] **Fixed missing logos outside the main list.** The upcoming-payments strip
+      never passed `logoUrl`, so Disney+ showed as a bare "D" while the same
+      subscription showed its real logo in the list. All screens now go through
+      one `SubscriptionAvatar`.
+- [x] **Removed the duplicate add button.** The home empty state and the FAB
+      were two identical actions on one screen; the FAB now appears only once
+      there is a list.
+- [x] **Statistics made actionable.** Added a ranked list of every subscription
+      by monthly cost, with brand logos and a share bar, tappable through to the
+      detail screen.
+- [x] **Privacy policy.** In-app screen in all three languages, plus
+      `PRIVACY_POLICY.md` for hosting and the Play "Data safety" answers.
+- [x] **Installed Android `cmdline-tools`.** `flutter build appbundle --release`
+      now produces `app-release.aab` (47.8 MB); it previously failed to strip
+      debug symbols.
+
+### Previous round
 
 - [x] **Replaced the dead logo provider.** `logo.clearbit.com` no longer has a
       DNS record - the free Logo API was retired - so every request failed and

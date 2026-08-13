@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/providers/settings_providers.dart';
 import '../../features/onboarding/presentation/onboarding_page.dart';
+import '../../features/settings/presentation/pages/privacy_policy_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/statistics/presentation/pages/statistics_page.dart';
 import '../../features/subscriptions/presentation/pages/add_subscription_page.dart';
@@ -18,6 +19,7 @@ abstract final class AppRoutes {
   static const add = '/add';
   static const detail = '/subscription';
   static const onboarding = '/onboarding';
+  static const privacy = '/privacy';
 
   static String detailFor(String id) => '$detail/$id';
 }
@@ -80,6 +82,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+
+      GoRoute(
+        path: AppRoutes.privacy,
+        builder: (context, state) => const PrivacyPolicyPage(),
       ),
 
       // Presented above the shell so the bottom bar is hidden while editing.

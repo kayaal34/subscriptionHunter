@@ -703,50 +703,78 @@ class _ServicePicker extends StatelessWidget {
             ),
           )
         else
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: AppSpacing.lg,
-              crossAxisSpacing: AppSpacing.md,
-              childAspectRatio: 0.74,
+          // Grouped under category headings: 75 services in one flat grid is
+          // a wall of icons with no way to orient yourself.
+          for (final entry
+              in PresetCatalog.groupByCategory(presets).entries) ...[
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.xs,
+                top: AppSpacing.sm,
+                bottom: AppSpacing.md,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    entry.key.icon,
+                    size: 16,
+                    color: context.colors.primary,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    entry.key.label(l10n).toUpperCase(),
+                    style: context.text.labelSmall?.copyWith(
+                      color: context.colors.primary,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            itemCount: presets.length,
-            itemBuilder: (context, index) {
-              final preset = presets[index];
-              return InkWell(
-                key: Key('preset-${preset.id}'),
-                borderRadius: BorderRadius.circular(AppSpacing.lg),
-                onTap: () => onPresetSelected(preset),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SubscriptionLogo(
-                      monogram: preset.monogram,
-                      brandColor: preset.brandColor,
-                      assetPath: preset.logoAsset,
-                      logoUrl: preset.logoUrl,
-                      size: 52,
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Flexible(
-                      child: Text(
-                        preset.name,
-                        maxLines: 2,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.text.labelSmall,
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: AppSpacing.lg,
+                crossAxisSpacing: AppSpacing.md,
+                childAspectRatio: 0.74,
+              ),
+              itemCount: entry.value.length,
+              itemBuilder: (context, index) {
+                final preset = entry.value[index];
+                return InkWell(
+                  key: Key('preset-${preset.id}'),
+                  borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  onTap: () => onPresetSelected(preset),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SubscriptionLogo(
+                        monogram: preset.monogram,
+                        brandColor: preset.brandColor,
+                        assetPath: preset.logoAsset,
+                        logoUrl: preset.logoUrl,
+                        size: 52,
                       ),
-                    ),
-                  ],
-                ),
-              ).animate().fadeIn(
-                delay: Duration(milliseconds: 14 * index.clamp(0, 14)),
-                duration: 220.ms,
-              );
-            },
-          ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Flexible(
+                        child: Text(
+                          preset.name,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.text.labelSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
         const SizedBox(height: AppSpacing.xl),
         OutlinedButton.icon(
           key: const Key('preset-custom'),

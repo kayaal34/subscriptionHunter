@@ -120,6 +120,16 @@ MonthlySpend _spendForMonth(
   );
 }
 
+/// Active subscriptions ordered by monthly cost, most expensive first.
+///
+/// Compared on monthly-equivalent cost so a 1200/year plan does not outrank a
+/// 150/month one just because its raw price is a bigger number.
+final rankedByCostProvider = Provider<List<Subscription>>((ref) {
+  final items = [...ref.watch(primaryCurrencySubscriptionsProvider)]
+    ..sort((a, b) => b.monthlyCost.compareTo(a.monthlyCost));
+  return items;
+});
+
 /// The single most expensive active subscription, normalised per month.
 final mostExpensiveProvider = Provider<Subscription?>((ref) {
   final subscriptions = ref.watch(primaryCurrencySubscriptionsProvider);

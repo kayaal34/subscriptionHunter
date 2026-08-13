@@ -2,15 +2,19 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/providers/settings_providers.dart';
 import '../../../../core/utils/money_formatter.dart';
 import '../../../../shared/widgets/empty_state.dart';
 import '../../../../shared/widgets/soft_card.dart';
+import '../../../subscriptions/domain/subscription.dart';
 import '../../../subscriptions/presentation/providers/subscription_providers.dart';
+import '../../../subscriptions/presentation/widgets/subscription_avatar.dart';
 import '../providers/statistics_providers.dart';
 
 class StatisticsPage extends ConsumerWidget {
@@ -48,8 +52,8 @@ class StatisticsPage extends ConsumerWidget {
                         const _ChartSwitcher(),
                         const SizedBox(height: AppSpacing.lg),
                         _FeaturedChart(slices: slices, currency: currency),
-                        const SizedBox(height: AppSpacing.md),
-                        _MostExpensiveCard(currency: currency),
+                        const SizedBox(height: AppSpacing.xl),
+                        _RankedList(currency: currency),
                       ],
                     ),
                   ),
@@ -133,66 +137,151 @@ class _FeaturedChart extends ConsumerWidget {
   }
 }
 
-/// Highlights the single biggest recurring cost.
-class _MostExpensiveCard extends ConsumerWidget {
-  const _MostExpensiveCard({required this.currency});
+/// Every subscription ranked by monthly cost, with a share bar.
+///
+/// The charts answer "which category" and "which month"; this answers "which
+/// subscription", which is the one a user can actually act on. Each row shows
+/// the real brand logo rather than a coloured dot.
+class _RankedList extends ConsumerWidget {
+  const _RankedList({required this.currency});
 
   final String currency;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final subscription = ref.watch(mostExpensiveProvider);
-    if (subscription == null) return const SizedBox.shrink();
+    final l10n = context.l10n;
+    final ranked = ref.watch(rankedByCostProvider);
+    if (ranked.isEmpty) return const SizedBox.shrink();
 
-    return SoftCard(
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(
-              color: context.colors.secondaryContainer,
-              borderRadius: BorderRadius.circular(AppSpacing.md),
-            ),
-            child: Icon(
-              Icons.local_fire_department_rounded,
-              color: context.colors.onSecondaryContainer,
-            ),
+    final highest = ranked.first.monthlyCost;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(
+            left: AppSpacing.xs,
+            bottom: AppSpacing.md,
           ),
-          const SizedBox(width: AppSpacing.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Text(l10n.statsMostExpensive, style: context.text.titleMedium),
+        ),
+        SoftCard(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          child: Column(
+            children: [
+              for (var i = 0; i < ranked.length; i++)
+                _RankedRow(
+                  subscription: ranked[i],
+                  currency: currency,
+                  // Relative to the most expensive, so the top row is always a
+                  // full bar and the rest read as a proportion of it.
+                  share: highest <= 0
+                      ? 0
+                      : ranked[i].monthlyCost / highest,
+                  rank: i + 1,
+                ).animate().fadeIn(
+                  delay: Duration(milliseconds: 40 * i.clamp(0, 8)),
+                  duration: 280.ms,
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _RankedRow extends StatelessWidget {
+  const _RankedRow({
+    required this.subscription,
+    required this.currency,
+    required this.share,
+    required this.rank,
+  });
+
+  final Subscription subscription;
+  final String currency;
+  final double share;
+  final int rank;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return InkWell(
+      onTap: () => context.push(AppRoutes.detailFor(subscription.id)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.md,
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 22,
+              child: Text(
+                '$rank',
+                style: context.text.labelMedium?.copyWith(
+                  color: context.colors.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            SubscriptionAvatar(subscription: subscription, size: 38),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    subscription.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.titleSmall,
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: share.clamp(0.0, 1.0),
+                      minHeight: 5,
+                      backgroundColor: context.colors.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation(
+                        Color(subscription.brandColor),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  context.l10n.statsMostExpensive,
+                  MoneyFormatter.compact(
+                    amount: subscription.monthlyCost,
+                    currencyCode: currency,
+                    localeName: context.localeName,
+                  ),
+                  style: context.text.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Text(
+                  l10n.perMonth,
                   style: context.text.labelSmall?.copyWith(
                     color: context.colors.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  subscription.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.text.titleMedium,
-                ),
               ],
             ),
-          ),
-          Text(
-            MoneyFormatter.compact(
-              amount: subscription.monthlyCost,
-              currencyCode: currency,
-              localeName: context.localeName,
-            ),
-            style: context.text.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ).animate().fadeIn(delay: 120.ms, duration: 320.ms);
+    );
   }
 }
 

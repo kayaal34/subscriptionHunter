@@ -790,6 +790,138 @@ abstract class AppLocalizations {
   /// **'No email app found. Write to {email}'**
   String settingsSupportUnavailable(String email);
 
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyTitle;
+
+  /// No description provided for @privacyUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated: 13 August 2026'**
+  String get privacyUpdated;
+
+  /// No description provided for @privacyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription Hunter is built to work without an account and without sending your data anywhere. This page explains exactly what the app stores, what leaves your device, and what it does not do.'**
+  String get privacyIntro;
+
+  /// No description provided for @privacyStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the app stores'**
+  String get privacyStorageTitle;
+
+  /// No description provided for @privacyStorageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you enter - subscription names, prices, billing dates, categories, notes and reminder settings - is written to a database file inside the app\'s private storage on your device. There is no account, no sign-in and no cloud sync. We never receive a copy.'**
+  String get privacyStorageBody;
+
+  /// No description provided for @privacyNetworkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What leaves your device'**
+  String get privacyNetworkTitle;
+
+  /// No description provided for @privacyNetworkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'One thing only: to show a brand logo, the app asks Google\'s favicon service for the icon of a public website, for example netflix.com. That request contains the service\'s domain name and nothing else - no subscription prices, no personal data, and no identifier for you or your device. Offline, the app draws a coloured tile instead and works normally.'**
+  String get privacyNetworkBody;
+
+  /// No description provided for @privacyNotificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get privacyNotificationsTitle;
+
+  /// No description provided for @privacyNotificationsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment reminders are scheduled by your device\'s own alarm system. They are generated locally from the data you entered and never pass through a server.'**
+  String get privacyNotificationsBody;
+
+  /// No description provided for @privacySupportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If you contact support'**
+  String get privacySupportTitle;
+
+  /// No description provided for @privacySupportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The support option opens your own email app with a message you can read and edit before sending. It is pre-filled with the app version and your Android version so a problem can be reproduced. If you send it, we receive your email address and what you wrote, and use them only to answer you.'**
+  String get privacySupportBody;
+
+  /// No description provided for @privacyNoTrackingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the app does not do'**
+  String get privacyNoTrackingTitle;
+
+  /// No description provided for @privacyNoTrackingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No analytics, no advertising, no tracking or profiling, no third-party marketing SDKs, and no selling or sharing of data. There is nothing to sell - the data never reaches us.'**
+  String get privacyNoTrackingBody;
+
+  /// No description provided for @privacyControlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your control over your data'**
+  String get privacyControlTitle;
+
+  /// No description provided for @privacyControlBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You can delete everything at any time from Settings, using Erase all data. Uninstalling the app also removes its database and settings from your device permanently. Because no copy exists anywhere else, deletion is immediate and final.'**
+  String get privacyControlBody;
+
+  /// No description provided for @privacyChildrenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Children'**
+  String get privacyChildrenTitle;
+
+  /// No description provided for @privacyChildrenBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The app is a general-purpose budgeting tool, is not directed at children under 13, and no data is knowingly collected from them.'**
+  String get privacyChildrenBody;
+
+  /// No description provided for @privacyContactTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get privacyContactTitle;
+
+  /// No description provided for @privacyContactBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions about this policy can be sent to {email}.'**
+  String privacyContactBody(String email);
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsPrivacySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What is stored and what leaves your device'**
+  String get settingsPrivacySubtitle;
+
+  /// No description provided for @privacyViewOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'View online'**
+  String get privacyViewOnline;
+
   /// No description provided for @categoryStreaming.
   ///
   /// In en, this message translates to:

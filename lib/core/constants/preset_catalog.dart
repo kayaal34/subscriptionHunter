@@ -60,7 +60,7 @@ class PresetService {
 /// only drive the card accent.
 abstract final class PresetCatalog {
   static const List<PresetService> all = [
-    // ---- Video streaming -------------------------------------------------
+    // ---- Video streaming -------------------------------------------
     PresetService(
       id: 'netflix',
       name: 'Netflix',
@@ -111,6 +111,22 @@ abstract final class PresetCatalog {
       domain: 'apple.com',
     ),
     PresetService(
+      id: 'paramount_plus',
+      name: 'Paramount+',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF0064FF,
+      monogram: 'P+',
+      domain: 'paramountplus.com',
+    ),
+    PresetService(
+      id: 'hulu',
+      name: 'Hulu',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF1CE783,
+      monogram: 'H',
+      domain: 'hulu.com',
+    ),
+    PresetService(
       id: 'mubi',
       name: 'MUBI',
       category: SubscriptionCategory.streaming,
@@ -126,8 +142,56 @@ abstract final class PresetCatalog {
       monogram: 'CR',
       domain: 'crunchyroll.com',
     ),
+    PresetService(
+      id: 'blutv',
+      name: 'BluTV',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF0B7FD4,
+      monogram: 'Bl',
+      domain: 'blutv.com',
+    ),
+    PresetService(
+      id: 'exxen',
+      name: 'Exxen',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFFFFC800,
+      monogram: 'Ex',
+      domain: 'exxen.com',
+    ),
+    PresetService(
+      id: 'tabii',
+      name: 'tabii',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFFE8523F,
+      monogram: 'tb',
+      domain: 'tabii.com',
+    ),
+    PresetService(
+      id: 'gain',
+      name: 'GAIN',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF1A1A1A,
+      monogram: 'GA',
+      domain: 'gain.tv',
+    ),
+    PresetService(
+      id: 'bein_connect',
+      name: 'beIN CONNECT',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF6D1F7F,
+      monogram: 'bC',
+      domain: 'beinconnect.com.tr',
+    ),
+    PresetService(
+      id: 'tod',
+      name: 'TOD',
+      category: SubscriptionCategory.streaming,
+      brandColor: 0xFF00A0DC,
+      monogram: 'TD',
+      domain: 'todtv.com.tr',
+    ),
 
-    // ---- Music & audio ---------------------------------------------------
+    // ---- Music & audio ---------------------------------------------
     PresetService(
       id: 'spotify',
       name: 'Spotify',
@@ -153,6 +217,38 @@ abstract final class PresetCatalog {
       domain: 'music.youtube.com',
     ),
     PresetService(
+      id: 'deezer',
+      name: 'Deezer',
+      category: SubscriptionCategory.music,
+      brandColor: 0xFFA238FF,
+      monogram: 'Dz',
+      domain: 'deezer.com',
+    ),
+    PresetService(
+      id: 'tidal',
+      name: 'TIDAL',
+      category: SubscriptionCategory.music,
+      brandColor: 0xFF000000,
+      monogram: 'TI',
+      domain: 'tidal.com',
+    ),
+    PresetService(
+      id: 'amazon_music',
+      name: 'Amazon Music',
+      category: SubscriptionCategory.music,
+      brandColor: 0xFF25D1DA,
+      monogram: 'AZ',
+      domain: 'music.amazon.com',
+    ),
+    PresetService(
+      id: 'soundcloud',
+      name: 'SoundCloud Go',
+      category: SubscriptionCategory.music,
+      brandColor: 0xFFFF5500,
+      monogram: 'SC',
+      domain: 'soundcloud.com',
+    ),
+    PresetService(
       id: 'audible',
       name: 'Audible',
       category: SubscriptionCategory.music,
@@ -168,8 +264,16 @@ abstract final class PresetCatalog {
       monogram: 'ST',
       domain: 'storytel.com',
     ),
+    PresetService(
+      id: 'fizy',
+      name: 'fizy',
+      category: SubscriptionCategory.music,
+      brandColor: 0xFF7B2FF7,
+      monogram: 'fz',
+      domain: 'fizy.com',
+    ),
 
-    // ---- AI & software ---------------------------------------------------
+    // ---- AI assistants ---------------------------------------------
     PresetService(
       id: 'chatgpt',
       name: 'ChatGPT Plus',
@@ -186,6 +290,40 @@ abstract final class PresetCatalog {
       monogram: 'C',
       domain: 'anthropic.com',
     ),
+    PresetService(
+      id: 'gemini',
+      name: 'Gemini Advanced',
+      category: SubscriptionCategory.ai,
+      brandColor: 0xFF4285F4,
+      monogram: 'G',
+      domain: 'gemini.google.com',
+    ),
+    PresetService(
+      id: 'perplexity',
+      name: 'Perplexity Pro',
+      category: SubscriptionCategory.ai,
+      brandColor: 0xFF20808D,
+      monogram: 'Px',
+      domain: 'perplexity.ai',
+    ),
+    PresetService(
+      id: 'midjourney',
+      name: 'Midjourney',
+      category: SubscriptionCategory.ai,
+      brandColor: 0xFF2B2B2B,
+      monogram: 'MJ',
+      domain: 'midjourney.com',
+    ),
+    PresetService(
+      id: 'github_copilot',
+      name: 'GitHub Copilot',
+      category: SubscriptionCategory.ai,
+      brandColor: 0xFF24292F,
+      monogram: 'CP',
+      domain: 'github.com',
+    ),
+
+    // ---- Software & productivity -----------------------------------
     PresetService(
       id: 'adobe_cc',
       name: 'Adobe Creative Cloud',
@@ -228,8 +366,69 @@ abstract final class PresetCatalog {
       monogram: 'No',
       domain: 'notion.so',
     ),
+    PresetService(
+      id: 'slack',
+      name: 'Slack',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFF4A154B,
+      monogram: 'SL',
+      domain: 'slack.com',
+    ),
+    PresetService(
+      id: 'zoom',
+      name: 'Zoom',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFF2D8CFF,
+      monogram: 'Z',
+      domain: 'zoom.us',
+    ),
+    PresetService(
+      id: 'jetbrains',
+      name: 'JetBrains',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFFFE315D,
+      monogram: 'JB',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'jetbrains.com',
+    ),
+    PresetService(
+      id: 'grammarly',
+      name: 'Grammarly',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFF15C39A,
+      monogram: 'Gr',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'grammarly.com',
+    ),
+    PresetService(
+      id: 'onepassword',
+      name: '1Password',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFF0572EC,
+      monogram: '1P',
+      defaultCycle: BillingCycle.yearly,
+      domain: '1password.com',
+    ),
+    PresetService(
+      id: 'nordvpn',
+      name: 'NordVPN',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFF4687FF,
+      monogram: 'NV',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'nordvpn.com',
+    ),
+    PresetService(
+      id: 'expressvpn',
+      name: 'ExpressVPN',
+      category: SubscriptionCategory.software,
+      brandColor: 0xFFDA3940,
+      monogram: 'EV',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'expressvpn.com',
+    ),
 
-    // ---- Cloud storage ---------------------------------------------------
+    // ---- Cloud storage ---------------------------------------------
     PresetService(
       id: 'icloud',
       name: 'iCloud+',
@@ -254,8 +453,35 @@ abstract final class PresetCatalog {
       monogram: 'Db',
       domain: 'dropbox.com',
     ),
+    PresetService(
+      id: 'onedrive',
+      name: 'OneDrive',
+      category: SubscriptionCategory.cloud,
+      brandColor: 0xFF0078D4,
+      monogram: 'OD',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'onedrive.live.com',
+    ),
+    PresetService(
+      id: 'backblaze',
+      name: 'Backblaze',
+      category: SubscriptionCategory.cloud,
+      brandColor: 0xFFE21E29,
+      monogram: 'BB',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'backblaze.com',
+    ),
+    PresetService(
+      id: 'pcloud',
+      name: 'pCloud',
+      category: SubscriptionCategory.cloud,
+      brandColor: 0xFF15BE53,
+      monogram: 'pC',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'pcloud.com',
+    ),
 
-    // ---- Gaming ----------------------------------------------------------
+    // ---- Gaming ----------------------------------------------------
     PresetService(
       id: 'playstation_plus',
       name: 'PlayStation Plus',
@@ -283,6 +509,46 @@ abstract final class PresetCatalog {
       domain: 'nintendo.com',
     ),
     PresetService(
+      id: 'ea_play',
+      name: 'EA Play',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFFFF4747,
+      monogram: 'EA',
+      domain: 'ea.com',
+    ),
+    PresetService(
+      id: 'ubisoft_plus',
+      name: 'Ubisoft+',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFF0F3B5F,
+      monogram: 'UB',
+      domain: 'ubisoft.com',
+    ),
+    PresetService(
+      id: 'geforce_now',
+      name: 'GeForce NOW',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFF76B900,
+      monogram: 'GF',
+      domain: 'nvidia.com',
+    ),
+    PresetService(
+      id: 'apple_arcade',
+      name: 'Apple Arcade',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFF1C1C1E,
+      monogram: 'AA',
+      domain: 'apple.com',
+    ),
+    PresetService(
+      id: 'discord_nitro',
+      name: 'Discord Nitro',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFF5865F2,
+      monogram: 'DN',
+      domain: 'discord.com',
+    ),
+    PresetService(
       id: 'twitch',
       name: 'Twitch Turbo',
       category: SubscriptionCategory.gaming,
@@ -290,8 +556,95 @@ abstract final class PresetCatalog {
       monogram: 'TW',
       domain: 'twitch.tv',
     ),
+    PresetService(
+      id: 'roblox_premium',
+      name: 'Roblox Premium',
+      category: SubscriptionCategory.gaming,
+      brandColor: 0xFFE2231A,
+      monogram: 'RB',
+      domain: 'roblox.com',
+    ),
 
-    // ---- Learning & other ------------------------------------------------
+    // ---- News & reading --------------------------------------------
+    PresetService(
+      id: 'nytimes',
+      name: 'The New York Times',
+      category: SubscriptionCategory.news,
+      brandColor: 0xFF121212,
+      monogram: 'NY',
+      domain: 'nytimes.com',
+    ),
+    PresetService(
+      id: 'economist',
+      name: 'The Economist',
+      category: SubscriptionCategory.news,
+      brandColor: 0xFFE3120B,
+      monogram: 'Ec',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'economist.com',
+    ),
+    PresetService(
+      id: 'medium',
+      name: 'Medium',
+      category: SubscriptionCategory.news,
+      brandColor: 0xFF191919,
+      monogram: 'Me',
+      domain: 'medium.com',
+    ),
+    PresetService(
+      id: 'blinkist',
+      name: 'Blinkist',
+      category: SubscriptionCategory.news,
+      brandColor: 0xFF2CE080,
+      monogram: 'Bk',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'blinkist.com',
+    ),
+
+    // ---- Fitness ---------------------------------------------------
+    PresetService(
+      id: 'strava',
+      name: 'Strava',
+      category: SubscriptionCategory.fitness,
+      brandColor: 0xFFFC4C02,
+      monogram: 'SV',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'strava.com',
+    ),
+    PresetService(
+      id: 'fitbit_premium',
+      name: 'Fitbit Premium',
+      category: SubscriptionCategory.fitness,
+      brandColor: 0xFF00B0B9,
+      monogram: 'FB',
+      domain: 'fitbit.com',
+    ),
+    PresetService(
+      id: 'myfitnesspal',
+      name: 'MyFitnessPal',
+      category: SubscriptionCategory.fitness,
+      brandColor: 0xFF0072EF,
+      monogram: 'MF',
+      domain: 'myfitnesspal.com',
+    ),
+    PresetService(
+      id: 'peloton',
+      name: 'Peloton',
+      category: SubscriptionCategory.fitness,
+      brandColor: 0xFFDF1E26,
+      monogram: 'PL',
+      domain: 'onepeloton.com',
+    ),
+    PresetService(
+      id: 'nike_training',
+      name: 'Nike Training Club',
+      category: SubscriptionCategory.fitness,
+      brandColor: 0xFF111111,
+      monogram: 'NK',
+      domain: 'nike.com',
+    ),
+
+    // ---- Learning --------------------------------------------------
     PresetService(
       id: 'duolingo',
       name: 'Duolingo Super',
@@ -309,50 +662,57 @@ abstract final class PresetCatalog {
       monogram: 'in',
       domain: 'linkedin.com',
     ),
-
-    // ---- Turkish services ------------------------------------------------
-    // Brand hexes here are approximations chosen to read well on a card.
     PresetService(
-      id: 'blutv',
-      name: 'BluTV',
-      category: SubscriptionCategory.streaming,
-      brandColor: 0xFF0B7FD4,
-      monogram: 'Bl',
-      domain: 'blutv.com',
+      id: 'coursera',
+      name: 'Coursera Plus',
+      category: SubscriptionCategory.education,
+      brandColor: 0xFF0056D2,
+      monogram: 'CO',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'coursera.org',
     ),
     PresetService(
-      id: 'exxen',
-      name: 'Exxen',
-      category: SubscriptionCategory.streaming,
-      brandColor: 0xFFFFC800,
-      monogram: 'Ex',
-      domain: 'exxen.com',
+      id: 'udemy',
+      name: 'Udemy Personal',
+      category: SubscriptionCategory.education,
+      brandColor: 0xFFA435F0,
+      monogram: 'UD',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'udemy.com',
     ),
     PresetService(
-      id: 'tabii',
-      name: 'tabii',
-      category: SubscriptionCategory.streaming,
-      brandColor: 0xFFE8523F,
-      monogram: 'tb',
-      domain: 'tabii.com',
+      id: 'skillshare',
+      name: 'Skillshare',
+      category: SubscriptionCategory.education,
+      brandColor: 0xFF002333,
+      monogram: 'SK',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'skillshare.com',
     ),
     PresetService(
-      id: 'gain',
-      name: 'GAIN',
-      category: SubscriptionCategory.streaming,
-      brandColor: 0xFF1A1A1A,
-      monogram: 'GA',
-      domain: 'gain.tv',
-    ),
-    PresetService(
-      id: 'bein_connect',
-      name: 'beIN CONNECT',
-      category: SubscriptionCategory.streaming,
-      brandColor: 0xFF6D1F7F,
-      monogram: 'bC',
-      domain: 'beinconnect.com.tr',
+      id: 'babbel',
+      name: 'Babbel',
+      category: SubscriptionCategory.education,
+      brandColor: 0xFFFF6E00,
+      monogram: 'BA',
+      defaultCycle: BillingCycle.yearly,
+      domain: 'babbel.com',
     ),
   ];
+
+  /// Presets grouped by category, preserving catalog order.
+  ///
+  /// The picker shows 75 services; an ungrouped grid of that size is a wall of
+  /// icons, so it is rendered under category headings instead.
+  static Map<SubscriptionCategory, List<PresetService>> groupByCategory(
+    List<PresetService> presets,
+  ) {
+    final grouped = <SubscriptionCategory, List<PresetService>>{};
+    for (final preset in presets) {
+      grouped.putIfAbsent(preset.category, () => []).add(preset);
+    }
+    return grouped;
+  }
 
   static PresetService? byId(String? id) {
     if (id == null) return null;

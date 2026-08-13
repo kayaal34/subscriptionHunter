@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router/app_router.dart';
 import '../../core/extensions/context_extensions.dart';
+import '../../features/subscriptions/presentation/providers/subscription_providers.dart';
 
 /// Bottom-navigation frame around the three main tabs.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerWidget {
   const AppShell({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
@@ -20,16 +22,20 @@ class AppShell extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final isHome = navigationShell.currentIndex == 0;
+    // The empty state already offers a large "add subscription" call to
+    // action. Showing the FAB as well put two identical buttons on the same
+    // screen, so it only appears once there is a list to sit above.
+    final showFab = isHome && ref.watch(hasSubscriptionsProvider);
 
     return Scaffold(
       body: navigationShell,
       floatingActionButton: AnimatedScale(
-        // Hidden off the home tab rather than removed, so switching tabs does
-        // not make the layout jump.
-        scale: isHome ? 1 : 0,
+        // Scaled rather than removed, so showing or hiding it does not make
+        // the layout jump.
+        scale: showFab ? 1 : 0,
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOutBack,
         child: FloatingActionButton.extended(

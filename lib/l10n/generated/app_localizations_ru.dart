@@ -396,6 +396,83 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get privacyTitle => 'Политика конфиденциальности';
+
+  @override
+  String get privacyUpdated => 'Последнее обновление: 13 августа 2026 г.';
+
+  @override
+  String get privacyIntro =>
+      'Subscription Hunter работает без аккаунта и не отправляет ваши данные куда-либо. Здесь описано, что именно приложение хранит, что покидает ваше устройство и чего оно не делает.';
+
+  @override
+  String get privacyStorageTitle => 'Что хранит приложение';
+
+  @override
+  String get privacyStorageBody =>
+      'Всё, что вы вводите - названия подписок, цены, даты списаний, категории, заметки и настройки напоминаний - записывается в файл базы данных в приватном хранилище приложения на вашем устройстве. Нет аккаунта, нет входа, нет облачной синхронизации. Мы никогда не получаем копию.';
+
+  @override
+  String get privacyNetworkTitle => 'Что покидает устройство';
+
+  @override
+  String get privacyNetworkBody =>
+      'Только одно: чтобы показать логотип бренда, приложение запрашивает у сервиса фавиконов Google значок публичного сайта, например netflix.com. В запросе передаётся только доменное имя сервиса - ни цен подписок, ни персональных данных, ни идентификаторов вас или вашего устройства. Без сети приложение рисует цветную плитку и работает как обычно.';
+
+  @override
+  String get privacyNotificationsTitle => 'Уведомления';
+
+  @override
+  String get privacyNotificationsBody =>
+      'Напоминания о платежах планируются системой будильников самого устройства. Они формируются локально из введённых вами данных и никогда не проходят через сервер.';
+
+  @override
+  String get privacySupportTitle => 'Если вы обращаетесь в поддержку';
+
+  @override
+  String get privacySupportBody =>
+      'Кнопка поддержки открывает ваше почтовое приложение с письмом, которое вы можете прочитать и изменить перед отправкой. В него заранее подставлены версия приложения и версия Android, чтобы проблему можно было воспроизвести. Если вы отправите письмо, мы получим ваш адрес и текст и используем их только для ответа.';
+
+  @override
+  String get privacyNoTrackingTitle => 'Чего приложение не делает';
+
+  @override
+  String get privacyNoTrackingBody =>
+      'Никакой аналитики, рекламы, отслеживания или профилирования, никаких сторонних маркетинговых SDK, никакой продажи или передачи данных. Продавать нечего - данные к нам просто не попадают.';
+
+  @override
+  String get privacyControlTitle => 'Ваш контроль над данными';
+
+  @override
+  String get privacyControlBody =>
+      'Вы можете удалить всё в любой момент через пункт Удалить все данные в настройках. Удаление приложения также безвозвратно стирает его базу и настройки с устройства. Поскольку копии нигде больше нет, удаление происходит сразу и окончательно.';
+
+  @override
+  String get privacyChildrenTitle => 'Дети';
+
+  @override
+  String get privacyChildrenBody =>
+      'Приложение является универсальным инструментом учёта расходов, не предназначено для детей младше 13 лет, и данные от них сознательно не собираются.';
+
+  @override
+  String get privacyContactTitle => 'Контакты';
+
+  @override
+  String privacyContactBody(String email) {
+    return 'Вопросы по этой политике можно отправить на $email.';
+  }
+
+  @override
+  String get settingsPrivacy => 'Политика конфиденциальности';
+
+  @override
+  String get settingsPrivacySubtitle =>
+      'Что хранится и что покидает устройство';
+
+  @override
+  String get privacyViewOnline => 'Открыть онлайн';
+
+  @override
   String get categoryStreaming => 'Стриминг';
 
   @override

@@ -124,9 +124,19 @@ debug key when the file is absent, so debug builds keep working without it.
 flutter build appbundle --release
 ```
 
-**Before publishing**, confirm `applicationId` in
-`android/app/build.gradle.kts`. It is currently `com.subscriptionhunter.app`
-and **cannot be changed after the first upload**.
+### Play Store checklist
+
+- **`applicationId`** in `android/app/build.gradle.kts` is
+  `com.subscriptionhunter.app` and **cannot be changed after the first upload**.
+- **Privacy policy** — Play requires a publicly reachable URL on the listing;
+  the in-app screen does not satisfy it on its own. Publish
+  [PRIVACY_POLICY.md](PRIVACY_POLICY.md) (GitHub Pages is enough) and set
+  `AppConstants.privacyPolicyUrl` to the published address. That file also
+  contains prepared answers for the **Data safety** form.
+- **SDK licences** — `cmdline-tools` is installed and the bundle builds, but
+  some SDK licences are still unaccepted. Run `flutter doctor
+  --android-licenses` in a real terminal and press `y`; it reads from the
+  console, so it cannot be automated by piping input.
 
 ---
 
