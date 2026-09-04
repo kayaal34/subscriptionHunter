@@ -30,6 +30,30 @@
   "homeEmptyMessage": "Add your first subscription to start tracking what you spend each month.",
   "homeEmptyAction": "Add subscription",
 
+  "currencyAmountIn": "{amount} in {code}",
+  "@currencyAmountIn": {
+    "description": "One currency's total, e.g. \"$9.99 in USD\", used in the multi-currency disclosure line",
+    "placeholders": {
+      "amount": {"type": "String"},
+      "code": {"type": "String"}
+    }
+  },
+  "currencyNotIncludedInTotal": "Not in the total: {amounts}",
+  "@currencyNotIncludedInTotal": {
+    "description": "Lists subscription costs in other currencies that the headline total leaves out",
+    "placeholders": {"amounts": {"type": "String"}}
+  },
+  "currencyNoneYet": "No {code} subscriptions yet",
+  "@currencyNoneYet": {
+    "description": "Shown instead of a zero total when the selected currency has no subscriptions",
+    "placeholders": {"code": {"type": "String"}}
+  },
+  "currencyTotalsShownIn": "Totals shown in {code}",
+  "@currencyTotalsShownIn": {
+    "description": "Statistics header note naming the currency the figures are in",
+    "placeholders": {"code": {"type": "String"}}
+  },
+
   "homeNoUpcoming": "Nothing due in the next 30 days.",
   "homeNoResults": "No subscriptions match \"{query}\".",
   "@homeNoResults": {
@@ -116,6 +140,12 @@
   "themeDark": "Dark",
   "settingsLanguage": "Language",
   "settingsCurrency": "Default currency",
+  "settingsCurrencyHelp": "New subscriptions start in this currency. Home and Statistics totals are shown in it; subscriptions in other currencies are listed on their own.",
+  "settingsCurrencyChanged": "Totals now shown in {code}",
+  "@settingsCurrencyChanged": {
+    "description": "Confirmation shown after the default currency is changed",
+    "placeholders": {"code": {"type": "String"}}
+  },
   "settingsNotifications": "Notifications",
   "settingsNotificationsEnabled": "Payment reminders",
   "settingsNotificationsSubtitle": "Get notified before a subscription renews",

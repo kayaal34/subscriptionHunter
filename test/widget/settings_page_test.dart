@@ -145,6 +145,13 @@ void main() {
       await _Harness.pump(tester);
 
       final tile = find.byKey(const Key('contact-support'));
+      // The settings list is a lazily built sliver, so a row far enough down
+      // is not in the tree until scrolled to.
+      await tester.scrollUntilVisible(
+        tile,
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(tile, findsOneWidget);
       // Tapping is not exercised here: it hands off to the platform mail app,
       // which only a device can answer. Covered manually instead.

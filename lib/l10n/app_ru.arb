@@ -29,6 +29,26 @@
   "homeEmptyMessage": "Добавьте первую подписку, чтобы отслеживать ежемесячные расходы.",
   "homeEmptyAction": "Добавить подписку",
 
+  "currencyAmountIn": "{amount} в {code}",
+  "@currencyAmountIn": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "code": {"type": "String"}
+    }
+  },
+  "currencyNotIncludedInTotal": "Не входит в итог: {amounts}",
+  "@currencyNotIncludedInTotal": {
+    "placeholders": {"amounts": {"type": "String"}}
+  },
+  "currencyNoneYet": "Пока нет подписок в {code}",
+  "@currencyNoneYet": {
+    "placeholders": {"code": {"type": "String"}}
+  },
+  "currencyTotalsShownIn": "Итоги показаны в {code}",
+  "@currencyTotalsShownIn": {
+    "placeholders": {"code": {"type": "String"}}
+  },
+
   "homeNoUpcoming": "В ближайшие 30 дней платежей нет.",
   "homeNoResults": "Нет подписок по запросу «{query}».",
   "@homeNoResults": {
@@ -114,6 +134,11 @@
   "themeDark": "Тёмная",
   "settingsLanguage": "Язык",
   "settingsCurrency": "Валюта по умолчанию",
+  "settingsCurrencyHelp": "Новые подписки создаются в этой валюте. Итоги на Главной и в Статистике показаны в ней; подписки в других валютах перечислены отдельно.",
+  "settingsCurrencyChanged": "Итоги теперь в {code}",
+  "@settingsCurrencyChanged": {
+    "placeholders": {"code": {"type": "String"}}
+  },
   "settingsNotifications": "Уведомления",
   "settingsNotificationsEnabled": "Напоминания о платежах",
   "settingsNotificationsSubtitle": "Уведомлять перед продлением подписки",

@@ -79,6 +79,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get homeEmptyAction => 'Abonelik ekle';
 
   @override
+  String currencyAmountIn(String amount, String code) {
+    return '$code cinsinden $amount';
+  }
+
+  @override
+  String currencyNotIncludedInTotal(String amounts) {
+    return 'Toplama dahil değil: $amounts';
+  }
+
+  @override
+  String currencyNoneYet(String code) {
+    return 'Henüz $code aboneliği yok';
+  }
+
+  @override
+  String currencyTotalsShownIn(String code) {
+    return 'Toplamlar $code cinsinden';
+  }
+
+  @override
   String get homeNoUpcoming => 'Önümüzdeki 30 gün içinde ödeme yok.';
 
   @override
@@ -281,6 +301,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsCurrency => 'Varsayılan para birimi';
+
+  @override
+  String get settingsCurrencyHelp =>
+      'Yeni abonelikler bu para biriminde başlar. Ana Sayfa ve İstatistikler toplamları bu birimde gösterilir; farklı para birimindeki abonelikler ayrı listelenir.';
+
+  @override
+  String settingsCurrencyChanged(String code) {
+    return 'Toplamlar artık $code cinsinden';
+  }
 
   @override
   String get settingsNotifications => 'Bildirimler';

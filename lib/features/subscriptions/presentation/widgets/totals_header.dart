@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/money_formatter.dart';
+import 'currency_coverage_note.dart';
 
 /// Monthly / yearly / count summary shown at the top of the home screen.
 class TotalsHeader extends StatelessWidget {
@@ -11,6 +12,7 @@ class TotalsHeader extends StatelessWidget {
     required this.yearlyTotal,
     required this.activeCount,
     required this.currencyCode,
+    this.hasOtherCurrencies = false,
     super.key,
   });
 
@@ -19,10 +21,20 @@ class TotalsHeader extends StatelessWidget {
   final int activeCount;
   final String currencyCode;
 
+  /// True when some active subscription is billed in a currency other than
+  /// [currencyCode]. Drives the "not in the total" disclosure and stops a bare
+  /// "0" reading as "you spend nothing" when the real reason is that every
+  /// subscription is in another currency.
+  final bool hasOtherCurrencies;
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
+
+    // A zero total while other currencies are in play is not "you spend
+    // nothing" - it is "nothing is billed in this currency". Say that instead.
+    final showsNothingInCurrency = hasOtherCurrencies && monthlyTotal == 0;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.xl),
@@ -56,16 +68,22 @@ class TotalsHeader extends StatelessWidget {
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
-              MoneyFormatter.format(
-                amount: monthlyTotal,
-                currencyCode: currencyCode,
-                localeName: context.localeName,
-              ),
-              style: context.text.displaySmall?.copyWith(
-                color: colors.onPrimary,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -1,
-              ),
+              showsNothingInCurrency
+                  ? l10n.currencyNoneYet(currencyCode)
+                  : MoneyFormatter.format(
+                      amount: monthlyTotal,
+                      currencyCode: currencyCode,
+                      localeName: context.localeName,
+                    ),
+              style:
+                  (showsNothingInCurrency
+                          ? context.text.titleLarge
+                          : context.text.displaySmall)
+                      ?.copyWith(
+                        color: colors.onPrimary,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: showsNothingInCurrency ? 0 : -1,
+                      ),
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
@@ -88,6 +106,11 @@ class TotalsHeader extends StatelessWidget {
               _Metric(label: l10n.homeActiveCount, value: '$activeCount'),
             ],
           ),
+          if (hasOtherCurrencies)
+            CurrencyCoverageNote(
+              foreground: colors.onPrimary.withValues(alpha: 0.85),
+              padding: const EdgeInsets.only(top: AppSpacing.lg),
+            ),
         ],
       ),
     );

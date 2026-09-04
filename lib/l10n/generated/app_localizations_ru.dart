@@ -79,6 +79,26 @@ class AppLocalizationsRu extends AppLocalizations {
   String get homeEmptyAction => 'Добавить подписку';
 
   @override
+  String currencyAmountIn(String amount, String code) {
+    return '$amount в $code';
+  }
+
+  @override
+  String currencyNotIncludedInTotal(String amounts) {
+    return 'Не входит в итог: $amounts';
+  }
+
+  @override
+  String currencyNoneYet(String code) {
+    return 'Пока нет подписок в $code';
+  }
+
+  @override
+  String currencyTotalsShownIn(String code) {
+    return 'Итоги показаны в $code';
+  }
+
+  @override
   String get homeNoUpcoming => 'В ближайшие 30 дней платежей нет.';
 
   @override
@@ -286,6 +306,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get settingsCurrency => 'Валюта по умолчанию';
+
+  @override
+  String get settingsCurrencyHelp =>
+      'Новые подписки создаются в этой валюте. Итоги на Главной и в Статистике показаны в ней; подписки в других валютах перечислены отдельно.';
+
+  @override
+  String settingsCurrencyChanged(String code) {
+    return 'Итоги теперь в $code';
+  }
 
   @override
   String get settingsNotifications => 'Уведомления';

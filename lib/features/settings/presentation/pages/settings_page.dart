@@ -176,27 +176,52 @@ class SettingsPage extends ConsumerWidget {
                   // ---- Currency ------------------------------------------
                   _SectionLabel(l10n.settingsCurrency),
                   SoftCard(
-                    child: DropdownButtonFormField<String>(
-                      key: const Key('default-currency'),
-                      initialValue: settings.currencyCode,
-                      isExpanded: true,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        filled: false,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      items: [
-                        for (final currency in Currencies.all)
-                          DropdownMenuItem(
-                            value: currency.code,
-                            child: Text(
-                              '${currency.symbol}  ${currency.code} · ${currency.englishName}',
-                            ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DropdownButtonFormField<String>(
+                          key: const Key('default-currency'),
+                          initialValue: settings.currencyCode,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            filled: false,
+                            contentPadding: EdgeInsets.zero,
                           ),
+                          items: [
+                            for (final currency in Currencies.all)
+                              DropdownMenuItem(
+                                value: currency.code,
+                                child: Text(
+                                  '${currency.symbol}  ${currency.code} · ${currency.englishName}',
+                                ),
+                              ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null ||
+                                value == settings.currencyCode) {
+                              return;
+                            }
+                            controller.setCurrency(value);
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    l10n.settingsCurrencyChanged(value),
+                                  ),
+                                ),
+                              );
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          l10n.settingsCurrencyHelp,
+                          style: context.text.bodySmall?.copyWith(
+                            color: context.colors.onSurfaceVariant,
+                          ),
+                        ),
                       ],
-                      onChanged: (value) {
-                        if (value != null) controller.setCurrency(value);
-                      },
                     ),
                   ),
 

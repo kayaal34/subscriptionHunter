@@ -238,6 +238,30 @@ abstract class AppLocalizations {
   /// **'Add subscription'**
   String get homeEmptyAction;
 
+  /// One currency's total, e.g. "$9.99 in USD", used in the multi-currency disclosure line
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} in {code}'**
+  String currencyAmountIn(String amount, String code);
+
+  /// Lists subscription costs in other currencies that the headline total leaves out
+  ///
+  /// In en, this message translates to:
+  /// **'Not in the total: {amounts}'**
+  String currencyNotIncludedInTotal(String amounts);
+
+  /// Shown instead of a zero total when the selected currency has no subscriptions
+  ///
+  /// In en, this message translates to:
+  /// **'No {code} subscriptions yet'**
+  String currencyNoneYet(String code);
+
+  /// Statistics header note naming the currency the figures are in
+  ///
+  /// In en, this message translates to:
+  /// **'Totals shown in {code}'**
+  String currencyTotalsShownIn(String code);
+
   /// No description provided for @homeNoUpcoming.
   ///
   /// In en, this message translates to:
@@ -597,6 +621,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default currency'**
   String get settingsCurrency;
+
+  /// No description provided for @settingsCurrencyHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'New subscriptions start in this currency. Home and Statistics totals are shown in it; subscriptions in other currencies are listed on their own.'**
+  String get settingsCurrencyHelp;
+
+  /// Confirmation shown after the default currency is changed
+  ///
+  /// In en, this message translates to:
+  /// **'Totals now shown in {code}'**
+  String settingsCurrencyChanged(String code);
 
   /// No description provided for @settingsNotifications.
   ///

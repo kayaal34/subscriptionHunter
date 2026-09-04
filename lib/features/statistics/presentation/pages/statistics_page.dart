@@ -14,6 +14,7 @@ import '../../../../shared/widgets/empty_state.dart';
 import '../../../../shared/widgets/soft_card.dart';
 import '../../../subscriptions/domain/subscription.dart';
 import '../../../subscriptions/presentation/providers/subscription_providers.dart';
+import '../../../subscriptions/presentation/widgets/currency_coverage_note.dart';
 import '../../../subscriptions/presentation/widgets/subscription_avatar.dart';
 import '../providers/statistics_providers.dart';
 
@@ -296,6 +297,7 @@ class _SummaryRow extends ConsumerWidget {
     final secondary = ref.watch(secondaryCurrenciesProvider);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -322,28 +324,19 @@ class _SummaryRow extends ConsumerWidget {
             ),
           ],
         ),
-        // Totals only cover one currency, so say so instead of silently
-        // omitting subscriptions billed in another.
+        // The charts and totals only cover one currency. Name it, and list
+        // what is billed in another, instead of silently omitting it.
         if (secondary.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Icon(
-                Icons.info_outline_rounded,
-                size: 15,
-                color: context.colors.onSurfaceVariant,
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: Text(
-                  '$currency · ${secondary.join(", ")}',
-                  style: context.text.labelSmall?.copyWith(
-                    color: context.colors.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ],
+          Text(
+            l10n.currencyTotalsShownIn(currency),
+            style: context.text.labelSmall?.copyWith(
+              color: context.colors.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
+            ),
           ),
+          const SizedBox(height: 2),
+          const CurrencyCoverageNote(),
         ],
       ],
     );

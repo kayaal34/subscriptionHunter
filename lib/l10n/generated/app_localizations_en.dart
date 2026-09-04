@@ -79,6 +79,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeEmptyAction => 'Add subscription';
 
   @override
+  String currencyAmountIn(String amount, String code) {
+    return '$amount in $code';
+  }
+
+  @override
+  String currencyNotIncludedInTotal(String amounts) {
+    return 'Not in the total: $amounts';
+  }
+
+  @override
+  String currencyNoneYet(String code) {
+    return 'No $code subscriptions yet';
+  }
+
+  @override
+  String currencyTotalsShownIn(String code) {
+    return 'Totals shown in $code';
+  }
+
+  @override
   String get homeNoUpcoming => 'Nothing due in the next 30 days.';
 
   @override
@@ -281,6 +301,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCurrency => 'Default currency';
+
+  @override
+  String get settingsCurrencyHelp =>
+      'New subscriptions start in this currency. Home and Statistics totals are shown in it; subscriptions in other currencies are listed on their own.';
+
+  @override
+  String settingsCurrencyChanged(String code) {
+    return 'Totals now shown in $code';
+  }
 
   @override
   String get settingsNotifications => 'Notifications';

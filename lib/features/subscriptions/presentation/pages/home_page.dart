@@ -74,6 +74,9 @@ class _HomeContent extends ConsumerWidget {
                           .watch(activeSubscriptionsProvider)
                           .length,
                       currencyCode: ref.watch(currencyCodeProvider),
+                      hasOtherCurrencies: ref
+                          .watch(secondaryCurrenciesProvider)
+                          .isNotEmpty,
                     )
                     .animate()
                     .fadeIn(duration: 350.ms)

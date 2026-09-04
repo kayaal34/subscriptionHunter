@@ -29,6 +29,26 @@
   "homeEmptyMessage": "Her ay ne kadar harcadığını takip etmeye başlamak için ilk aboneliğini ekle.",
   "homeEmptyAction": "Abonelik ekle",
 
+  "currencyAmountIn": "{code} cinsinden {amount}",
+  "@currencyAmountIn": {
+    "placeholders": {
+      "amount": {"type": "String"},
+      "code": {"type": "String"}
+    }
+  },
+  "currencyNotIncludedInTotal": "Toplama dahil değil: {amounts}",
+  "@currencyNotIncludedInTotal": {
+    "placeholders": {"amounts": {"type": "String"}}
+  },
+  "currencyNoneYet": "Henüz {code} aboneliği yok",
+  "@currencyNoneYet": {
+    "placeholders": {"code": {"type": "String"}}
+  },
+  "currencyTotalsShownIn": "Toplamlar {code} cinsinden",
+  "@currencyTotalsShownIn": {
+    "placeholders": {"code": {"type": "String"}}
+  },
+
   "homeNoUpcoming": "Önümüzdeki 30 gün içinde ödeme yok.",
   "homeNoResults": "\"{query}\" ile eşleşen abonelik yok.",
   "@homeNoResults": {
@@ -114,6 +134,11 @@
   "themeDark": "Koyu",
   "settingsLanguage": "Dil",
   "settingsCurrency": "Varsayılan para birimi",
+  "settingsCurrencyHelp": "Yeni abonelikler bu para biriminde başlar. Ana Sayfa ve İstatistikler toplamları bu birimde gösterilir; farklı para birimindeki abonelikler ayrı listelenir.",
+  "settingsCurrencyChanged": "Toplamlar artık {code} cinsinden",
+  "@settingsCurrencyChanged": {
+    "placeholders": {"code": {"type": "String"}}
+  },
   "settingsNotifications": "Bildirimler",
   "settingsNotificationsEnabled": "Ödeme hatırlatmaları",
   "settingsNotificationsSubtitle": "Abonelik yenilenmeden önce bildirim al",
