@@ -433,7 +433,7 @@ class _CategoryChartCardState extends State<_CategoryChartCard> {
             children: [
               for (var i = 0; i < widget.slices.length; i++)
                 _LegendChip(
-                  color: AppPalette.chartColorAt(i),
+                  color: AppPalette.chartColorAt(i, Theme.of(context).brightness),
                   label: widget.slices[i].category.label(l10n),
                   value: MoneyFormatter.compact(
                     amount: widget.slices[i].monthlyTotal,
@@ -452,7 +452,7 @@ class _CategoryChartCardState extends State<_CategoryChartCard> {
     final isTouched = index == _touchedIndex;
     return PieChartSectionData(
       value: slice.monthlyTotal,
-      color: AppPalette.chartColorAt(index),
+      color: AppPalette.chartColorAt(index, Theme.of(context).brightness),
       radius: isTouched ? 64 : 56,
       title: slice.share >= 0.08 ? '${(slice.share * 100).round()}%' : '',
       titleStyle: TextStyle(
