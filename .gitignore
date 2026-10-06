@@ -3,7 +3,6 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-*.lock
 *.iml
 
 # IDEs
@@ -16,7 +15,6 @@
 
 # Build outputs
 build/
-android/
 ios/
 windows/
 macos/
@@ -25,10 +23,8 @@ web/
 
 # Hive specific
 *.hive
-*.lock
 
 # Generated files
-*.g.dart
 *.freezed.dart
 *.config.dart
 
@@ -43,6 +39,14 @@ Thumbs.db
 # Firebase/Analytics
 google-services.json
 GoogleService-Info.plist
+
+# Android: tracked so the app builds from a clean clone; secrets stay out
+android/local.properties
+android/.gradle/
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+**/GeneratedPluginRegistrant.*
 
 # Secrets
 *.jks
