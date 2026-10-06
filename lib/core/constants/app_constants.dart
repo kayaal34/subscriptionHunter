@@ -12,7 +12,7 @@ class AppLanguage {
 
 abstract final class AppConstants {
   /// Keep in sync with `version:` in pubspec.yaml.
-  static const String version = '1.0.1';
+  static const String version = '1.1.0';
 
   /// Publicly hosted copy of the privacy policy.
   ///
