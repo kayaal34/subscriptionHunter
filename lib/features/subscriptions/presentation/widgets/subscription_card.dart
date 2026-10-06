@@ -53,16 +53,16 @@ class SubscriptionCard extends StatelessWidget {
                 ? Colors.white.withValues(alpha: 0.10)
                 : colors.outlineVariant,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? const Color(0x80000000)
-                  : const Color(0x0A0E1116),
-              blurRadius: 24,
-              offset: const Offset(0, -10),
-              spreadRadius: -12,
-            ),
-          ],
+          boxShadow: isDark
+              ? const [
+                  BoxShadow(
+                    color: Color(0x80000000),
+                    blurRadius: 24,
+                    offset: Offset(0, -10),
+                    spreadRadius: -12,
+                  ),
+                ]
+              : null,
         ),
         child: Material(
           type: MaterialType.transparency,

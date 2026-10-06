@@ -10,6 +10,7 @@ import '../../../core/extensions/context_extensions.dart';
 import '../../../core/providers/settings_providers.dart';
 import '../../../core/services/notification_coordinator.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import 'onboarding_visuals.dart';
 
 /// First-launch flow: three intro pages, then a consent gate.
 ///
@@ -93,17 +94,17 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 onPageChanged: (value) => setState(() => _page = value),
                 children: [
                   _IntroPane(
-                    icon: Icons.receipt_long_rounded,
+                    visual: const CardsVisual(),
                     title: l10n.onboardingTitle1,
                     body: l10n.onboardingBody1,
                   ),
                   _IntroPane(
-                    icon: Icons.notifications_active_rounded,
+                    visual: const RemindersVisual(),
                     title: l10n.onboardingTitle2,
                     body: l10n.onboardingBody2,
                   ),
                   _IntroPane(
-                    icon: Icons.insights_rounded,
+                    visual: const InsightsVisual(),
                     title: l10n.onboardingTitle3,
                     body: l10n.onboardingBody3,
                   ),
@@ -159,12 +160,12 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
 
 class _IntroPane extends StatelessWidget {
   const _IntroPane({
-    required this.icon,
+    required this.visual,
     required this.title,
     required this.body,
   });
 
-  final IconData icon;
+  final Widget visual;
   final String title;
   final String body;
 
@@ -174,32 +175,7 @@ class _IntroPane extends StatelessWidget {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-              padding: const EdgeInsets.all(AppSpacing.xxl),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    context.colors.primary,
-                    context.colors.primary.withValues(alpha: 0.7),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.colors.primary.withValues(alpha: 0.3),
-                    blurRadius: 32,
-                    offset: const Offset(0, 12),
-                    spreadRadius: -8,
-                  ),
-                ],
-              ),
-              child: Icon(icon, size: 56, color: context.colors.onPrimary),
-            )
-            .animate()
-            .fadeIn(duration: 420.ms)
-            .scaleXY(begin: 0.85, curve: Curves.easeOutBack),
+        visual,
         const SizedBox(height: AppSpacing.xxl),
         Text(
           title,
