@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,6 +60,33 @@ class SettingsPage extends ConsumerWidget {
         ),
       );
     }
+  }
+
+  Future<void> _exportCsv(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    final items = ref.read(subscriptionsProvider).value ?? const [];
+    final now = DateTime.now();
+    String cell(String v) => '"${v.replaceAll('"', '""')}"';
+    final rows = [
+      'name,price,currency,cycle,category,next_payment,archived',
+      for (final s in items)
+        [
+          cell(s.name),
+          s.price.toStringAsFixed(2),
+          s.currencyCode,
+          s.billingCycle.name,
+          s.category.id,
+          s.nextBillingDate(now).toIso8601String().substring(0, 10),
+          s.isArchived,
+        ].join(','),
+    ];
+    await Clipboard.setData(ClipboardData(text: rows.join('\n')));
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(l10n.settingsExportDone(items.length))),
+      );
   }
 
   @override
@@ -250,6 +278,42 @@ class SettingsPage extends ConsumerWidget {
                       onChanged: controller.setNotificationsEnabled,
                       title: Text(l10n.settingsNotificationsEnabled),
                       subtitle: Text(l10n.settingsNotificationsSubtitle),
+                    ),
+                  ),
+
+                  SoftCard(
+                    child: DropdownButtonFormField<int>(
+                      key: const Key('default-reminder'),
+                      initialValue: settings.defaultReminderDays,
+                      isExpanded: true,
+                      decoration: InputDecoration(
+                        labelText: l10n.settingsReminderDefault,
+                        helperText: l10n.settingsReminderDefaultHelp,
+                        helperMaxLines: 2,
+                        border: InputBorder.none,
+                        filled: false,
+                      ),
+                      items: [
+                        for (final days in const [0, 1, 2, 3, 5, 7])
+                          DropdownMenuItem(
+                            value: days,
+                            child: Text(l10n.reminderDaysBefore(days)),
+                          ),
+                      ],
+                      onChanged: (v) {
+                        if (v != null) controller.setDefaultReminderDays(v);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  SoftCard(
+                    padding: EdgeInsets.zero,
+                    child: ListTile(
+                      key: const Key('export-csv'),
+                      leading: const Icon(Icons.table_view_rounded),
+                      title: Text(l10n.settingsExport),
+                      subtitle: Text(l10n.settingsExportSubtitle),
+                      onTap: () => _exportCsv(context, ref),
                     ),
                   ),
 

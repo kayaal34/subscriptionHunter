@@ -312,6 +312,25 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get settingsReminderDefault => 'Varsayılan hatırlatma';
+
+  @override
+  String get settingsReminderDefaultHelp =>
+      'Yeni abonelikler ödemeden bu kadar önce hatırlatır.';
+
+  @override
+  String get settingsExport => 'Verileri CSV olarak kopyala';
+
+  @override
+  String get settingsExportSubtitle =>
+      'Tüm abonelikleri tablo olarak panoya kopyala';
+
+  @override
+  String settingsExportDone(int count) {
+    return '$count abonelik kopyalandı';
+  }
+
+  @override
   String get settingsNotifications => 'Bildirimler';
 
   @override

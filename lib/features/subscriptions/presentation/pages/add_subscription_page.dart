@@ -76,6 +76,7 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
     _initialised = true;
 
     _currencyCode = ref.read(currencyCodeProvider);
+    _reminderDaysBefore = ref.read(settingsProvider).defaultReminderDays;
 
     if (widget.editingId != null) {
       final existing = ref.read(subscriptionByIdProvider(widget.editingId!));

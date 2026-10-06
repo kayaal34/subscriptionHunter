@@ -317,6 +317,25 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get settingsReminderDefault => 'Напоминание по умолчанию';
+
+  @override
+  String get settingsReminderDefaultHelp =>
+      'Новые подписки напоминают за это время до платежа.';
+
+  @override
+  String get settingsExport => 'Скопировать данные в CSV';
+
+  @override
+  String get settingsExportSubtitle =>
+      'Скопировать все подписки в буфер обмена как таблицу';
+
+  @override
+  String settingsExportDone(int count) {
+    return 'Скопировано подписок: $count';
+  }
+
+  @override
   String get settingsNotifications => 'Уведомления';
 
   @override

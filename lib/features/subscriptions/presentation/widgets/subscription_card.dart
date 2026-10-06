@@ -57,7 +57,7 @@ class SubscriptionCard extends StatelessWidget {
             BoxShadow(
               color: isDark
                   ? const Color(0x80000000)
-                  : const Color(0x1A0E1116),
+                  : const Color(0x0A0E1116),
               blurRadius: 24,
               offset: const Offset(0, -10),
               spreadRadius: -12,
@@ -206,7 +206,7 @@ TextStyle monoStyle({double size = 14}) => TextStyle(
 /// The service colour only tints one corner, so a stack of cards stays calm.
 LinearGradient walletGradient(Color brand, {required bool isDark}) {
   final base = isDark ? const Color(0xFF17171C) : Colors.white;
-  final end = isDark ? const Color(0xFF0F0F13) : const Color(0xFFF1F2F5);
+  final end = isDark ? const Color(0xFF0F0F13) : const Color(0xFFF7F8FA);
   return LinearGradient(
     begin: Alignment.topRight,
     end: Alignment.bottomLeft,

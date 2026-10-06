@@ -13,6 +13,7 @@ class AppSettings {
     required this.languageCode,
     required this.currencyCode,
     required this.notificationsEnabled,
+    this.defaultReminderDays = 1,
   });
 
   final ThemeMode themeMode;
@@ -23,6 +24,9 @@ class AppSettings {
   final String currencyCode;
   final bool notificationsEnabled;
 
+  /// Days before a payment that new subscriptions remind by default.
+  final int defaultReminderDays;
+
   Locale? get locale => languageCode == null ? null : Locale(languageCode!);
 
   AppSettings copyWith({
@@ -31,11 +35,13 @@ class AppSettings {
     bool clearLanguage = false,
     String? currencyCode,
     bool? notificationsEnabled,
+    int? defaultReminderDays,
   }) => AppSettings(
     themeMode: themeMode ?? this.themeMode,
     languageCode: clearLanguage ? null : (languageCode ?? this.languageCode),
     currencyCode: currencyCode ?? this.currencyCode,
     notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+    defaultReminderDays: defaultReminderDays ?? this.defaultReminderDays,
   );
 }
 
@@ -58,6 +64,7 @@ class SettingsController extends Notifier<AppSettings> {
   static const _kLanguage = 'settings.languageCode';
   static const _kCurrency = 'settings.currencyCode';
   static const _kNotifications = 'settings.notificationsEnabled';
+  static const _kReminderDays = 'settings.defaultReminderDays';
 
   SharedPreferences get _prefs => ref.read(sharedPreferencesProvider);
 
@@ -77,6 +84,7 @@ class SettingsController extends Notifier<AppSettings> {
           storedCurrency ??
           Currencies.forCountryCode(ref.read(deviceCountryCodeProvider)),
       notificationsEnabled: prefs.getBool(_kNotifications) ?? true,
+      defaultReminderDays: prefs.getInt(_kReminderDays) ?? 1,
     );
   }
 
@@ -101,6 +109,11 @@ class SettingsController extends Notifier<AppSettings> {
   Future<void> setCurrency(String code) async {
     state = state.copyWith(currencyCode: code);
     await _prefs.setString(_kCurrency, code);
+  }
+
+  Future<void> setDefaultReminderDays(int days) async {
+    state = state.copyWith(defaultReminderDays: days);
+    await _prefs.setInt(_kReminderDays, days);
   }
 
   Future<void> setNotificationsEnabled(bool enabled) async {

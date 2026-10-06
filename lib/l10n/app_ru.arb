@@ -139,6 +139,14 @@
   "@settingsCurrencyChanged": {
     "placeholders": {"code": {"type": "String"}}
   },
+  "settingsReminderDefault": "Напоминание по умолчанию",
+  "settingsReminderDefaultHelp": "Новые подписки напоминают за это время до платежа.",
+  "settingsExport": "Скопировать данные в CSV",
+  "settingsExportSubtitle": "Скопировать все подписки в буфер обмена как таблицу",
+  "settingsExportDone": "Скопировано подписок: {count}",
+  "@settingsExportDone": {
+    "placeholders": {"count": {"type": "int"}}
+  },
   "settingsNotifications": "Уведомления",
   "settingsNotificationsEnabled": "Напоминания о платежах",
   "settingsNotificationsSubtitle": "Уведомлять перед продлением подписки",

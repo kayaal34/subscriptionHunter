@@ -634,6 +634,36 @@ abstract class AppLocalizations {
   /// **'Totals now shown in {code}'**
   String settingsCurrencyChanged(String code);
 
+  /// No description provided for @settingsReminderDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default reminder'**
+  String get settingsReminderDefault;
+
+  /// No description provided for @settingsReminderDefaultHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'New subscriptions remind you this long before a payment.'**
+  String get settingsReminderDefaultHelp;
+
+  /// No description provided for @settingsExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy data as CSV'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy every subscription to the clipboard as a spreadsheet'**
+  String get settingsExportSubtitle;
+
+  /// No description provided for @settingsExportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied {count} subscriptions'**
+  String settingsExportDone(int count);
+
   /// No description provided for @settingsNotifications.
   ///
   /// In en, this message translates to:

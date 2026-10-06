@@ -312,6 +312,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get settingsReminderDefault => 'Default reminder';
+
+  @override
+  String get settingsReminderDefaultHelp =>
+      'New subscriptions remind you this long before a payment.';
+
+  @override
+  String get settingsExport => 'Copy data as CSV';
+
+  @override
+  String get settingsExportSubtitle =>
+      'Copy every subscription to the clipboard as a spreadsheet';
+
+  @override
+  String settingsExportDone(int count) {
+    return 'Copied $count subscriptions';
+  }
+
+  @override
   String get settingsNotifications => 'Notifications';
 
   @override

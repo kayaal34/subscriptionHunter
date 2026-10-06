@@ -139,6 +139,14 @@
   "@settingsCurrencyChanged": {
     "placeholders": {"code": {"type": "String"}}
   },
+  "settingsReminderDefault": "Varsayılan hatırlatma",
+  "settingsReminderDefaultHelp": "Yeni abonelikler ödemeden bu kadar önce hatırlatır.",
+  "settingsExport": "Verileri CSV olarak kopyala",
+  "settingsExportSubtitle": "Tüm abonelikleri tablo olarak panoya kopyala",
+  "settingsExportDone": "{count} abonelik kopyalandı",
+  "@settingsExportDone": {
+    "placeholders": {"count": {"type": "int"}}
+  },
   "settingsNotifications": "Bildirimler",
   "settingsNotificationsEnabled": "Ödeme hatırlatmaları",
   "settingsNotificationsSubtitle": "Abonelik yenilenmeden önce bildirim al",

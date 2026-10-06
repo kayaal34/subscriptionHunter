@@ -146,6 +146,14 @@
     "description": "Confirmation shown after the default currency is changed",
     "placeholders": {"code": {"type": "String"}}
   },
+  "settingsReminderDefault": "Default reminder",
+  "settingsReminderDefaultHelp": "New subscriptions remind you this long before a payment.",
+  "settingsExport": "Copy data as CSV",
+  "settingsExportSubtitle": "Copy every subscription to the clipboard as a spreadsheet",
+  "settingsExportDone": "Copied {count} subscriptions",
+  "@settingsExportDone": {
+    "placeholders": {"count": {"type": "int"}}
+  },
   "settingsNotifications": "Notifications",
   "settingsNotificationsEnabled": "Payment reminders",
   "settingsNotificationsSubtitle": "Get notified before a subscription renews",
