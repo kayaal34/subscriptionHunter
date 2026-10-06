@@ -8,11 +8,9 @@ import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/providers/settings_providers.dart';
 import '../../../../shared/widgets/empty_state.dart';
-import '../../domain/subscription.dart';
 import '../providers/subscription_providers.dart';
 import '../widgets/subscription_card.dart';
 import '../widgets/totals_header.dart';
-import '../widgets/upcoming_strip.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -52,22 +50,34 @@ class _HomeContent extends ConsumerWidget {
     final l10n = context.l10n;
     final now = ref.watch(nowProvider)();
     final visible = ref.watch(visibleSubscriptionsProvider);
-    final upcoming = ref.watch(upcomingBillsProvider);
+
+    // Wallet order: the card due soonest is last, so it lands in front and
+    // fully visible while the later ones peek out above it.
+    final stack = visible.reversed.toList();
 
     return CustomScrollView(
       slivers: [
-        SliverAppBar(floating: true, title: Text(l10n.appTitle)),
-
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
             AppSpacing.lg,
-            AppSpacing.sm,
-            AppSpacing.lg,
+            AppSpacing.xl,
             0,
           ),
           sliver: SliverToBoxAdapter(
             child:
-                TotalsHeader(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.appTitle.toUpperCase(),
+                      style: monoStyle(size: 12).copyWith(
+                        color: context.colors.onSurfaceVariant,
+                        letterSpacing: 3,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    TotalsHeader(
                       monthlyTotal: ref.watch(monthlyTotalProvider),
                       yearlyTotal: ref.watch(yearlyTotalProvider),
                       activeCount: ref
@@ -77,53 +87,38 @@ class _HomeContent extends ConsumerWidget {
                       hasOtherCurrencies: ref
                           .watch(secondaryCurrenciesProvider)
                           .isNotEmpty,
-                    )
-                    .animate()
-                    .fadeIn(duration: 350.ms)
-                    .slideY(begin: -0.08, curve: Curves.easeOutCubic),
+                    ),
+                  ],
+                )
+                .animate()
+                .fadeIn(duration: 350.ms)
+                .slideY(begin: -0.06, curve: Curves.easeOutCubic),
           ),
         ),
 
-        if (upcoming.isNotEmpty)
-          SliverToBoxAdapter(
-            child: UpcomingStrip(
-              bills: upcoming,
-            ).animate().fadeIn(delay: 90.ms, duration: 350.ms),
-          ),
-
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
             AppSpacing.xl,
-            AppSpacing.lg,
+            AppSpacing.xl,
             AppSpacing.sm,
+            AppSpacing.md,
           ),
           sliver: SliverToBoxAdapter(
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    l10n.homeAllSubscriptions,
-                    style: context.text.titleMedium,
+                  child: TextField(
+                    key: const Key('home-search-field'),
+                    onChanged: ref.read(searchQueryProvider.notifier).set,
+                    decoration: InputDecoration(
+                      hintText: l10n.homeSearchHint,
+                      prefixIcon: const Icon(Icons.search_rounded),
+                      isDense: true,
+                    ),
                   ),
                 ),
                 const _SortMenu(),
               ],
-            ),
-          ),
-        ),
-
-        SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          sliver: SliverToBoxAdapter(
-            child: TextField(
-              key: const Key('home-search-field'),
-              onChanged: ref.read(searchQueryProvider.notifier).set,
-              decoration: InputDecoration(
-                hintText: l10n.homeSearchHint,
-                prefixIcon: const Icon(Icons.search_rounded),
-                isDense: true,
-              ),
             ),
           ),
         ),
@@ -155,43 +150,41 @@ class _HomeContent extends ConsumerWidget {
           )
         else
           SliverPadding(
-            // Bottom padding clears the floating action button.
+            // Bottom padding clears the floating navigation bar.
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.lg,
+              AppSpacing.sm,
               AppSpacing.lg,
-              AppSpacing.lg,
-              96,
+              120,
             ),
-            sliver: SliverList.separated(
-              itemCount: visible.length,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-              itemBuilder: (context, index) {
-                final subscription = visible[index];
-                return Dismissible(
-                      // Keyed by id, not index, so dismissing one row does not
-                      // make the list animate the wrong card away.
-                      key: ValueKey('dismiss-${subscription.id}'),
-                      direction: DismissDirection.endToStart,
-                      background: const _DeleteBackground(),
-                      onDismissed: (_) =>
-                          _deleteWithUndo(context, ref, subscription),
-                      child: SubscriptionCard(
-                        key: Key('subscription-card-${subscription.id}'),
-                        subscription: subscription,
-                        daysAway: subscription.daysUntilNextBilling(now),
-                        onTap: () =>
-                            context.push(AppRoutes.detailFor(subscription.id)),
-                      ),
-                    )
-                    .animate()
-                    // Staggered, but capped: with 40 rows an uncapped delay
-                    // would leave the last card fading in a second late.
-                    .fadeIn(
-                      delay: Duration(milliseconds: 30 * (index.clamp(0, 8))),
-                      duration: 300.ms,
-                    )
-                    .slideY(begin: 0.12, curve: Curves.easeOutCubic);
-              },
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  for (var i = 0; i < stack.length; i++)
+                    _Peek(
+                      // Every card but the front one shows only its header.
+                      peek: i < stack.length - 1,
+                      child:
+                          SubscriptionCard(
+                                key: Key('subscription-card-${stack[i].id}'),
+                                subscription: stack[i],
+                                daysAway: stack[i].daysUntilNextBilling(now),
+                                onTap: () => context.push(
+                                  AppRoutes.detailFor(stack[i].id),
+                                ),
+                              )
+                              .animate()
+                              .fadeIn(
+                                delay: Duration(
+                                  milliseconds:
+                                      40 * ((stack.length - 1 - i).clamp(0, 6)),
+                                ),
+                                duration: 320.ms,
+                              )
+                              .slideY(begin: 0.1, curve: Curves.easeOutCubic),
+                    ),
+                ],
+              ),
             ),
           ),
       ],
@@ -199,51 +192,22 @@ class _HomeContent extends ConsumerWidget {
   }
 }
 
-/// Deletes [subscription] and offers an undo for a few seconds.
-///
-/// A swipe is easy to trigger by accident, so the row is restored verbatim -
-/// same id, same created date - rather than re-added as a new subscription.
-Future<void> _deleteWithUndo(
-  BuildContext context,
-  WidgetRef ref,
-  Subscription subscription,
-) async {
-  final l10n = context.l10n;
-  final messenger = ScaffoldMessenger.of(context);
-  final actions = ref.read(subscriptionActionsProvider);
+/// Lays a card out at only [walletCardPeek] tall while it still paints in
+/// full, so the next card overlaps it like passes in a wallet.
+class _Peek extends StatelessWidget {
+  const _Peek({required this.peek, required this.child});
 
-  await actions.delete(subscription.id);
-
-  messenger
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text(l10n.deletedSnack(subscription.name)),
-        action: SnackBarAction(
-          label: l10n.actionUndo,
-          onPressed: () => actions.add(subscription),
-        ),
-      ),
-    );
-}
-
-/// Red "delete" surface revealed while swiping a card away.
-class _DeleteBackground extends StatelessWidget {
-  const _DeleteBackground();
+  final bool peek;
+  final Widget child;
 
   @override
-  Widget build(BuildContext context) => Container(
-    alignment: Alignment.centerRight,
-    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-    decoration: BoxDecoration(
-      color: context.colors.errorContainer,
-      borderRadius: BorderRadius.circular(AppSpacing.cardRadius),
-    ),
-    child: Icon(
-      Icons.delete_outline_rounded,
-      color: context.colors.onErrorContainer,
-    ),
-  );
+  Widget build(BuildContext context) => peek
+      ? Align(
+          alignment: Alignment.topCenter,
+          heightFactor: walletCardPeek / walletCardHeight,
+          child: child,
+        )
+      : child;
 }
 
 class _SortMenu extends ConsumerWidget {

@@ -4,8 +4,12 @@ import '../../../../app/theme/app_palette.dart';
 import '../../../../core/extensions/context_extensions.dart';
 import '../../../../core/utils/money_formatter.dart';
 import 'currency_coverage_note.dart';
+import 'subscription_card.dart' show monoStyle;
 
-/// Monthly / yearly / count summary shown at the top of the home screen.
+/// Monthly total, yearly total and count shown above the wallet stack.
+///
+/// No card behind it: the figure sits straight on the ground, in champagne on
+/// dark and in ink on light, with small mono labels like a statement.
 class TotalsHeader extends StatelessWidget {
   const TotalsHeader({
     required this.monthlyTotal,
@@ -31,88 +35,82 @@ class TotalsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
+    final isDark = context.isDark;
 
-    // A zero total while other currencies are in play is not "you spend
-    // nothing" - it is "nothing is billed in this currency". Say that instead.
     final showsNothingInCurrency = hasOtherCurrencies && monthlyTotal == 0;
 
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSpacing.sheetRadius),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [colors.primary, colors.primary.withValues(alpha: 0.82)],
+    final figureStyle = showsNothingInCurrency
+        ? context.text.titleLarge?.copyWith(fontWeight: FontWeight.w300)
+        : context.text.displayMedium?.copyWith(
+            fontWeight: FontWeight.w300,
+            letterSpacing: -1.5,
+            height: 1.05,
+          );
+
+    Widget figure = FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Text(
+        showsNothingInCurrency
+            ? l10n.currencyNoneYet(currencyCode)
+            : MoneyFormatter.format(
+                amount: monthlyTotal,
+                currencyCode: currencyCode,
+                localeName: context.localeName,
+              ),
+        style: figureStyle?.copyWith(color: isDark ? null : colors.onSurface),
+      ),
+    );
+
+    if (isDark) {
+      figure = ShaderMask(
+        shaderCallback: (bounds) => const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: AppPalette.champagneGradient,
+        ).createShader(bounds),
+        blendMode: BlendMode.srcIn,
+        child: figure,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.homeMonthlyTotal.toUpperCase(),
+          style: monoStyle(size: 11).copyWith(
+            color: colors.onSurfaceVariant,
+            letterSpacing: 2.2,
+          ),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: colors.primary.withValues(alpha: 0.28),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-            spreadRadius: -8,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            l10n.homeMonthlyTotal,
-            style: context.text.labelLarge?.copyWith(
-              color: colors.onPrimary.withValues(alpha: 0.8),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              showsNothingInCurrency
-                  ? l10n.currencyNoneYet(currencyCode)
-                  : MoneyFormatter.format(
-                      amount: monthlyTotal,
-                      currencyCode: currencyCode,
-                      localeName: context.localeName,
-                    ),
-              style:
-                  (showsNothingInCurrency
-                          ? context.text.titleLarge
-                          : context.text.displaySmall)
-                      ?.copyWith(
-                        color: colors.onPrimary,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: showsNothingInCurrency ? 0 : -1,
-                      ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Row(
-            children: [
-              _Metric(
-                label: l10n.homeYearlyTotal,
-                value: MoneyFormatter.compact(
-                  amount: yearlyTotal,
-                  currencyCode: currencyCode,
-                  localeName: context.localeName,
-                ),
+        const SizedBox(height: AppSpacing.sm),
+        figure,
+        const SizedBox(height: AppSpacing.lg),
+        Row(
+          children: [
+            _Metric(
+              label: l10n.homeYearlyTotal,
+              value: MoneyFormatter.compact(
+                amount: yearlyTotal,
+                currencyCode: currencyCode,
+                localeName: context.localeName,
               ),
-              Container(
-                width: 1,
-                height: 32,
-                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                color: colors.onPrimary.withValues(alpha: 0.24),
-              ),
-              _Metric(label: l10n.homeActiveCount, value: '$activeCount'),
-            ],
-          ),
-          if (hasOtherCurrencies)
-            CurrencyCoverageNote(
-              foreground: colors.onPrimary.withValues(alpha: 0.85),
-              padding: const EdgeInsets.only(top: AppSpacing.lg),
             ),
-        ],
-      ),
+            Container(
+              width: 1,
+              height: 30,
+              margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+              color: colors.outlineVariant,
+            ),
+            _Metric(label: l10n.homeActiveCount, value: '$activeCount'),
+          ],
+        ),
+        if (hasOtherCurrencies)
+          const CurrencyCoverageNote(
+            padding: EdgeInsets.only(top: AppSpacing.lg),
+          ),
+      ],
     );
   }
 }
@@ -124,27 +122,19 @@ class _Metric extends StatelessWidget {
   final String value;
 
   @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label,
-          style: context.text.labelSmall?.copyWith(
-            color: colors.onPrimary.withValues(alpha: 0.78),
-          ),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        label.toUpperCase(),
+        style: monoStyle(size: 10).copyWith(
+          color: context.colors.onSurfaceVariant,
+          letterSpacing: 1.8,
         ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: context.text.titleMedium?.copyWith(
-            color: colors.onPrimary,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+      const SizedBox(height: 4),
+      Text(value, style: monoStyle(size: 17)),
+    ],
+  );
 }
