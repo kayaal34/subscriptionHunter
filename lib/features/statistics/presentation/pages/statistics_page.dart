@@ -408,7 +408,7 @@ class _CategoryChartCardState extends State<_CategoryChartCard> {
             child: PieChart(
               PieChartData(
                 sectionsSpace: 2,
-                centerSpaceRadius: 52,
+                centerSpaceRadius: 62,
                 pieTouchData: PieTouchData(
                   touchCallback: (event, response) {
                     setState(() {
@@ -453,7 +453,7 @@ class _CategoryChartCardState extends State<_CategoryChartCard> {
     return PieChartSectionData(
       value: slice.monthlyTotal,
       color: AppPalette.chartColorAt(index, Theme.of(context).brightness),
-      radius: isTouched ? 64 : 56,
+      radius: isTouched ? 34 : 28,
       title: slice.share >= 0.08 ? '${(slice.share * 100).round()}%' : '',
       titleStyle: TextStyle(
         fontSize: isTouched ? 15 : 13,
