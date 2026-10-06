@@ -175,7 +175,12 @@ class _IntroPane extends StatelessWidget {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        visual,
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(width: 340, child: visual),
+          ),
+        ),
         const SizedBox(height: AppSpacing.xxl),
         Text(
           title,

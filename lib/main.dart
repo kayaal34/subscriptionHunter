@@ -1,6 +1,7 @@
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,6 +10,8 @@ import 'core/providers/settings_providers.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // The layouts are designed for portrait; landscape only overflowed.
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   // Loaded before the first frame so the saved theme and language are already
   // known - the app never flashes the wrong colours or the wrong language on
