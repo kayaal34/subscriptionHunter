@@ -69,19 +69,19 @@ flutter_launcher_icons:
   image_path: "assets/icon/icon.png"
   # Adaptive icons (API 26+) are the foreground mark on a flat brand colour,
   # so the system can mask it to whatever shape the launcher uses.
-  adaptive_icon_background: "#4A378C"
+  adaptive_icon_background: "#1F3AE0"
   adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   min_sdk_android: 24
 
 # Launch screen shown while the Dart VM boots. Regenerate with:
 #   dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#4A378C"
+  color: "#1F3AE0"
   image: assets/icon/icon_foreground.png
   android_12:
-    color: "#4A378C"
+    color: "#1F3AE0"
     image: assets/icon/icon_foreground.png
-    icon_background_color: "#4A378C"
+    icon_background_color: "#1F3AE0"
   android: true
   ios: false
   web: false
