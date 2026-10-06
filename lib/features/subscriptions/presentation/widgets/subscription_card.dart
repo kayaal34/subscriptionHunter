@@ -33,6 +33,9 @@ class SubscriptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final brand = Color(subscription.brandColor);
+    final colors = context.colors;
+    final isDark = context.isDark;
+    final ink = colors.onSurface;
     final today = DateUtils.dateOnly(DateTime.now());
     final nextDate = DateTime(today.year, today.month, today.day + daysAway);
 
@@ -44,13 +47,19 @@ class SubscriptionCard extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: radius,
-          gradient: walletGradient(brand),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
-          boxShadow: const [
+          gradient: walletGradient(brand, isDark: isDark),
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.10)
+                : colors.outlineVariant,
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color(0x80000000),
+              color: isDark
+                  ? const Color(0x80000000)
+                  : const Color(0x1A0E1116),
               blurRadius: 24,
-              offset: Offset(0, -10),
+              offset: const Offset(0, -10),
               spreadRadius: -12,
             ),
           ],
@@ -72,7 +81,7 @@ class SubscriptionCard extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.center,
                         colors: [
-                          Colors.white.withValues(alpha: 0.16),
+                          Colors.white.withValues(alpha: isDark ? 0.10 : 0.6),
                           Colors.transparent,
                         ],
                       ),
@@ -100,7 +109,7 @@ class SubscriptionCard extends StatelessWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: context.text.titleMedium?.copyWith(
-                                color: Colors.white,
+                                color: ink,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -114,7 +123,7 @@ class SubscriptionCard extends StatelessWidget {
                             ),
                             style: monoStyle(
                               size: 14.5,
-                            ).copyWith(color: Colors.white),
+                            ).copyWith(color: ink),
                           ),
                         ],
                       ),
@@ -134,15 +143,15 @@ class SubscriptionCard extends StatelessWidget {
                                   ),
                                   style: monoStyle(
                                     size: 15,
-                                  ).copyWith(color: Colors.white),
+                                  ).copyWith(color: ink),
                                 ),
                                 const SizedBox(height: 3),
                                 Text(
                                   l10n.dueLabel(daysAway),
                                   style: context.text.labelMedium?.copyWith(
                                     color: urgent
-                                        ? AppPalette.champagne
-                                        : Colors.white.withValues(alpha: 0.72),
+                                        ? colors.primary
+                                        : colors.onSurfaceVariant,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -173,14 +182,14 @@ class _Pill extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     decoration: BoxDecoration(
-      color: Colors.white.withValues(alpha: 0.16),
+      color: context.colors.onSurface.withValues(alpha: 0.08),
       borderRadius: BorderRadius.circular(99),
     ),
     child: Text(
       label,
       style: monoStyle(
         size: 10.5,
-      ).copyWith(color: Colors.white, letterSpacing: 1),
+      ).copyWith(color: context.colors.onSurface, letterSpacing: 1),
     ),
   );
 }
@@ -193,20 +202,19 @@ TextStyle monoStyle({double size = 14}) => TextStyle(
   letterSpacing: -0.3,
 );
 
-/// Brand colour darkened toward graphite so white text always has contrast,
-/// even for light brand colours such as yellow.
-LinearGradient walletGradient(Color brand) {
-  final start = brand.computeLuminance() > 0.55
-      ? Color.lerp(brand, Colors.black, 0.35)!
-      : brand;
+/// Card surface that belongs to the theme: graphite on dark, white on light.
+/// The service colour only tints one corner, so a stack of cards stays calm.
+LinearGradient walletGradient(Color brand, {required bool isDark}) {
+  final base = isDark ? const Color(0xFF17171C) : Colors.white;
+  final end = isDark ? const Color(0xFF0F0F13) : const Color(0xFFF1F2F5);
   return LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    begin: Alignment.topRight,
+    end: Alignment.bottomLeft,
     colors: [
-      start,
-      Color.lerp(start, Colors.black, 0.55)!,
-      const Color(0xFF0B0B0D),
+      Color.lerp(base, brand, isDark ? 0.34 : 0.16)!,
+      base,
+      end,
     ],
-    stops: const [0, 0.68, 1],
+    stops: const [0, 0.55, 1],
   );
 }
