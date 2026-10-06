@@ -209,10 +209,7 @@ class _DetailRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            value,
-            style: monoStyle(size: 13),
-          ),
+          Text(value, style: monoStyle(size: 13)),
           if (highlight != null)
             Text(
               highlight!,
@@ -319,9 +316,9 @@ class _PaymentDots extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             context.upper(label.format(month)),
-            style: monoStyle(size: 9.5).copyWith(
-              color: colors.onSurfaceVariant,
-            ),
+            style: monoStyle(
+              size: 9.5,
+            ).copyWith(color: colors.onSurfaceVariant),
           ),
         ],
       );

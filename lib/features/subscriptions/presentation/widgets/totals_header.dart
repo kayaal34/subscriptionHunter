@@ -89,10 +89,9 @@ class TotalsHeader extends StatelessWidget {
       children: [
         Text(
           '${context.upper(l10n.homeMonthlyTotal)} · $month',
-          style: monoStyle(size: 11).copyWith(
-            color: colors.onSurfaceVariant,
-            letterSpacing: 2,
-          ),
+          style: monoStyle(
+            size: 11,
+          ).copyWith(color: colors.onSurfaceVariant, letterSpacing: 2),
         ),
         const SizedBox(height: AppSpacing.sm),
         figure,
@@ -101,7 +100,7 @@ class TotalsHeader extends StatelessWidget {
             padding: EdgeInsets.only(top: AppSpacing.md),
           ),
         const SizedBox(height: AppSpacing.lg),
-        Container(
+        DecoratedBox(
           decoration: BoxDecoration(
             border: Border.symmetric(
               horizontal: BorderSide(color: colors.outlineVariant),
@@ -148,11 +147,7 @@ class TotalsHeader extends StatelessWidget {
 }
 
 class _Metric extends StatelessWidget {
-  const _Metric({
-    required this.label,
-    required this.value,
-    this.inset = false,
-  });
+  const _Metric({required this.label, required this.value, this.inset = false});
 
   final String label;
   final String value;

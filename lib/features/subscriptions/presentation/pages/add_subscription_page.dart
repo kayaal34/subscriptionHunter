@@ -121,7 +121,6 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
       _category = preset.category;
       _brandColor = preset.brandColor;
       _cycle = preset.defaultCycle;
-
     });
     FocusScope.of(context).unfocus();
   }
@@ -326,10 +325,9 @@ class _AddSubscriptionPageState extends ConsumerState<AddSubscriptionPage> {
                           child: TextFormField(
                             key: const Key('field-price'),
                             controller: _priceController,
-                            keyboardType:
-                                const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                 RegExp(r'[0-9.,]'),
@@ -705,8 +703,9 @@ class _ServicePicker extends StatelessWidget {
         else
           // Grouped under category headings: 75 services in one flat grid is
           // a wall of icons with no way to orient yourself.
-          for (final entry
-              in PresetCatalog.groupByCategory(presets).entries) ...[
+          for (final entry in PresetCatalog.groupByCategory(
+            presets,
+          ).entries) ...[
             Padding(
               padding: const EdgeInsets.only(
                 left: AppSpacing.xs,
@@ -715,11 +714,7 @@ class _ServicePicker extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    entry.key.icon,
-                    size: 16,
-                    color: context.colors.primary,
-                  ),
+                  Icon(entry.key.icon, size: 16, color: context.colors.primary),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
                     context.upper(entry.key.label(l10n)),

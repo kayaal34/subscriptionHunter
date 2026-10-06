@@ -15,7 +15,8 @@ import '../../../subscriptions/domain/subscription.dart';
 import '../../../subscriptions/presentation/providers/subscription_providers.dart';
 import '../../../subscriptions/presentation/widgets/currency_coverage_note.dart';
 import '../../../subscriptions/presentation/widgets/subscription_avatar.dart';
-import '../../../subscriptions/presentation/widgets/subscription_card.dart' show monoStyle;
+import '../../../subscriptions/presentation/widgets/subscription_card.dart'
+    show monoStyle;
 import '../providers/statistics_providers.dart';
 
 class StatisticsPage extends ConsumerWidget {
@@ -56,10 +57,10 @@ class StatisticsPage extends ConsumerWidget {
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg,
+                      AppSpacing.xl,
                       AppSpacing.sm,
-                      AppSpacing.lg,
-                      96,
+                      AppSpacing.xl,
+                      32,
                     ),
                     sliver: SliverList.list(
                       children: [
@@ -118,9 +119,7 @@ class _RankedList extends ConsumerWidget {
                   currency: currency,
                   // Relative to the most expensive, so the top row is always a
                   // full bar and the rest read as a proportion of it.
-                  share: highest <= 0
-                      ? 0
-                      : ranked[i].monthlyCost / highest,
+                  share: highest <= 0 ? 0 : ranked[i].monthlyCost / highest,
                   rank: i + 1,
                 ).animate().fadeIn(
                   delay: Duration(milliseconds: 40 * i.clamp(0, 8)),
@@ -241,30 +240,40 @@ class _SummaryRow extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _StatTile(
-                label: l10n.statsTotalMonthly,
-                value: MoneyFormatter.compact(
-                  amount: ref.watch(monthlyTotalProvider),
-                  currencyCode: currency,
-                  localeName: context.localeName,
-                ),
-              ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              horizontal: BorderSide(color: context.colors.outlineVariant),
             ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: _StatTile(
-                label: l10n.statsTotalYearly,
-                value: MoneyFormatter.compact(
-                  amount: ref.watch(yearlyTotalProvider),
-                  currencyCode: currency,
-                  localeName: context.localeName,
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _StatTile(
+                    label: l10n.statsTotalMonthly,
+                    value: MoneyFormatter.compact(
+                      amount: ref.watch(monthlyTotalProvider),
+                      currencyCode: currency,
+                      localeName: context.localeName,
+                    ),
+                  ),
                 ),
-              ),
+                VerticalDivider(width: 1, color: context.colors.outlineVariant),
+                Expanded(
+                  child: _StatTile(
+                    inset: true,
+                    label: l10n.statsTotalYearly,
+                    value: MoneyFormatter.compact(
+                      amount: ref.watch(yearlyTotalProvider),
+                      currencyCode: currency,
+                      localeName: context.localeName,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
         // The charts and totals only cover one currency. Name it, and list
         // what is billed in another, instead of silently omitting it.
@@ -286,30 +295,36 @@ class _SummaryRow extends ConsumerWidget {
 }
 
 class _StatTile extends StatelessWidget {
-  const _StatTile({required this.label, required this.value});
+  const _StatTile({
+    required this.label,
+    required this.value,
+    this.inset = false,
+  });
 
   final String label;
   final String value;
+  final bool inset;
 
   @override
-  Widget build(BuildContext context) => SoftCard(
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.fromLTRB(inset ? 16 : 0, 14, 0, 14),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label,
-          style: context.text.labelSmall?.copyWith(
+          context.upper(label),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: monoStyle(size: 9.5).copyWith(
             color: context.colors.onSurfaceVariant,
+            letterSpacing: 1.6,
           ),
         ),
-        const SizedBox(height: AppSpacing.xs),
+        const SizedBox(height: 6),
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
-          child: Text(
-            value,
-            style: monoStyle(size: 21),
-          ),
+          child: Text(value, style: monoStyle(size: 19)),
         ),
       ],
     ),
@@ -325,10 +340,9 @@ class _Label extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     context.upper(text),
-    style: monoStyle(size: 10.5).copyWith(
-      color: context.colors.onSurfaceVariant,
-      letterSpacing: 2,
-    ),
+    style: monoStyle(
+      size: 10.5,
+    ).copyWith(color: context.colors.onSurfaceVariant, letterSpacing: 2),
   );
 }
 
@@ -353,8 +367,10 @@ class _CategoryLedger extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(3),
           child: SizedBox(
+            width: double.infinity,
             height: 16,
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 for (var i = 0; i < slices.length; i++) ...[
                   if (i > 0) const SizedBox(width: 2),

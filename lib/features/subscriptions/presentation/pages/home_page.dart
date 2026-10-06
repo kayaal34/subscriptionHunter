@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../app/router/app_router.dart';
 import '../../../../app/theme/app_palette.dart';
@@ -68,58 +69,63 @@ class _HomeContent extends ConsumerWidget {
           sliver: SliverToBoxAdapter(
             child:
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            context.upper(l10n.appTitle),
-                            style: monoStyle(size: 12).copyWith(
-                              color: context.colors.onSurfaceVariant,
-                              letterSpacing: 3,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                context.upper(l10n.appTitle),
+                                style: monoStyle(size: 12).copyWith(
+                                  color: context.colors.onSurfaceVariant,
+                                  letterSpacing: 3,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        FilledButton.icon(
-                          key: const Key('home-add'),
-                          onPressed: () => context.push(AppRoutes.add),
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size(0, 38),
-                            padding: const EdgeInsets.fromLTRB(12, 0, 16, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                            FilledButton.icon(
+                              key: const Key('home-add'),
+                              onPressed: () => context.push(AppRoutes.add),
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size(0, 38),
+                                padding: const EdgeInsets.fromLTRB(
+                                  12,
+                                  0,
+                                  16,
+                                  0,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              icon: const Icon(Icons.add_rounded, size: 18),
+                              label: Text(l10n.actionAdd),
                             ),
-                          ),
-                          icon: const Icon(Icons.add_rounded, size: 18),
-                          label: Text(l10n.actionAdd),
+                          ],
                         ),
+                        const SizedBox(height: AppSpacing.xl),
+                        TotalsHeader(
+                          monthlyTotal: ref.watch(monthlyTotalProvider),
+                          yearlyTotal: ref.watch(yearlyTotalProvider),
+                          activeCount: ref
+                              .watch(activeSubscriptionsProvider)
+                              .length,
+                          currencyCode: ref.watch(currencyCodeProvider),
+                          hasOtherCurrencies: ref
+                              .watch(secondaryCurrenciesProvider)
+                              .isNotEmpty,
+                          nextLabel: ref.watch(upcomingBillsProvider).isEmpty
+                              ? null
+                              : DateFormat.MMMd(context.localeName).format(
+                                  ref.watch(upcomingBillsProvider).first.date,
+                                ),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        const UpcomingTimeline(),
                       ],
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-                    TotalsHeader(
-                      monthlyTotal: ref.watch(monthlyTotalProvider),
-                      yearlyTotal: ref.watch(yearlyTotalProvider),
-                      activeCount: ref
-                          .watch(activeSubscriptionsProvider)
-                          .length,
-                      currencyCode: ref.watch(currencyCodeProvider),
-                      hasOtherCurrencies: ref
-                          .watch(secondaryCurrenciesProvider)
-                          .isNotEmpty,
-                      nextLabel: ref.watch(upcomingBillsProvider).isEmpty
-                          ? null
-                          : l10n.dueLabel(
-                              ref.watch(upcomingBillsProvider).first.daysAway,
-                            ),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                    const UpcomingTimeline(),
-                  ],
-                )
-                .animate()
-                .fadeIn(duration: 350.ms)
-                .slideY(begin: -0.06, curve: Curves.easeOutCubic),
+                    )
+                    .animate()
+                    .fadeIn(duration: 350.ms)
+                    .slideY(begin: -0.06, curve: Curves.easeOutCubic),
           ),
         ),
 

@@ -72,13 +72,11 @@ class UpcomingTimeline extends ConsumerWidget {
                   right: d == 28 ? 0 : null,
                   top: 56,
                   child: Text(
-                    d == 0
-                        ? context.upper(l10n.dueToday)
-                        : context.upper(
-                            dayFormat.format(
-                              DateTime(today.year, today.month, today.day + d),
-                            ),
-                          ),
+                    context.upper(
+                      dayFormat.format(
+                        DateTime(today.year, today.month, today.day + d),
+                      ),
+                    ),
                     style: labelStyle,
                   ),
                 ),
