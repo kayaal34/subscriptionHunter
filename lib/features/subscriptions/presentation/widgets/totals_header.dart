@@ -78,7 +78,7 @@ class TotalsHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.homeMonthlyTotal.toUpperCase(),
+          context.upper(l10n.homeMonthlyTotal),
           style: monoStyle(size: 11).copyWith(
             color: colors.onSurfaceVariant,
             letterSpacing: 2.2,
@@ -127,7 +127,7 @@ class _Metric extends StatelessWidget {
     mainAxisSize: MainAxisSize.min,
     children: [
       Text(
-        label.toUpperCase(),
+        context.upper(label),
         style: monoStyle(size: 10).copyWith(
           color: context.colors.onSurfaceVariant,
           letterSpacing: 1.8,

@@ -70,7 +70,7 @@ class _HomeContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.appTitle.toUpperCase(),
+                      context.upper(l10n.appTitle),
                       style: monoStyle(size: 12).copyWith(
                         color: context.colors.onSurfaceVariant,
                         letterSpacing: 3,

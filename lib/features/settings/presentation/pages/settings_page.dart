@@ -363,7 +363,7 @@ class _SectionLabel extends StatelessWidget {
       AppSpacing.sm,
     ),
     child: Text(
-      text.toUpperCase(),
+      context.upper(text),
       style: context.text.labelSmall?.copyWith(
         color: context.colors.primary,
         fontWeight: FontWeight.w800,

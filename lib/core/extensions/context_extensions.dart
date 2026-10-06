@@ -17,6 +17,16 @@ extension BuildContextX on BuildContext {
   String get localeName => Localizations.localeOf(this).toLanguageTag();
 
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
+
+  /// Upper-cases [text] for the active language. Dart's own `toUpperCase`
+  /// turns Turkish "i" into "I" instead of "İ" (so "Eki" became "EKI").
+  String upper(String text) {
+    final language = Localizations.localeOf(this).languageCode;
+    final fixed = (language == 'tr' || language == 'az')
+        ? text.replaceAll('i', 'İ').replaceAll('ı', 'I')
+        : text;
+    return fixed.toUpperCase();
+  }
 }
 
 extension DueLabel on AppLocalizations {

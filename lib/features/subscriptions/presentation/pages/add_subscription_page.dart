@@ -528,7 +528,7 @@ class _FormSection extends StatelessWidget {
               Icon(icon, size: 18, color: context.colors.primary),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                title.toUpperCase(),
+                context.upper(title),
                 style: context.text.labelMedium?.copyWith(
                   color: context.colors.primary,
                   fontWeight: FontWeight.w800,
@@ -722,7 +722,7 @@ class _ServicePicker extends StatelessWidget {
                   ),
                   const SizedBox(width: AppSpacing.sm),
                   Text(
-                    entry.key.label(l10n).toUpperCase(),
+                    context.upper(entry.key.label(l10n)),
                     style: context.text.labelSmall?.copyWith(
                       color: context.colors.primary,
                       fontWeight: FontWeight.w800,

@@ -127,9 +127,11 @@ class SubscriptionCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  DateFormat.MMMd(
-                                    context.localeName,
-                                  ).format(nextDate).toUpperCase(),
+                                  context.upper(
+                                    DateFormat.MMMd(
+                                      context.localeName,
+                                    ).format(nextDate),
+                                  ),
                                   style: monoStyle(
                                     size: 15,
                                   ).copyWith(color: Colors.white),
