@@ -207,7 +207,12 @@ abstract final class AppTheme {
           borderRadius: BorderRadius.circular(AppSpacing.md),
         ),
         backgroundColor: scheme.surfaceContainerHighest,
-        selectedColor: scheme.secondaryContainer,
+        selectedColor: scheme.primary,
+        checkmarkColor: scheme.onPrimary,
+        secondaryLabelStyle: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: scheme.onPrimary,
+        ),
         labelStyle: TextStyle(
           fontWeight: FontWeight.w600,
           color: scheme.onSurface,
