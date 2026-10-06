@@ -12,7 +12,7 @@ import '../../../../shared/widgets/soft_card.dart';
 import '../../domain/billing_calculator.dart';
 import '../../domain/subscription.dart';
 import '../providers/subscription_providers.dart';
-import '../widgets/subscription_avatar.dart';
+import '../widgets/subscription_card.dart';
 
 class SubscriptionDetailPage extends ConsumerWidget {
   const SubscriptionDetailPage({required this.id, super.key});
@@ -102,32 +102,13 @@ class SubscriptionDetailPage extends ConsumerWidget {
           AppSpacing.xxl,
         ),
         children: [
-          Center(
-            child: Hero(
-              tag: 'logo-${subscription.id}',
-              child: SubscriptionAvatar(
-                subscription: subscription,
-                size: 88,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Text(
-            subscription.name,
-            textAlign: TextAlign.center,
-            style: context.text.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            '${MoneyFormatter.format(amount: subscription.price, currencyCode: subscription.currencyCode, localeName: context.localeName)} · ${subscription.billingCycle.label(l10n)}',
-            textAlign: TextAlign.center,
-            style: context.text.bodyLarge?.copyWith(
-              color: context.colors.onSurfaceVariant,
-            ),
-          ),
+          SubscriptionCard(
+            subscription: subscription,
+            daysAway: subscription.daysUntilNextBilling(now),
+          ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.06),
 
+          const SizedBox(height: AppSpacing.xl),
+          _PaymentDots(subscription: subscription, now: now),
           const SizedBox(height: AppSpacing.xl),
           SoftCard(
             child: Column(
@@ -230,9 +211,7 @@ class _DetailRow extends StatelessWidget {
         children: [
           Text(
             value,
-            style: context.text.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: monoStyle(size: 13),
           ),
           if (highlight != null)
             Text(
@@ -280,12 +259,80 @@ class _CostTile extends StatelessWidget {
               currencyCode: currencyCode,
               localeName: context.localeName,
             ),
-            style: context.text.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: monoStyle(size: 17),
           ),
         ),
       ],
     ),
   );
+}
+
+/// Twelve months around today: paid, the next charge, and those still to come.
+class _PaymentDots extends StatelessWidget {
+  const _PaymentDots({required this.subscription, required this.now});
+
+  final Subscription subscription;
+  final DateTime now;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final today = DateUtils.dateOnly(now);
+    final first = DateTime(today.year, today.month - 6, 1);
+    final last = DateTime(today.year, today.month + 6, 0);
+    final charges = BillingCalculator.occurrencesInRange(
+      anchor: subscription.anchorDate,
+      cycle: subscription.billingCycle,
+      rangeStart: first,
+      rangeEnd: last,
+      endDate: subscription.endDate,
+    );
+    final next = subscription.nextBillingDate(now);
+    final label = DateFormat('MMMMM', context.localeName);
+
+    Widget dot(DateTime month) {
+      final inMonth = charges.where(
+        (d) => d.year == month.year && d.month == month.month,
+      );
+      Color? fill;
+      Border? border;
+      if (inMonth.isEmpty) {
+        border = Border.all(color: colors.outlineVariant);
+      } else if (inMonth.any((d) => d == next)) {
+        border = Border.all(color: colors.primary, width: 2);
+      } else if (inMonth.first.isBefore(today)) {
+        fill = colors.primary;
+      } else {
+        border = Border.all(color: colors.outline, width: 1.5);
+      }
+      return Column(
+        children: [
+          Container(
+            width: 16,
+            height: 16,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: fill,
+              border: border,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            context.upper(label.format(month)),
+            style: monoStyle(size: 9.5).copyWith(
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        for (var i = 0; i < 12; i++)
+          dot(DateTime(today.year, today.month - 6 + i, 1)),
+      ],
+    ).animate().fadeIn(delay: 60.ms, duration: 320.ms);
+  }
 }
