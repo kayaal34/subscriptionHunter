@@ -16,6 +16,7 @@ import '../../../subscriptions/domain/subscription.dart';
 import '../../../subscriptions/presentation/providers/subscription_providers.dart';
 import '../../../subscriptions/presentation/widgets/currency_coverage_note.dart';
 import '../../../subscriptions/presentation/widgets/subscription_avatar.dart';
+import '../../../subscriptions/presentation/widgets/subscription_card.dart' show monoStyle;
 import '../providers/statistics_providers.dart';
 
 class StatisticsPage extends ConsumerWidget {
@@ -38,7 +39,22 @@ class StatisticsPage extends ConsumerWidget {
               )
             : CustomScrollView(
                 slivers: [
-                  SliverAppBar(floating: true, title: Text(l10n.statsTitle)),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.xl,
+                        AppSpacing.lg,
+                        AppSpacing.xl,
+                        AppSpacing.sm,
+                      ),
+                      child: Text(
+                        l10n.statsTitle,
+                        style: context.text.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
                       AppSpacing.lg,
@@ -366,9 +382,7 @@ class _StatTile extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Text(
             value,
-            style: context.text.titleLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+            style: monoStyle(size: 21),
           ),
         ),
       ],

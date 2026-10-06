@@ -82,7 +82,22 @@ class SettingsPage extends ConsumerWidget {
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            SliverAppBar(floating: true, title: Text(l10n.settingsTitle)),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.xl,
+                  AppSpacing.lg,
+                  AppSpacing.xl,
+                  0,
+                ),
+                child: Text(
+                  l10n.settingsTitle,
+                  style: context.text.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
+            ),
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,
