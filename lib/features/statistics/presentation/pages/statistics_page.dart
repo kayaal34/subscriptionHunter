@@ -468,7 +468,7 @@ class _CategoryChartCardState extends State<_CategoryChartCard> {
       value: slice.monthlyTotal,
       color: AppPalette.chartColorAt(index, Theme.of(context).brightness),
       radius: isTouched ? 34 : 28,
-      title: slice.share >= 0.08 ? '${(slice.share * 100).round()}%' : '',
+      title: slice.share >= 0.08 && slice.share < 0.99 ? '${(slice.share * 100).round()}%' : '',
       titleStyle: TextStyle(
         fontSize: isTouched ? 15 : 13,
         fontWeight: FontWeight.w800,
