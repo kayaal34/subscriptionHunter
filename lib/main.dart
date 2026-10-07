@@ -12,6 +12,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // The layouts are designed for portrait; landscape only overflowed.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // Android 15 draws apps edge to edge; opt in explicitly so older versions
+  // behave the same. Screens already pad themselves with SafeArea.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Loaded before the first frame so the saved theme and language are already
   // known - the app never flashes the wrong colours or the wrong language on
