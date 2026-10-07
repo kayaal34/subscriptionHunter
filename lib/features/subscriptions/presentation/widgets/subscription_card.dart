@@ -117,15 +117,36 @@ class SubscriptionCard extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          Text(
-                            MoneyFormatter.format(
-                              amount: subscription.price,
-                              currencyCode: subscription.currencyCode,
-                              localeName: context.localeName,
-                            ),
-                            style: monoStyle(
-                              size: 14.5,
-                            ).copyWith(color: ink),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                MoneyFormatter.format(
+                                  amount: subscription.price,
+                                  currencyCode: subscription.currencyCode,
+                                  localeName: context.localeName,
+                                ),
+                                style: monoStyle(
+                                  size: 14.5,
+                                ).copyWith(color: ink),
+                              ),
+                              const SizedBox(height: 3),
+                              // Visible even when the card is overlapped.
+                              Text(
+                                context.upper(
+                                  DateFormat.MMMd(
+                                    context.localeName,
+                                  ).format(nextDate),
+                                ),
+                                style: monoStyle(size: 10.5).copyWith(
+                                  color: urgent
+                                      ? colors.primary
+                                      : colors.onSurfaceVariant,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -138,19 +159,8 @@ class SubscriptionCard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  context.upper(
-                                    DateFormat.MMMd(
-                                      context.localeName,
-                                    ).format(nextDate),
-                                  ),
-                                  style: monoStyle(
-                                    size: 15,
-                                  ).copyWith(color: ink),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
                                   l10n.dueLabel(daysAway),
-                                  style: context.text.labelMedium?.copyWith(
+                                  style: context.text.titleSmall?.copyWith(
                                     color: urgent
                                         ? colors.primary
                                         : colors.onSurfaceVariant,
