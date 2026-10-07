@@ -80,9 +80,11 @@ class SubscriptionCard extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.center,
+                        // Fade to the same white at zero alpha: fading to
+                        // Colors.transparent (black) passes through grey.
                         colors: [
                           Colors.white.withValues(alpha: isDark ? 0.10 : 0.6),
-                          Colors.transparent,
+                          Colors.white.withValues(alpha: 0),
                         ],
                       ),
                     ),
